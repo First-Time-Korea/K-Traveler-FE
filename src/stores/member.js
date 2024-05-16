@@ -14,8 +14,6 @@ export const useMemberStore = defineStore("memberStore", () => {
   const userInfo = ref(null);
   const isValidToken = ref(false);
 
-  const userSignUp = async (signUpUser) => {};
-
   const userLogin = async (loginUser) => {
     await userConfirm(
       loginUser,
@@ -140,6 +138,5 @@ export const useMemberStore = defineStore("memberStore", () => {
     getUserInfo,
     tokenRegenerate,
     userLogout,
-    userSignUp,
   };
 });
