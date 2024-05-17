@@ -1,0 +1,111 @@
+@charset "UTF-8";
+
+@font-face {
+	font-family: 'TTHakgyoansimYeohaengR';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_keris@1.0/TTHakgyoansimYeohaengR.woff2')
+		format('woff2');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'MYYeongnamnu';
+	src:
+		url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/MYYeongnamnu.woff2')
+		format('woff2');
+	font-weight: normal;
+	font-style: normal;
+}
+
+* {
+	font-family: 'TTHakgyoansimYeohaengR', sans-serif;
+	/* WAGURITTF 폰트 적용, 폰트가 로드되지 않았을 경우에는 sans-serif 폰트를 대체로 사용 */
+}
+
+.footer {
+	height: 150px; /* 실제 푸터의 높이 */
+}
+
+/* 네비게이션 바의 높이와 내부 패딩 조정 */
+.navbar {
+	/* padding: 0rem 0rem; */ /* 기본 패딩 증가 */
+	height: auto; /* 높이를 자동으로 조정하되, 패딩에 의해 높이가 증가됨 */
+}
+
+/* 네비게이션 바 브랜드(로고)의 크기와 패딩 조정 */
+.navbar-brand {
+	padding: 0.3125rem 0; /* 상하 패딩 조정 */
+	font-size: 3rem; /* 폰트 크기 증가 */
+	font-family: 'MYYeongnamnu', cursive;
+	color: green;
+}
+
+/* 링크 컨테이너 */
+.navbar-nav-container {
+	display: flex; /* 플렉스 컨테이너 설정 */
+	justify-content: space-between; /* 양 끝으로 배치 */
+	align-items: center; /* 수직 중앙 정렬 */
+	width: 65%; /* 부모 요소의 전체 너비를 차지하도록 설정 */
+}
+
+/* 네비게이션 링크의 패딩 조정 */
+.nav-link {
+	padding: 0.5rem 0.5rem; /* 상하 패딩과 좌우 패딩 조정 */
+}
+
+/* 네비게이션 버튼의 패딩과 폰트 크기 조정 */
+.navbar-toggler {
+	padding: 0.25rem 0.75rem; /* 버튼의 패딩 조정 */
+	font-size: 1.25rem; /* 아이콘 크기 조정을 위한 폰트 크기 증가 */
+}
+/* 로고와 네비게이션 링크를 포함하는 상단 네비게이션 바 커스텀 스타일 */
+.navbar-custom {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	display: flex;
+}
+
+.navbar-brand-center {
+	width: 100%; /* 너비를 100%로 설정하여 가운데 정렬 */
+	text-align: center; /* 텍스트 중앙 정렬 */
+	padding: 0px 5px; /* 상하 패딩으로 높이 조정 */
+}
+
+.navbar-nav-custom {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#header {
+	margin-bottom: 110px;
+}
+
+.navbar-custom {
+	background-color: white; /* 필요에 따라 색상 변경 */
+}
+
+.navbar-brand-center {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+}
+
+/* 비밀번호 찾기 모달 스타일 */
+.modal-body {
+	padding: 40px 80px;
+}
+
+.btn-success {
+	background-color: white;
+	color: #28a745;
+	border-color: white;
+}
+
+/* 로그인 모달 스타일 */
+.modal-dialog-centered>.modal-content>.d-flex {
+	padding: 30px 30px 20px 30px;
+}
