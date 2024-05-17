@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import TheMainView from "@/views/TheMainView.vue";
+import TheAttractionView from "@/views/TheAttractionView.vue";
 import UserRouter from "@/router/userRouter.js";
-// import AttractionRouter from "@/router/attractionRouter.js"
 
 import { storeToRefs } from "pinia";
 
@@ -31,6 +31,11 @@ const router = createRouter({
       path: "/",
       name: "main",
       component: TheMainView,
+    },
+    {
+      path: "/attraction",
+      name: "attraction",
+      component: TheAttractionView,
     },
 
     ...UserRouter,
