@@ -225,7 +225,6 @@ export const useThemeTestStore = defineStore("themeTest", () => {
 
   const restOfQuestions = ref(questions.value.length);
   const isDone = computed(() => {
-    console.log(isDone);
     return restOfQuestions.value == 0;
   });
 
