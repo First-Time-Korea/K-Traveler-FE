@@ -2,9 +2,13 @@
 import { ref } from "vue";
 
 const props = defineProps({
+  index: Number,
   color: String,
-  size: Number,
+  size: String,
+  checked: Boolean,
 });
+
+const emit = defineEmits(["checkEvent"]);
 
 const colors = {
   first: "border-first-300 checked:border-first-300 checked:bg-first-300",
@@ -32,12 +36,16 @@ const inputBasicStyle =
 const inputStyle = `${inputBasicStyle} ${colors[props.color]} ${sizesOfInput[props.size]}`;
 
 const sizeOfSvg = `${sizesOfSvg[props.size]}`;
+
+const check = () => {
+  emit("checkEvent", props.index);
+};
 </script>
 
 <template>
   <div class="inline-flex items-center">
     <label class="relative flex items-center p-3 rounded-full cursor-pointer" htmlFor="customStyle">
-      <input type="checkbox" :class="inputStyle" />
+      <input type="checkbox" :class="inputStyle" @click="check" :checked="props.checked" />
       <span
         class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100"
       >
