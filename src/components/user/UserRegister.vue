@@ -25,15 +25,19 @@ async function goSignUp() {
         alert("비밀번호가 일치하지 않습니다.");
         return;
     }
-    try {
-        const response = await signup(user.value);
-        if (response.status == 201) {
-            alert("회원가입이 완료되었습니다.");
-            router.push({ name: "main" });
-        }
-    } catch (error) {
-        console.log(error);
-    }
+    await signup((user.value),
+        (response) => {
+            console.log(response.data);
+            if (response.data.status === "success") {
+                alert("회원가입이 완료되었습니다.");
+                router.push({ name: "main" });
+            }
+        },
+        (error) => {
+            console.log(error);
+            alert("회원가입이 실패하였습니다.");
+            router.push({ name: "user-join" })
+        })
 }
 
 async function goIdCheck() {
