@@ -24,7 +24,7 @@ const buttonStyle = computed(() => {
     <div class="container text-center">
       <ThemeTestItem v-for="question in store.questions" :key="question.id" :question="question" />
     </div>
-    <button :class="buttonStyle" type="button">DONE</button>
+    <button :class="buttonStyle" type="button" @click="store.calcualteResult">DONE</button>
   </div>
 </template>
 
