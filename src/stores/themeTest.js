@@ -1,212 +1,220 @@
-import { ref, computed } from 'vue';
+import { ref, computed } from "vue";
 import { defineStore } from "pinia/dist/pinia";
 
-export const useThemeTestStore = defineStore('themeTest', () => {
-    const theme = {
-        food: "A",
-        shopping: "B",
-        history: "C",
-        nature: "D",
-        kCulture: "E",
-        entertainment: "F",
-        modernCulture: "H"
-    };
+export const useThemeTestStore = defineStore("themeTest", () => {
+  const theme = {
+    food: "A",
+    shopping: "B",
+    history: "C",
+    nature: "D",
+    kCulture: "E",
+    entertainment: "F",
+    modernCulture: "H",
+  };
 
-    let id = 0;
-    const questions = ref([
-        {
-            id: id++,
-            text: "I enjoy trying local cuisine when traveling.",
-            theme: theme.food,
-            value: 0
-        },
-        {
-            id: id++,
-            text: "Food quality is important to me when choosing a travel destination.",
-            theme: theme.food,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I am familiar with Korea's 'chimaek' culture.",
-            theme: theme.food,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I find trying exotic and unfamiliar foods exciting.",
-            theme: theme.food,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I enjoy shopping for local products and souvenirs when traveling.",
-            theme: theme.shopping,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I want to visit traditional Korean markets.",
-            theme: theme.shopping,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "Shopping is important to me when choosing a travel destination.",
-            theme: theme.shopping,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I am familiar with K-Beauty in Korea.",
-            theme: theme.shopping,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I am interested in exploring historical sites and monuments.",
-            theme: theme.history,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I want to experience traditional Korean culture.",
-            theme: theme.history,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I am familiar with hanok and hanbok.",
-            theme: theme.history,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I enjoy exploring UNESCO World Heritage sites.",
-            theme: theme.history,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I want to visit national parks and natural reserves.",
-            theme: theme.nature,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I want to explore Korean mountains and hiking trails.",
-            theme: theme.nature,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I am interested in scenic coastal views and beaches.",
-            theme: theme.nature,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I enjoy photographing nature scenery.",
-            theme: theme.nature,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I am a fan of K-pop music and idols.",
-            theme: theme.kCulture,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I enjoy watching Korean dramas and movies.",
-            theme: theme.kCulture,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I want to visit locations where famous K-dramas were filmed.",
-            theme: theme.kCulture,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I enjoy watching Korean variety shows.",
-            theme: theme.kCulture,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I enjoy visiting amusement parks and theme parks.",
-            theme: theme.entertainment,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I want to experience Korean nightlife.",
-            theme: theme.entertainment,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I want to visit gaming arcades and PC bangs.",
-            theme: theme.entertainment,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I want to experience unique Korean spas and jjimjilbangs.",
-            theme: theme.entertainment,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I want to go cycling in scenic areas.",
-            theme: theme.G,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I enjoy doing activities at travel destinations.",
-            theme: theme.G,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I want to try water sports and activities.",
-            theme: theme.G,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I enjoy hiking and mountain climbing.",
-            theme: theme.G,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I am interested in visiting contemporary art galleries.",
-            theme: theme.modernCulture,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I enjoy exploring modern architecture and urban spaces.",
-            theme: theme.modernCulture,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I want to attend contemporary theater and dance performances.",
-            theme: theme.modernCulture,
-            value: 0,
-        },
-        {
-            id: id++,
-            text: "I want to explore digital art and technology exhibitions.",
-            theme: theme.modernCulture,
-            value: 0,
-        }
-    ]);
+  let id = 0;
+  const questions = ref([
+    {
+      id: id++,
+      text: "I enjoy trying local cuisine when traveling.",
+      theme: theme.food,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "Food quality is important to me when choosing a travel destination.",
+      theme: theme.food,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I am familiar with Korea's 'chimaek' culture.",
+      theme: theme.food,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I find trying exotic and unfamiliar foods exciting.",
+      theme: theme.food,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I enjoy shopping for local products and souvenirs when traveling.",
+      theme: theme.shopping,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I want to visit traditional Korean markets.",
+      theme: theme.shopping,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "Shopping is important to me when choosing a travel destination.",
+      theme: theme.shopping,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I am familiar with K-Beauty in Korea.",
+      theme: theme.shopping,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I am interested in exploring historical sites and monuments.",
+      theme: theme.history,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I want to experience traditional Korean culture.",
+      theme: theme.history,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I am familiar with hanok and hanbok.",
+      theme: theme.history,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I enjoy exploring UNESCO World Heritage sites.",
+      theme: theme.history,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I want to visit national parks and natural reserves.",
+      theme: theme.nature,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I want to explore Korean mountains and hiking trails.",
+      theme: theme.nature,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I am interested in scenic coastal views and beaches.",
+      theme: theme.nature,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I enjoy photographing nature scenery.",
+      theme: theme.nature,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I am a fan of K-pop music and idols.",
+      theme: theme.kCulture,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I enjoy watching Korean dramas and movies.",
+      theme: theme.kCulture,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I want to visit locations where famous K-dramas were filmed.",
+      theme: theme.kCulture,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I enjoy watching Korean variety shows.",
+      theme: theme.kCulture,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I enjoy visiting amusement parks and theme parks.",
+      theme: theme.entertainment,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I want to experience Korean nightlife.",
+      theme: theme.entertainment,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I want to visit gaming arcades and PC bangs.",
+      theme: theme.entertainment,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I want to experience unique Korean spas and jjimjilbangs.",
+      theme: theme.entertainment,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I want to go cycling in scenic areas.",
+      theme: theme.G,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I enjoy doing activities at travel destinations.",
+      theme: theme.G,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I want to try water sports and activities.",
+      theme: theme.G,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I enjoy hiking and mountain climbing.",
+      theme: theme.G,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I am interested in visiting contemporary art galleries.",
+      theme: theme.modernCulture,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I enjoy exploring modern architecture and urban spaces.",
+      theme: theme.modernCulture,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I want to attend contemporary theater and dance performances.",
+      theme: theme.modernCulture,
+      value: -1,
+    },
+    {
+      id: id++,
+      text: "I want to explore digital art and technology exhibitions.",
+      theme: theme.modernCulture,
+      value: -1,
+    },
+  ]);
 
-    return {questions}
-})
+  const calculateValueOfQuestion = (index, value) => {
+    questions.value.findIndex((question) => {
+      if (question.index === index) {
+        question.value = value;
+      }
+    });
+  };
+
+  return { questions, calculateValueOfQuestion };
+});
