@@ -9,6 +9,7 @@ export const useThemeTestStore = defineStore("themeTest", () => {
     nature: "D",
     kCulture: "E",
     entertainment: "F",
+    sport: "G",
     modernCulture: "H",
   };
 
@@ -161,25 +162,25 @@ export const useThemeTestStore = defineStore("themeTest", () => {
     {
       id: id++,
       text: "I want to go cycling in scenic areas.",
-      theme: theme.G,
+      theme: theme.sport,
       value: -1,
     },
     {
       id: id++,
       text: "I enjoy doing activities at travel destinations.",
-      theme: theme.G,
+      theme: theme.sport,
       value: -1,
     },
     {
       id: id++,
       text: "I want to try water sports and activities.",
-      theme: theme.G,
+      theme: theme.sport,
       value: -1,
     },
     {
       id: id++,
       text: "I enjoy hiking and mountain climbing.",
-      theme: theme.G,
+      theme: theme.sport,
       value: -1,
     },
     {
@@ -208,13 +209,25 @@ export const useThemeTestStore = defineStore("themeTest", () => {
     },
   ]);
 
-  const calculateValueOfQuestion = (index, value) => {
+  const calculateValueOfQuestion = (id, value) => {
     questions.value.findIndex((question) => {
-      if (question.index === index) {
+      if (question.id === id) {
         question.value = value;
+
+        if (value > -1) {
+          restOfQuestions.value--;
+        } else {
+          restOfQuestions.value++;
+        }
       }
     });
   };
 
-  return { questions, calculateValueOfQuestion };
+  const restOfQuestions = ref(questions.value.length);
+  const isDone = computed(() => {
+    console.log(isDone);
+    return restOfQuestions.value == 0;
+  });
+
+  return { questions, isDone, calculateValueOfQuestion };
 });

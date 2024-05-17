@@ -31,14 +31,14 @@ const handleCheckEvent = (index) => {
     checkedIndex = -1;
 
     // 점수 계산하기
-    store.calculateValueOfQuestion(props.question.index, -1);
+    store.calculateValueOfQuestion(props.question.id, -1);
   } else {
     // 다른 checkbox를 check한 경우
     checkedIndex = index;
     checkboxes.value[checkedIndex].checked = !checkboxes.value[checkedIndex].checked;
 
     // 점수 계산하기
-    store.calculateValueOfQuestion(props.question.index, Math.abs(6 - index));
+    store.calculateValueOfQuestion(props.question.id, Math.abs(6 - index));
   }
 };
 </script>
