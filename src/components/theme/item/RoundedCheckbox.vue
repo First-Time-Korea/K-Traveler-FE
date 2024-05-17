@@ -1,42 +1,37 @@
 <script setup>
+import { ref } from "vue";
+
 const props = defineProps({
   color: String,
   size: Number,
 });
 
-const inputStyle = [
-  "before:content['']",
-  "peer",
-  "relative",
-  `h-${4 * props.size}`,
-  `w-${4 * props.size}`,
-  "cursor-pointer",
-  "appearance-none",
-  "rounded-full",
-  "border",
-  `border-${props.color}`,
-  "bg-white",
-  "transition-all",
-  "before:absolute",
-  "before:top-2/4",
-  "before:left-2/4",
-  "before:block",
-  "before:h-6",
-  "before:w-6",
-  "before:-translate-y-2/4",
-  "before:-translate-x-2/4",
-  "before:rounded-full",
-  "before:bg-blue-gray-500",
-  "before:opacity-0",
-  "before:transition-opacity",
-  `checked:border-${props.color}`,
-  `checked:bg-${props.color}`,
-  "checked:before:bg-gray-900",
-  "hover:scale-105",
-  "hover:before:opacity-0",
-];
+const colors = {
+  first: "border-first-300 checked:border-first-300 checked:bg-first-300",
+  second: "border-second-500 checked:border-second-500 checked:bg-second-500",
+  third: "border-third-300 checked:border-third-300 checked:bg-third-300",
+};
 
-const svgStyle = [`h-${2 * props.size}`, `w-${2 * props.size}`];
+const sizesOfInput = {
+  xsm: "h-8 w-8 before:h-12 before:w-12",
+  sm: "h-10 w-10 before:h-14 before:w-14",
+  md: "h-12 w-12 before:h-16 before:w-16",
+  lg: "h-14 w-14 before:h-18 before:w-18",
+};
+
+const sizesOfSvg = {
+  xsm: "h-2.5 w-2.5",
+  sm: "h-3.5 w-3.5",
+  md: "h-5 w-5",
+  lg: "h-6 w-6",
+};
+
+const inputBasicStyle =
+  "before:content[''] peer relative cursor-pointer appearance-none rounded-full border-2 bg-white transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:before:bg-gray-900 hover:scale-105 hover:before:opacity-0";
+
+const inputStyle = `${inputBasicStyle} ${colors[props.color]} ${sizesOfInput[props.size]}`;
+
+const sizeOfSvg = `${sizesOfSvg[props.size]}`;
 </script>
 
 <template>
@@ -48,7 +43,7 @@ const svgStyle = [`h-${2 * props.size}`, `w-${2 * props.size}`];
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          :class="svgStyle"
+          :class="sizeOfSvg"
           viewBox="0 0 20 20"
           fill="currentColor"
           stroke="currentColor"
