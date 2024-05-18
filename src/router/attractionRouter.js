@@ -1,10 +1,5 @@
-import { createRouter, createWebHistory } from "vue-router";
-import TheMainView from "@/views/TheMainView.vue";
-import UserRouter from "@/router/userRouter.js";
-import AttractionRouter from "@/router/attractionRouter";
-
+import TheAttractionView from "@/views/TheAttractionView.vue";
 import { storeToRefs } from "pinia";
-
 import { useMemberStore } from "@/stores/member";
 
 const onlyAuthUser = async (to, from, next) => {
@@ -24,17 +19,11 @@ const onlyAuthUser = async (to, from, next) => {
   }
 };
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: "/",
-      name: "main",
-      component: TheMainView,
-    },
-    ...UserRouter,
-    ...AttractionRouter,
-  ],
-});
-
-export default router;
+export default [
+  {
+    path: "/attraction",
+    name: "attraction",
+    beforeEnter: onlyAuthUser,
+    component: TheAttractionView,
+  },
+];
