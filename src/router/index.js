@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import TheMainView from "@/views/TheMainView.vue";
 import UserRouter from "@/router/userRouter.js";
 import AttractionRouter from "@/router/attractionRouter";
+import ThemeRouter from "@/router/themeRouter.js";
+
 
 import { storeToRefs } from "pinia";
 
@@ -34,6 +36,7 @@ const router = createRouter({
     },
     ...UserRouter,
     ...AttractionRouter,
+    ...ThemeRouter,
   ],
 });
 
