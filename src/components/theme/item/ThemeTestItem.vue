@@ -45,12 +45,17 @@ const handleCheckEvent = (index) => {
 
 <template>
   <div class="mb-20 container text-center">
-    <h4
-      class="block mb-3 font-sans text-2xl antialiased font-semibold leading-snug tracking-normal text-inherit text-blue-gray-700"
+    <h5
+      class="text-blue-gray-700 block mb-3 font-sans text-2xl antialiased font-semibold leading-snug tracking-normal text-inherit"
     >
       {{ question.text }}
-    </h4>
+    </h5>
     <div class="flex justify-center">
+      <h6
+        class="text-first-300 mr-8 inline-flex items-center block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-inherit"
+      >
+        Agree
+      </h6>
       <RoundedCheckbox
         v-for="(checkbox, index) in checkboxes"
         :key="index"
@@ -60,6 +65,11 @@ const handleCheckEvent = (index) => {
         :checked="checkbox.checked"
         @check-event="handleCheckEvent"
       />
+      <h6
+        class="text-third-300 ml-8 inline-flex items-center block font-sans text-base antialiased font-semibold leading-relaxed tracking-normal text-inherit"
+      >
+        Disagree
+      </h6>
     </div>
   </div>
 </template>
