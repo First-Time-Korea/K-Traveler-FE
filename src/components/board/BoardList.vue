@@ -87,6 +87,26 @@ const articles = ref([
       <BoardListItem v-for="article in articles" :key="article.id" :article="article" />
     </div>
   </div>
+
+  <!-- 여행 후기 작성 버튼 -->
+  <button
+    class="fixed bottom-6 right-6 bg-third-300 rounded-full text-white p-3.5 shadow-md shadow-gray-900/20 hover:bg-third-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+      />
+    </svg>
+  </button>
 </template>
 
 <style>
