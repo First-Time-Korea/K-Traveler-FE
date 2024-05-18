@@ -1,3 +1,5 @@
+import { locations } from "@/assets/js/Location.js";
+
 const theme = {
   food: {
     code: "A",
@@ -24,6 +26,7 @@ const theme = {
         alt: "Teacup Without Handle",
       },
     ],
+    locations: [locations.seoul, locations.incheon, locations.daejeon],
   },
   shopping: {
     code: "B",
@@ -42,6 +45,7 @@ const theme = {
         alt: "Shopping Cart",
       },
     ],
+    locations: [locations.seoul, locations.incheon, locations.daejeon],
   },
   history: {
     code: "C",
@@ -56,6 +60,7 @@ const theme = {
         alt: "Face with Monocle",
       },
     ],
+    locations: [locations.seoul, locations.incheon, locations.daejeon],
   },
   nature: {
     code: "D",
@@ -82,6 +87,7 @@ const theme = {
         alt: "Desert Island",
       },
     ],
+    locations: [locations.seoul, locations.incheon, locations.daejeon],
   },
   kCulture: {
     code: "E",
@@ -108,6 +114,7 @@ const theme = {
         alt: "Television",
       },
     ],
+    locations: [locations.seoul, locations.incheon, locations.daejeon],
   },
   entertainment: {
     code: "F",
@@ -134,6 +141,7 @@ const theme = {
         alt: "Roller Coaster",
       },
     ],
+    locations: [locations.seoul, locations.incheon, locations.daejeon],
   },
   sport: {
     code: "G",
@@ -160,6 +168,7 @@ const theme = {
         alt: "Man Rowing Boat",
       },
     ],
+    locations: [locations.seoul, locations.incheon, locations.daejeon],
   },
   modernCulture: {
     code: "H",
@@ -186,6 +195,7 @@ const theme = {
         alt: "Cityscape at Dusk",
       },
     ],
+    locations: [locations.seoul, locations.incheon, locations.daejeon],
   },
 };
 

@@ -3,6 +3,7 @@ import { onMounted, ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useMemberStore } from "@/stores/member";
 import { theme } from "@/assets/js/Theme";
+import LocationItem from "@/components/theme/item/LocationItem.vue";
 
 const route = useRoute();
 const store = useMemberStore();
@@ -26,7 +27,6 @@ const buttonDisabledStyle = "pointer-events-none bg-second-500 text-second-700/1
 const buttonAbledStyle = "bg-first-300 text-white";
 
 const buttonStyle = computed(() => {
-  // TODO: 로그인 상태에 따라 버튼 활성화하기
   return store.isLogin
     ? `${buttonBasicStyle} ${buttonAbledStyle}`
     : `${buttonBasicStyle} ${buttonDisabledStyle}`;
@@ -43,6 +43,7 @@ const goRecommendedAttraction = () => {
     <div
       class="relative flex flex-col text-gray-700 bg-white shadow-md bg-clip-border rounded-xl p-8 card-width"
     >
+      <!-- 여행지 테마 -->
       <div class="p-6">
         <div class="flex justify-center mb-8">
           <img :src="img.src" :alt="img.alt" class="w-50 h-50" />
@@ -53,18 +54,41 @@ const goRecommendedAttraction = () => {
           {{ resultTheme.subject }}
         </h3>
         <p
-          class="mb-2 block font-sans text-base antialiased font-light leading-relaxed text-inherit"
+          class="mb-2 text-center block font-sans text-base antialiased font-light leading-relaxed text-inherit"
         >
           {{ resultTheme.content }}
         </p>
-        <p class="block font-sans text-base antialiased font-light leading-relaxed text-inherit">
+        <p
+          class="text-center block font-sans text-base antialiased font-light leading-relaxed text-inherit"
+        >
           {{ resultTheme.recommendation }}
         </p>
       </div>
-      <div class="flex justify-center mt-10 mb-10">
+
+      <!-- 테마에 맞는 추천 여행지 보러가기 -->
+      <div class="flex justify-center mt-20 mb-16">
         <button :class="buttonStyle" type="button" @click="goRecommendedAttraction">
           Get Attraction Recommendation
         </button>
+      </div>
+
+      <!-- 추천 여행지 TOP 3 지역 -->
+      <h4
+        class="text-center mb-4 block font-sans text-2xl antialiased font-semibold leading-snug tracking-normal text-inherit"
+      >
+        TOP 3
+      </h4>
+      <p
+        class="mb-6 text-center block font-sans text-base antialiased font-light leading-relaxed text-inherit"
+      >
+        The top three regions with the most destinations that suit your theme.
+      </p>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+        <LocationItem
+          v-for="location in resultTheme.locations"
+          :key="location.code"
+          :location="location"
+        />
       </div>
     </div>
   </div>
