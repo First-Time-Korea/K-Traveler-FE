@@ -3,7 +3,7 @@ import { onMounted, onUpdated, ref, watch } from "vue";
 import { useRouter } from "vue-router"
 import { storeToRefs } from "pinia"
 import { useAttracionStore } from "@/stores/attraction.js";
-import { togleBookmark, getAttraction } from "@/api/attraction.js";
+import { togleBookmark, getAttraction, getAttractionByAI } from "@/api/attraction.js";
 import { useMemberStore } from "@/stores/member"
 
 import "@/assets/css/VMap.css";
@@ -25,7 +25,7 @@ const isModalVisible = ref(false);
 const clickedPlace = ref({
     contentId: null,
     title: '',
-    addr: '',
+    addr1: '',
     overView: '',
     firstImage: '',
     isBookmarked: false
@@ -90,7 +90,7 @@ function displayPlaces(places) {
             position: position
         });
         kakao.maps.event.addListener(marker, 'click', function () {
-            openModal(place.contentId);
+            openModal(place.contentId, place.themeCode);
         });
         newMarkers.push(marker);
         bounds.extend(position);
@@ -123,28 +123,53 @@ function changeHeartIcon() {
 }
 
 function closeModal() {
+    clickedPlace.value = {
+        contentId: null,
+        title: '',
+        addr1: '',
+        overView: '',
+        firstImage: '',
+        isBookmarked: false
+    };
     isModalVisible.value = false;
 }
 
-function openModal(contentId) {
+function openModal(contentId, themeCode) {
     const wantItem = {
         "memberId": userInfo.value.id,
         "contentId": contentId
     }
-    getAttraction((wantItem),
-        (response) => {
-            if (response.data.status == "success") {
-                clickedPlace.value = {
-                    ...clickedPlace.value,
-                    ...response.data.data,
-                    isBookmarked: response.data.data.bookmarkId > 0
-                };
+    if (themeCode === 'E') {
+        getAttractionByAI((wantItem),
+            (response) => {
+                if (response.data.status == "success") {
+                    clickedPlace.value = {
+                        ...clickedPlace.value,
+                        ...response.data.data,
+                        isBookmarked: response.data.data.bookmarkId > 0
+                    };
+                }
+            },
+            (error) => {
+                console.log(error.data);
             }
-        },
-        (error) => {
-            console.log(error.data);
-        }
-    )
+        )
+    } else {
+        getAttraction((wantItem),
+            (response) => {
+                if (response.data.status == "success") {
+                    clickedPlace.value = {
+                        ...clickedPlace.value,
+                        ...response.data.data,
+                        isBookmarked: response.data.data.bookmarkId > 0
+                    };
+                }
+            },
+            (error) => {
+                console.log(error.data);
+            }
+        )
+    }
     isModalVisible.value = true;
 }
 
@@ -164,7 +189,7 @@ function removeMarker() {
             <div class="image-container">
                 <img v-if="clickedPlace.firstImage" :src="clickedPlace.firstImage" alt="Place image"
                     class="place-image">
-                <img v-else src="@/assets/img/sunjae.jpg" alt="Default image" class="place-image">
+                <img v-else src="@/assets/img/no-picture.png" alt="Default image" class="place-image">
                 <img src="@/assets/img/like-before.png" v-if="!clickedPlace.isBookmarked" alt="Like" class="like-button"
                     @click="togleLike(clickedPlace.contentId)">
                 <img src="@/assets/img/like-after.png" v-else alt="Liked" class="like-button"
@@ -172,9 +197,10 @@ function removeMarker() {
 
             </div>
             <div class="title scroll">
-                {{ clickedPlace.title }}
+                <p class="font-bold">{{ clickedPlace.title }}</p>
+                {{ clickedPlace.addr1 }}
             </div>
-            <div class="description scroll">
+            <div class=" description scroll">
                 {{ clickedPlace.overView }}
             </div>
         </div>

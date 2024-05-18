@@ -24,4 +24,15 @@ async function getAttraction(wantItem, success, fail) {
   await http.post("attraction", wantItem).then(success).catch(fail);
 }
 
-export { getCategory, getTheme, getSearch, getAttraction, togleBookmark };
+async function getAttractionByAI(wantItem, success, fail) {
+  await http.post("attraction/ai", wantItem).then(success).catch(fail);
+}
+
+export {
+  getCategory,
+  getTheme,
+  getSearch,
+  getAttraction,
+  getAttractionByAI,
+  togleBookmark,
+};

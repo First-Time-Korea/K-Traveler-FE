@@ -19,7 +19,7 @@
 }
 
 * {
-	font-family: 'TTHakgyoansimYeohaengR', sans-serif;
+	/* font-family: 'TTHakgyoansimYeohaengR', sans-serif; */
 	/* WAGURITTF 폰트 적용, 폰트가 로드되지 않았을 경우에는 sans-serif 폰트를 대체로 사용 */
 }
 
