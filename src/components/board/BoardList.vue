@@ -1,5 +1,6 @@
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import BoardListItem from "@/components/board/item/BoardListItem.vue";
 
 const buttonBasicStyle =
   "relative flex-1 align-middle select-none font-sans font-medium text-center uppercase transition-all w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none";
@@ -13,6 +14,34 @@ const buttonStyle = computed(() => {
     ? `${buttonBasicStyle} ${buttonAbledStyle}`
     : `${buttonBasicStyle} ${buttonDisabledStyle}`;
 });
+
+// TODO: 여행 후기 검색 결과 가져오기
+const articles = ref([
+  {
+    id: "1",
+    memberID: "test",
+    img: {
+      src: "https://images.unsplash.com/photo-1432462770865-65b70566d673?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=1950&amp;q=80",
+      name: "file_name",
+    },
+  },
+  {
+    id: "2",
+    memberID: "test",
+    img: {
+      src: "https://images.unsplash.com/photo-1629367494173-c78a56567877?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=927&amp;q=80",
+      name: "file_name",
+    },
+  },
+  {
+    id: "3",
+    memberID: "test",
+    img: {
+      src: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=2940&amp;q=80",
+      name: "file_name",
+    },
+  },
+]);
 </script>
 
 <template>
@@ -52,7 +81,34 @@ const buttonStyle = computed(() => {
         </span>
       </button>
     </div>
+
+    <!-- 여행 후기 리스트 -->
+    <div class="masonry-layout p-10">
+      <BoardListItem v-for="article in articles" :key="article.id" :article="article" />
+    </div>
   </div>
 </template>
 
-<style></style>
+<style>
+.masonry-layout {
+  gap: 1rem;
+}
+
+@media (min-width: 600px) {
+  .masonry-layout {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 750px) {
+  .masonry-layout {
+    column-count: 4;
+  }
+}
+
+@media (min-width: 900px) {
+  .masonry-layout {
+    column-count: 6;
+  }
+}
+</style>
