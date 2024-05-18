@@ -37,3 +37,11 @@ body {
 body::-webkit-scrollbar {
 	display: none;
 }
+
+.scroll {
+	-ms-overflow-style: none;
+}
+
+.scroll::-webkit-scrollbar {
+	display: none;
+}

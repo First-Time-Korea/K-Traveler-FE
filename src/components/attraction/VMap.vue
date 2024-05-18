@@ -3,7 +3,7 @@ import { onMounted, onUpdated, ref, watch } from "vue";
 import { useRouter } from "vue-router"
 import { storeToRefs } from "pinia"
 import { useAttracionStore } from "@/stores/attraction.js";
-import { togleBookmark } from "@/api/attraction.js";
+import { togleBookmark, getAttraction } from "@/api/attraction.js";
 import { useMemberStore } from "@/stores/member"
 
 import "@/assets/css/VMap.css";
@@ -27,7 +27,7 @@ const clickedPlace = ref({
     title: '',
     addr: '',
     overView: '',
-    image: '',
+    firstImage: '',
     isBookmarked: false
 });
 
@@ -43,7 +43,11 @@ onUpdated(() => {
 });
 
 watch(() => places.value, (newPlaces) => {
-    displayPlaces(newPlaces)
+    if (newPlaces.length != 0) {
+        displayPlaces(newPlaces)
+    } else {
+        alert("Search item does not exist.")
+    }
 }, { deep: true })
 
 const loadScript = () => {
@@ -86,16 +90,7 @@ function displayPlaces(places) {
             position: position
         });
         kakao.maps.event.addListener(marker, 'click', function () {
-            const content = {
-                contentId: place.contentId,
-                title: place.title,
-                addr: place.addr1,
-                overView: place.overView,
-                image: place.firstImg,
-                isBookmarked: (place.bookmarkId > 0)
-            }
-            clickedPlace.value = content;
-            openModal();
+            openModal(place.contentId);
         });
         newMarkers.push(marker);
         bounds.extend(position);
@@ -114,7 +109,7 @@ function togleLike(contentId) {
     togleBookmark((bookmarkItem),
         (response) => {
             if (response.data.status == "success") {
-                changeHeartIon()
+                changeHeartIcon()
             }
         },
         (error) => {
@@ -123,7 +118,7 @@ function togleLike(contentId) {
     )
 }
 
-function changeHeartIon() {
+function changeHeartIcon() {
     clickedPlace.value.isBookmarked = !clickedPlace.value.isBookmarked;
 }
 
@@ -131,7 +126,25 @@ function closeModal() {
     isModalVisible.value = false;
 }
 
-function openModal() {
+function openModal(contentId) {
+    const wantItem = {
+        "memberId": userInfo.value.id,
+        "contentId": contentId
+    }
+    getAttraction((wantItem),
+        (response) => {
+            if (response.data.status == "success") {
+                clickedPlace.value = {
+                    ...clickedPlace.value,
+                    ...response.data.data,
+                    isBookmarked: response.data.data.bookmarkId > 0
+                };
+            }
+        },
+        (error) => {
+            console.log(error.data);
+        }
+    )
     isModalVisible.value = true;
 }
 
@@ -149,16 +162,19 @@ function removeMarker() {
     <div v-show="isModalVisible" class="modal" @click.self="closeModal">
         <div class="modal-content">
             <div class="image-container">
-                <img v-if="clickedPlace.image" :src="clickedPlace.image" alt="Place image" class="place-image">
+                <img v-if="clickedPlace.firstImage" :src="clickedPlace.firstImage" alt="Place image"
+                    class="place-image">
                 <img v-else src="@/assets/img/sunjae.jpg" alt="Default image" class="place-image">
-
                 <img src="@/assets/img/like-before.png" v-if="!clickedPlace.isBookmarked" alt="Like" class="like-button"
                     @click="togleLike(clickedPlace.contentId)">
                 <img src="@/assets/img/like-after.png" v-else alt="Liked" class="like-button"
                     @click="togleLike(clickedPlace.contentId)">
 
             </div>
-            <div class="description">
+            <div class="title scroll">
+                {{ clickedPlace.title }}
+            </div>
+            <div class="description scroll">
                 {{ clickedPlace.overView }}
             </div>
         </div>

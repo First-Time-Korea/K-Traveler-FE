@@ -20,4 +20,8 @@ async function togleBookmark(bookmarkItem, success, fail) {
     .catch(fail);
 }
 
-export { getCategory, getTheme, getSearch, togleBookmark };
+async function getAttraction(wantItem, success, fail) {
+  await http.post("attraction", wantItem).then(success).catch(fail);
+}
+
+export { getCategory, getTheme, getSearch, getAttraction, togleBookmark };

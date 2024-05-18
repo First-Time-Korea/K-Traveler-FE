@@ -53,3 +53,13 @@
     font-size: 14px;
     line-height: 1.6;
 }
+
+.title {
+    padding: 5px;
+    margin-top: 5px;
+    max-height: 150px;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.6;
+    background-color: #f5f6f8;
+}

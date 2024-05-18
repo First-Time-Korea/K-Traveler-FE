@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 
 export const useMenuStore = defineStore("menuStore", () => {
   const menuList = ref([
+    { name: "Theme Test", show: false, routeName: "theme-test" },
     { name: "Travel", show: false, routeName: "attraction" },
     { name: "Sign Up", show: true, routeName: "user-join" },
     { name: "Sign In", show: true, routeName: "user-login" },
@@ -11,7 +12,10 @@ export const useMenuStore = defineStore("menuStore", () => {
   ]);
 
   const changeMenuState = () => {
-    menuList.value = menuList.value.map((item) => ({ ...item, show: !item.show }));
+    menuList.value = menuList.value.map((item) => ({
+      ...item,
+      show: !item.show,
+    }));
   };
   return {
     menuList,
