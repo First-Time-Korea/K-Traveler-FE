@@ -10,8 +10,14 @@ function getCategory(cateCode, success, fail) {
 }
 
 function getSearch(searchItem, success, fail) {
-  console.log(searchItem.value);
   http.post("attraction/search", searchItem.value).then(success).catch(fail);
 }
 
-export { getCategory, getTheme, getSearch };
+async function togleBookmark(bookmarkItem, success, fail) {
+  await http
+    .post("attraction/bookmark", bookmarkItem)
+    .then(success)
+    .catch(fail);
+}
+
+export { getCategory, getTheme, getSearch, togleBookmark };

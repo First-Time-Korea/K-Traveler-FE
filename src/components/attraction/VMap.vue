@@ -3,11 +3,17 @@ import { onMounted, onUpdated, ref, watch } from "vue";
 import { useRouter } from "vue-router"
 import { storeToRefs } from "pinia"
 import { useAttracionStore } from "@/stores/attraction.js";
+import { togleBookmark } from "@/api/attraction.js";
+import { useMemberStore } from "@/stores/member"
+
 import "@/assets/css/VMap.css";
 
+const memberStore = useMemberStore();
 const router = useRouter();
 const attractionStore = useAttracionStore();
+
 const { places } = storeToRefs(attractionStore);
+const { userInfo } = storeToRefs(memberStore);
 
 const appKey = import.meta.env.VITE_KAKAO_MAP_SERVICE_KEY;
 
@@ -16,7 +22,14 @@ let map = null;
 var clusterer;
 
 const isModalVisible = ref(false);
-const clickedPlace = ref({});
+const clickedPlace = ref({
+    contentId: null,
+    title: '',
+    addr: '',
+    overView: '',
+    image: '',
+    isBookmarked: false
+});
 
 onMounted(() => {
     if (window.kakao && window.kakao.maps) {
@@ -35,7 +48,6 @@ watch(() => places.value, (newPlaces) => {
 
 const loadScript = () => {
     const script = document.createElement("script");
-    /* global kakao */
     script.onload = () => kakao.maps.load(initMap);
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${appKey}&libraries=services,clusterer,drawing`;
     document.head.appendChild(script);
@@ -74,12 +86,13 @@ function displayPlaces(places) {
             position: position
         });
         kakao.maps.event.addListener(marker, 'click', function () {
-            // 클릭 이벤트가 발생했을 때 실행할 코드
             const content = {
+                contentId: place.contentId,
                 title: place.title,
                 addr: place.addr1,
                 overView: place.overView,
-                image: place.firstImg
+                image: place.firstImg,
+                isBookmarked: (place.bookmarkId > 0)
             }
             clickedPlace.value = content;
             openModal();
@@ -93,21 +106,33 @@ function displayPlaces(places) {
 
 }
 
-function likePlace(id) {
-    console.log('Liked', id);
-    // 추가: 서버에 좋아요를 보내는 로직을 구현하세요.
+function togleLike(contentId) {
+    const bookmarkItem = {
+        "memberId": userInfo.value.id,
+        "contentId": contentId
+    }
+    togleBookmark((bookmarkItem),
+        (response) => {
+            if (response.data.status == "success") {
+                changeHeartIon()
+            }
+        },
+        (error) => {
+            console.log(error.data);
+        }
+    )
+}
+
+function changeHeartIon() {
+    clickedPlace.value.isBookmarked = !clickedPlace.value.isBookmarked;
 }
 
 function closeModal() {
-    console.log("Closing modal. Current visibility:", isModalVisible.value);
     isModalVisible.value = false;
-    console.log("Modal should now be closed. New visibility:", isModalVisible.value);
 }
 
 function openModal() {
-    console.log("Opening modal. Current visibility:", isModalVisible.value);
     isModalVisible.value = true;
-    console.log("Modal should now be open. New visibility:", isModalVisible.value);
 }
 
 function removeMarker() {
@@ -124,10 +149,14 @@ function removeMarker() {
     <div v-show="isModalVisible" class="modal" @click.self="closeModal">
         <div class="modal-content">
             <div class="image-container">
-                <img v-if="clickedPlace.firstImg" :src="clickedPlace.firstImg" alt="Place image" class="place-image">
+                <img v-if="clickedPlace.image" :src="clickedPlace.image" alt="Place image" class="place-image">
                 <img v-else src="@/assets/img/sunjae.jpg" alt="Default image" class="place-image">
-                <img src="@/assets/img/like-before.png" alt="Like" class="like-button"
-                    @click.stop="likePlace(clickedPlace.id)">
+
+                <img src="@/assets/img/like-before.png" v-if="!clickedPlace.isBookmarked" alt="Like" class="like-button"
+                    @click="togleLike(clickedPlace.contentId)">
+                <img src="@/assets/img/like-after.png" v-else alt="Liked" class="like-button"
+                    @click="togleLike(clickedPlace.contentId)">
+
             </div>
             <div class="description">
                 {{ clickedPlace.overView }}
