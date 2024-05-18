@@ -2,19 +2,6 @@
 import { computed, ref } from "vue";
 import BoardListItem from "@/components/board/item/BoardListItem.vue";
 
-const buttonBasicStyle =
-  "relative flex-1 align-middle select-none font-sans font-medium text-center uppercase transition-all w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none";
-
-const buttonDisabledStyle = "pointer-events-none bg-second-500 text-second-700/100 shadow-none";
-
-const buttonAbledStyle = "bg-first-300 text-white";
-
-const buttonStyle = computed(() => {
-  return true
-    ? `${buttonBasicStyle} ${buttonAbledStyle}`
-    : `${buttonBasicStyle} ${buttonDisabledStyle}`;
-});
-
 // TODO: 여행 후기 검색 결과 가져오기
 const articles = ref([
   {
@@ -42,6 +29,32 @@ const articles = ref([
     },
   },
 ]);
+
+const type = ref("tag");
+
+const keyword = ref("");
+
+const isWritedKeyword = computed(() => {
+  return keyword.value.length !== 0;
+});
+
+const buttonBasicStyle =
+  "relative flex-1 align-middle select-none font-sans font-medium text-center uppercase transition-all w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none";
+
+const buttonDisabledStyle = "pointer-events-none bg-second-500 text-second-700/100 shadow-none";
+
+const buttonAbledStyle = "bg-first-300 text-white";
+
+const buttonStyle = computed(() => {
+  return isWritedKeyword.value
+    ? `${buttonBasicStyle} ${buttonAbledStyle}`
+    : `${buttonBasicStyle} ${buttonDisabledStyle}`;
+});
+
+const search = () => {
+  // TODO: type과 keyword를 바탕으로 여행 후기 검색하기
+  console.log(`search: ${type.value} - ${keyword.value}`);
+};
 </script>
 
 <template>
@@ -51,6 +64,7 @@ const articles = ref([
       <div class="relative h-10 flex-3 min-w-[60px]">
         <select
           class="peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+          v-model="type"
         >
           <option value="tag">tag</option>
           <option value="username">username</option>
@@ -60,9 +74,10 @@ const articles = ref([
         <input
           class="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900"
           placeholder="USERNAME"
+          v-model="keyword"
         />
       </div>
-      <button :class="buttonStyle" type="button">
+      <button :class="buttonStyle" type="button" @click="search">
         <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
