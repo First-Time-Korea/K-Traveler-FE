@@ -9,6 +9,11 @@ export default [
         name: "theme-test",
         component: () => import("@/components/theme/ThemeTest.vue"),
       },
+      {
+        path: "result/:theme",
+        name: "theme-result",
+        component: () => import("@/components/theme/ThemeResult.vue"),
+      },
     ],
   },
 ];
