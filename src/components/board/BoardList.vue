@@ -1,6 +1,11 @@
 <script setup>
 import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useMemberStore } from "@/stores/member";
 import BoardListItem from "@/components/board/item/BoardListItem.vue";
+
+const router = useRouter();
+const store = useMemberStore();
 
 // TODO: 여행 후기 검색 결과 가져오기
 const articles = ref([
@@ -55,6 +60,14 @@ const search = () => {
   // TODO: type과 keyword를 바탕으로 여행 후기 검색하기
   console.log(`search: ${type.value} - ${keyword.value}`);
 };
+
+const goBoardWrite = () => {
+  if (store.isLogin) {
+    router.push({ name: "board-write" });
+  } else {
+    router.push({ name: "user-login" });
+  }
+};
 </script>
 
 <template>
@@ -106,6 +119,7 @@ const search = () => {
   <!-- 여행 후기 작성 버튼 -->
   <button
     class="fixed bottom-6 right-6 bg-third-300 rounded-full text-white p-3.5 shadow-md shadow-gray-900/20 hover:bg-third-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+    @click="goBoardWrite"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
