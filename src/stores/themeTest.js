@@ -4,42 +4,42 @@ import { defineStore } from "pinia/dist/pinia";
 export const useThemeTestStore = defineStore("themeTest", () => {
   const theme = ref({
     food: {
-      text: "A",
+      code: "A",
       key: "food",
       score: 0,
     },
     shopping: {
-      text: "B",
+      code: "B",
       key: "shopping",
       score: 0,
     },
     history: {
-      text: "C",
+      code: "C",
       key: "history",
       score: 0,
     },
     nature: {
-      text: "D",
+      code: "D",
       key: "nature",
       score: 0,
     },
     kCulture: {
-      text: "E",
+      code: "E",
       key: "kCulture",
       score: 0,
     },
     entertainment: {
-      text: "F",
+      code: "F",
       key: "entertainment",
       score: 0,
     },
     sport: {
-      text: "G",
+      code: "G",
       key: "sport",
       score: 0,
     },
     modernCulture: {
-      text: "H",
+      code: "H",
       key: "modernCulture",
       score: 0,
     },
@@ -270,7 +270,7 @@ export const useThemeTestStore = defineStore("themeTest", () => {
     for (let key in theme.value) {
       if (maxScore < theme.value[key].score) {
         maxScore = theme.value[key].score;
-        maxTheme = theme.value[key].text;
+        maxTheme = key;
       }
     }
 
