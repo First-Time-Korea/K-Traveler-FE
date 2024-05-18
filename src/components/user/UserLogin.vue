@@ -26,7 +26,7 @@ const login = async () => {
   if (isLogin.value) {
     getUserInfo(token)
     changeMenuState()
-    router.replace("/")
+    router.push({ name: "main" })
   }
 }
 </script>
