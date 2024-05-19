@@ -1,10 +1,38 @@
 <script setup>
-import { computed, ref } from "vue";
-import { useRouter } from "vue-router";
-import { writeArticle } from "@/api/board";
+import { computed, ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { writeArticle, getArticleForModification, modifyArticle } from "@/api/board";
 import ChipItemVue from "@/components/board/item/ChipItem.vue";
 
+const route = useRoute();
 const router = useRouter();
+
+const { VITE_VUE_API_URL } = import.meta.env;
+
+const props = defineProps({ type: String });
+
+const isModifyMode = ref(false);
+
+const articleId = ref(route.params.articleid);
+onMounted(() => {
+  if (props.type === "modify") {
+    getArticleForModification(
+      articleId.value,
+      ({ data }) => {
+        for (let tag of data.article.tags) {
+          tags.value.push(tag.name);
+        }
+        content.value = data.article.content;
+        previewUrl.value = `${VITE_VUE_API_URL}/article/img/${data.article.file.saveFolder}/${data.article.file.saveFile}`;
+        file.value = "already registed img";
+      },
+      (error) => {
+        console.log(error);
+        alert("여행 후기 조회하기 실패...");
+      }
+    );
+  }
+});
 
 const buttonBasicStyle =
   "w-full align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none";
@@ -84,6 +112,10 @@ const previewStyle = computed(() => {
     : {};
 });
 
+const onSubmit = () => {
+  props.type === "write" ? tryWriteArticle() : tryModifyArticle();
+};
+
 const tryWriteArticle = () => {
   const formData = new FormData();
 
@@ -104,6 +136,33 @@ const tryWriteArticle = () => {
     (error) => {
       console.log(error);
       alert("여행 후기 작성이 실패했습니다...");
+    }
+  );
+};
+
+const tryModifyArticle = () => {
+  const formData = new FormData();
+
+  formData.append("articleid", articleId.value);
+  formData.append("tags", tags.value);
+  formData.append("content", content.value);
+  if (file.value === "already registed img") {
+    const emptyFile = new Blob([""], { type: "text/plain" });
+    formData.append("file", emptyFile, "empty.txt");
+  } else {
+    formData.append("file", file.value);
+  }
+
+  modifyArticle(
+    formData,
+    (response) => {
+      if (response.status == 200) {
+        alert("여행 후기 수정이 정삭정으로 완료되었습니다.");
+      }
+    },
+    (error) => {
+      console.log(error);
+      alert("여행 후기 수정이 실패했습니다...");
     }
   );
 };
@@ -175,7 +234,7 @@ const goArticleList = () => {
             ></textarea>
           </div>
           <div class="mt-4 w-full">
-            <button :class="buttonStyle" type="button" @click="tryWriteArticle">DONE</button>
+            <button :class="buttonStyle" type="button" @click="onSubmit">DONE</button>
           </div>
         </div>
       </div>

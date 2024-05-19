@@ -26,7 +26,7 @@ import BoardFormItem from "@/components/board/item/BoardFormItem.vue";
     </button>
 
     <div class="mt-4 mb-20">
-      <BoardFormItem type="write" />
+      <BoardFormItem type="modify" />
     </div>
   </div>
 </template>

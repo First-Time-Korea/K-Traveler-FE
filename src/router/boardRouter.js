@@ -14,6 +14,11 @@ export default [
         name: "board-write",
         component: () => import("@/components/board/BoardWrite.vue"),
       },
+      {
+        path: "modify/:articleid",
+        name: "board-modify",
+        component: () => import("@/components/board/BoardModify.vue"),
+      },
     ],
   },
 ];

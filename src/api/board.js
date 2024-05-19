@@ -17,4 +17,19 @@ function getArticles(param, success, fail) {
   local.get(`/article/list`, { params: param }).then(success).catch(fail);
 }
 
-export { writeArticle, getArticles };
+function getArticleForModification(articleId, success, fail) {
+  local.get(`/article/modify/${articleId}`).then(success).catch(false);
+}
+
+function modifyArticle(article, success, fail) {
+  local
+    .put(`/article/modify`, article, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then(success)
+    .catch(fail);
+}
+
+export { writeArticle, getArticles, getArticleForModification, modifyArticle };
