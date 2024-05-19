@@ -47,7 +47,38 @@ const showTags = computed(() => {
 const content = ref("");
 
 const canDone = computed(() => {
-  return tags.value.length > 0 && content.value !== "";
+  return tags.value.length > 0 && content.value !== "" && file.value !== null;
+});
+
+const handleFileUpload = () => {
+  fileInput.value.click();
+};
+
+const file = ref(null);
+const previewUrl = ref();
+const uploadFile = (event) => {
+  file.value = event.target.files[0];
+  console.log(file.value);
+  if (file.value) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      previewUrl.value = e.target.result;
+    };
+    reader.readAsDataURL(file.value);
+  }
+};
+
+const fileInput = ref(null);
+
+const previewStyle = computed(() => {
+  return previewUrl.value
+    ? {
+        backgroundImage: `url(${previewUrl.value})`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }
+    : {};
 });
 </script>
 
@@ -58,10 +89,15 @@ const canDone = computed(() => {
     >
       <div class="flex flex-row h-full">
         <!-- 사진 업로드란 -->
-        <div class="bg-second-500/100 flex-1 m-4 rounded-[7px] flex justify-center items-center">
+        <div
+          class="bg-second-500/100 flex-1 m-4 rounded-[7px] flex justify-center items-center"
+          :style="previewStyle"
+        >
+          <input type="file" class="hidden" ref="fileInput" @change="uploadFile" />
           <button
             class="flex justify-center items-center relative align-middle select-none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-12 max-w-[50px] h-12 max-h-[50px] rounded-lg text-xs text-gray-900 hover:bg-gray-900/10 active:bg-gray-900/20"
             type="button"
+            @click="handleFileUpload"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
