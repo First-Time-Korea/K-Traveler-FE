@@ -3,7 +3,7 @@ import TheMainView from "@/views/TheMainView.vue";
 import UserRouter from "@/router/userRouter.js";
 import AttractionRouter from "@/router/attractionRouter";
 import ThemeRouter from "@/router/themeRouter.js";
-
+import PlanRouter from "@/router/planRouter";
 
 import { storeToRefs } from "pinia";
 
@@ -37,6 +37,7 @@ const router = createRouter({
     ...UserRouter,
     ...AttractionRouter,
     ...ThemeRouter,
+    ...PlanRouter,
   ],
 });
 

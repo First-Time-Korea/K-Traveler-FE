@@ -25,19 +25,19 @@ const logout = () => {
         <h1 style="color: #5FBDFF;">LOGO</h1>
       </router-link>
       <div class="flex items-center gap-4" style="color:black;  list-style-type: none;">
-        <div class="flex items-center gap-x-1">
+        <div class="flex items-center gap-x-5">
           <template v-for="menu in menuList" :key="menu.routeName">
             <template v-if="menu.show">
               <template v-if="menu.routeName === 'user-logout'">
-                <li class="nav-item ">
-                  <router-link to="/" @click.prevent="logout" class="nav-link">{{
+                <li class="nav-item">
+                  <router-link to="/" @click.prevent="logout" class="nav-link ">{{
                     menu.name
                   }}</router-link>
                 </li>
               </template>
               <template v-else>
                 <li class="nav-item">
-                  <router-link :to="{ name: menu.routeName }" class="nav-link">{{
+                  <router-link :to="{ name: menu.routeName }" class="nav-link ">{{
                     menu.name
                   }}</router-link>
                 </li>
