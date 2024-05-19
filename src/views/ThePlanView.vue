@@ -2,8 +2,8 @@
 </script>
 
 <template>
-    <div class="relative">
-        <router-view class="mt-20"></router-view>
+    <div class="relative mt-20">
+        <router-view></router-view>
     </div>
 </template>
 

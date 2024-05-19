@@ -22,6 +22,7 @@ const setRegions = () => {
 }
 
 const handleRegionClick = (region) => {
+    console.log("간다간다간다", region);
     updateClickedRegion(region);
 }
 

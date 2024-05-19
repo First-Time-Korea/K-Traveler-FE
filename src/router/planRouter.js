@@ -3,6 +3,8 @@ import { useMemberStore } from "@/stores/member";
 import ThePlanView from "@/views/ThePlanView.vue";
 import ThePlanRegionChoiceView from "@/views/plan/ThePlanRegionChoiceView.vue";
 import ThePlanScheduleChoiceView from "@/views/plan/ThePlanScheduleChoiceView.vue";
+import ThePlanAttractionChoiceView from "@/views/plan/ThePlanAttractionChioceView.vue";
+
 // import PlaceChoiceView from "@/views/plan/PlaceChoiceView.vue";
 
 const onlyAuthUser = async (to, from, next) => {
@@ -39,6 +41,11 @@ export default [
         path: "schedule",
         name: "choice-schedule",
         component: () => ThePlanScheduleChoiceView,
+      },
+      {
+        path: "attraction",
+        name: "choice-attraction",
+        component: () => ThePlanAttractionChoiceView,
       },
     ],
   },

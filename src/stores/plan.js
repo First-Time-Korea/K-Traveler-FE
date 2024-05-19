@@ -3,14 +3,15 @@ import { ref } from "vue";
 
 export const usePlanStore = defineStore("planStore", () => {
   const clickedRegion = ref({
+    sidoCode: "",
     sidoName: "",
     gugunName: "",
     sidoDescription: "",
   });
 
   const schedule = ref({
-    date: "",
-    timeSlots: [],
+    start: null,
+    end: null,
   });
 
   // 여행 장소를 관리할 상태
@@ -35,10 +36,11 @@ export const usePlanStore = defineStore("planStore", () => {
   };
 
   const checkCanProceed = () => {
-    canGoNext.value =
-      clickedRegion.value.sidoName !== "" &&
-      schedule.value.date !== "" &&
-      places.value.length > 0;
+    //TODO: 유효성 검증
+    // canGoNext.value =
+    //   clickedRegion.value.sidoName !== "" &&
+    //   schedule.value.date !== "" &&
+    //   places.value.length > 0;
   };
 
   const submitAllData = () => {
