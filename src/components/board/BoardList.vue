@@ -14,7 +14,7 @@ onMounted(() => {
 
 const tryGetArticles = () => {
   getArticles(param.value, ({ data }) => {
-    articles.value = data.articles;
+    articles.value = { ...articles.value, ...data.articles };
     currentPage.value = data.currentPage;
     totalPage.value = data.totalPageCount;
   });
@@ -53,6 +53,16 @@ const goBoardWrite = () => {
     router.push({ name: "user-login" });
   }
 };
+
+const tryMoreGetArticles = () => {
+  currentPage.value += 1;
+  param.value.pgno = currentPage.value;
+  tryGetArticles();
+};
+
+const canMoreGetArticles = computed(() => {
+  return currentPage.value < totalPage.value;
+});
 </script>
 
 <template>
@@ -121,6 +131,18 @@ const goBoardWrite = () => {
       />
     </svg>
   </button>
+
+  <!-- 여행 후기 더 불러오기 -->
+  <div class="flex justify-center mt-10 mb-10">
+    <button
+      class="px-6 py-3 font-sans text-xs font-bold text-center text-first-400 uppercase align-middle transition-all rounded-lg select-none hover:bg-first-300/10 active:bg-first-300/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+      type="button"
+      v-show="canMoreGetArticles"
+      @click="tryMoreGetArticles"
+    >
+      MORE
+    </button>
+  </div>
 </template>
 
 <style>
