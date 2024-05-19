@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import TheMainView from "@/views/TheMainView.vue";
 import UserRouter from "@/router/userRouter.js";
+import AttractionRouter from "@/router/attractionRouter";
 import ThemeRouter from "@/router/themeRouter.js";
 // import AttractionRouter from "@/router/attractionRouter.js"
 import BoardRouter from "@/router/boardRouter.js";
@@ -34,8 +35,8 @@ const router = createRouter({
       name: "main",
       component: TheMainView,
     },
-
     ...UserRouter,
+    ...AttractionRouter,
     ...ThemeRouter,
     ...BoardRouter,
   ],
