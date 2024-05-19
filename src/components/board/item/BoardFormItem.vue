@@ -1,6 +1,10 @@
 <script setup>
 import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
+import { writeArticle } from "@/api/board";
 import ChipItemVue from "@/components/board/item/ChipItem.vue";
+
+const router = useRouter();
 
 const buttonBasicStyle =
   "w-full align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none";
@@ -58,7 +62,6 @@ const file = ref(null);
 const previewUrl = ref();
 const uploadFile = (event) => {
   file.value = event.target.files[0];
-  console.log(file.value);
   if (file.value) {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -80,6 +83,34 @@ const previewStyle = computed(() => {
       }
     : {};
 });
+
+const tryWriteArticle = () => {
+  const formData = new FormData();
+
+  formData.append("userid", "ssafy");
+  formData.append("tags", tags.value);
+  formData.append("content", content.value);
+  formData.append("file", file.value);
+
+  writeArticle(
+    formData,
+    (response) => {
+      if (response.status == 201) {
+        alert("여행 후기 작성이 정상적으로 완료되었습니다.");
+      }
+
+      goArticleList();
+    },
+    (error) => {
+      console.log(error);
+      alert("여행 후기 작성이 실패했습니다...");
+    }
+  );
+};
+
+const goArticleList = () => {
+  router.replace({ name: "board-list" });
+};
 </script>
 
 <template>
@@ -144,9 +175,7 @@ const previewStyle = computed(() => {
             ></textarea>
           </div>
           <div class="mt-4 w-full">
-            <button :class="buttonStyle" type="button" @click="goRecommendedAttraction">
-              DONE
-            </button>
+            <button :class="buttonStyle" type="button" @click="tryWriteArticle">DONE</button>
           </div>
         </div>
       </div>
