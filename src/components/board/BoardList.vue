@@ -29,23 +29,6 @@ const param = ref({
   word: "",
 });
 
-const isWritedWord = computed(() => {
-  return param.value.word.length !== 0;
-});
-
-const buttonBasicStyle =
-  "relative flex-1 align-middle select-none font-sans font-medium text-center uppercase transition-all w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none";
-
-const buttonDisabledStyle = "pointer-events-none bg-second-500 text-second-700/100 shadow-none";
-
-const buttonAbledStyle = "bg-first-300 text-white";
-
-const buttonStyle = computed(() => {
-  return isWritedWord.value
-    ? `${buttonBasicStyle} ${buttonAbledStyle}`
-    : `${buttonBasicStyle} ${buttonDisabledStyle}`;
-});
-
 const goBoardWrite = () => {
   if (store.isLogin) {
     router.push({ name: "board-write" });
@@ -54,11 +37,24 @@ const goBoardWrite = () => {
   }
 };
 
+const searchedWord = ref("");
+
+const searchArticles = () => {
+  articles.value = {};
+  searchedWord.value = param.value.word;
+  console.log(searchedWord.value);
+  tryGetArticles();
+};
+
 const tryMoreGetArticles = () => {
   currentPage.value += 1;
   param.value.pgno = currentPage.value;
   tryGetArticles();
 };
+
+const showNoSearchedResult = computed(() => {
+  return Object.keys(articles.value).length === 0;
+});
 
 const canMoreGetArticles = computed(() => {
   return currentPage.value < totalPage.value;
@@ -66,7 +62,7 @@ const canMoreGetArticles = computed(() => {
 </script>
 
 <template>
-  <div class="mt-10">
+  <div class="mt-10 mb-10">
     <!-- 검색창 -->
     <div class="flex justify-center space-x-4">
       <div class="relative h-10 flex-3 min-w-[60px]">
@@ -85,7 +81,11 @@ const canMoreGetArticles = computed(() => {
           v-model="param.word"
         />
       </div>
-      <button :class="buttonStyle" type="button" @click="tryGetArticles">
+      <button
+        class="bg-first-300 text-white relative flex-1 align-middle select-none font-sans font-medium text-center uppercase transition-all w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+        type="button"
+        @click="searchArticles"
+      >
         <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -105,9 +105,29 @@ const canMoreGetArticles = computed(() => {
       </button>
     </div>
 
+    <!-- 조회 결과 없음 -->
+    <p
+      class="text-center mt-20 block font-sans text-base antialiased font-light leading-relaxed text-inherit"
+      v-show="showNoSearchedResult"
+    >
+      No search results match '{{ searchedWord }}'.
+    </p>
+
     <!-- 여행 후기 리스트 -->
     <div class="masonry-layout p-10">
       <BoardListItem v-for="article in articles" :key="article.articleId" :article="article" />
+    </div>
+
+    <!-- 여행 후기 더 불러오기 -->
+    <div class="flex justify-center mt-10">
+      <button
+        class="px-6 py-3 font-sans text-xs font-bold text-center text-first-400 uppercase align-middle transition-all rounded-lg select-none hover:bg-first-300/10 active:bg-first-300/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+        type="button"
+        v-show="canMoreGetArticles"
+        @click="tryMoreGetArticles"
+      >
+        MORE
+      </button>
     </div>
   </div>
 
@@ -131,18 +151,6 @@ const canMoreGetArticles = computed(() => {
       />
     </svg>
   </button>
-
-  <!-- 여행 후기 더 불러오기 -->
-  <div class="flex justify-center mt-10 mb-10">
-    <button
-      class="px-6 py-3 font-sans text-xs font-bold text-center text-first-400 uppercase align-middle transition-all rounded-lg select-none hover:bg-first-300/10 active:bg-first-300/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-      type="button"
-      v-show="canMoreGetArticles"
-      @click="tryMoreGetArticles"
-    >
-      MORE
-    </button>
-  </div>
 </template>
 
 <style>
