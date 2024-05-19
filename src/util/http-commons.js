@@ -87,4 +87,14 @@ function localAxios() {
   return instance;
 }
 
-export { localAxios, stationAxios };
+function localAxiosWithHeaders() {
+  const instance = axios.create({
+    baseURL: VITE_VUE_API_URL,
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+    },
+  });
+  return instance;
+}
+
+export { localAxios, localAxiosWithHeaders, stationAxios };
