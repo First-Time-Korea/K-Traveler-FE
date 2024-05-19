@@ -1,170 +1,35 @@
 <script setup>
 import { onMounted, onUpdated, ref, watch } from "vue";
+import { useRouter } from "vue-router"
+import { storeToRefs } from "pinia"
+import { useAttracionStore } from "@/stores/attraction.js";
+import { togleBookmark, getAttraction, getAttractionByAI } from "@/api/attraction.js";
+import { useMemberStore } from "@/stores/member"
 
-const props = defineProps({
-    keyword: String,
-    places: Object
-});
+import "@/assets/css/VMap.css";
+
+const memberStore = useMemberStore();
+const router = useRouter();
+const attractionStore = useAttracionStore();
+
+const { places } = storeToRefs(attractionStore);
+const { userInfo } = storeToRefs(memberStore);
+
 const appKey = import.meta.env.VITE_KAKAO_MAP_SERVICE_KEY;
 
 var markers = [];
-var overlays = [];
-var positions = [];
 let map = null;
+var clusterer;
 
-const loadScript = () => {
-    const script = document.createElement("script");
-    /* global kakao */
-    script.onload = () => kakao.maps.load(initMap);
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${appKey}&libraries=services,clusterer,drawing`;
-    document.head.appendChild(script);
-};
-
-const initMap = () => {
-    const container = document.getElementById("map");
-    const options = {
-        center: new kakao.maps.LatLng(36.35559977190671, 127.29859991863871),
-        level: 9,
-    };
-    map = new kakao.maps.Map(container, options);
-
-    const zoomControl = new kakao.maps.ZoomControl();
-    map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
-    var mapTypeControl = new kakao.maps.MapTypeControl();
-    map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
-};
-
-watch(() => props.places, (places) => {
-    displayPlaces(places)
-})
-
-// 검색 결과 목록과 마커를 표출하는 함수입니다
-function displayPlaces(places) {
-    // kakao.maps.LatLngBounds()는 카카오맵에서 사용되는 경도 및 위도 좌표의 경계를 정의하는 클래스입니다.
-    var bounds = new kakao.maps.LatLngBounds();
-    // 지도에 표시되고 있는 마커를 제거합니다
-    removeMarker();
-
-    for (var i = 0; i < places.length; i++) {
-        positions.push({
-            title: places[i].addr1,
-            latlng_x: places[i].longitude,
-            latlng_y: places[i].latitude
-        });
-    }
-
-    for (var i = 0; i < positions.length; i++) {
-        var placePosition = new kakao.maps.LatLng(places[i].latitude, places[i].longitude);
-
-        displayMarker(places, i);
-        bounds.extend(placePosition);
-    }
-
-    // 검색결과 항목들을 검색결과 목록 Element에 추가합니다
-    // menuEl.scrollTop = 0;
-    // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-    map.setBounds(bounds);
-}
-
-//지도에 마커 클릭시 오버레이 출력
-function displayMarker(places, i) {
-    var marker = addMarker(places[i].latitude, places[i].longitude);
-
-    var overlay = new kakao.maps.CustomOverlay({
-        position: marker.getPosition(),
-    });
-
-    // 이미지가 없다면 준비중으로 대체
-    if (places[i].firstImg == "") {
-        places[i].firstImg = "/img/preparingimg.jpg";
-    }
-
-    var content = document.createElement("div");
-    content.classList.add("wrap");
-    content.style.cssText = 'position: absolute; 	left: 0; bottom: 20px;	width: 250px;	margin-left: -100px; text-align: left; overflow: hidden;'
-    content.innerHTML =
-        '<div class="info" style="background: white; border-radius: 5px; box-shadow: 0px 1px 2px #888;">' +
-        '<div style="background: #eee; padding: 5px 0 0 10px"> <div class="title" style="display: inline-block;">' +
-        places[i].title +
-        '</div></div>' +
-        '<div class="body" style="padding: 10px">' +
-        '<div class="img">' +
-        '<img src="' +
-        places[i].firstImg +
-        '" width="73" height="70">' +
-        "</div>" +
-        "</div>" +
-        '<div class="desc">' +
-        '<div class="ellipsis" style="padding: 0px 10px">' +
-        places[i].addr1 +
-        "</div>" +
-        '<div class="jibun ellipsis" style="padding: 0px 10px">' +
-        places[i].addr2 +
-        "</div>" +
-        "</div>" +
-        "</div>";
-
-    // <img id="closeBtn" onclick="close()" style="float: right; padding-right: 5px; width: 20px" src="/src/assets/img/icn_close.png"/>
-    var closeBtn = document.createElement("button");
-    closeBtn.className = "btn btn-primary btn-sm";
-    closeBtn.style.cssText = "float : right";
-    closeBtn.innerHTML += "<div>닫기</div>";
-    closeBtn.onclick = () => {
-        overlay.setMap(null);
-    }
-    content.appendChild(closeBtn);
-
-    // end
-    overlay.setContent(content);
-
-    kakao.maps.event.addListener(marker, "click", function () {
-        removeOverlay();
-        overlay.setMap(map);
-    });
-
-    overlays.push(overlay);
-    return overlay;
-}
-
-function addMarker(latitude, longitude) {
-    var imageSrc = "/src/assets/img/trip.png",
-        imageSize = new kakao.maps.Size(60, 60),
-        imgOptions = {
-            spriteSize: new kakao.maps.Size(45),
-            spriteOrigin: new kakao.maps.Point(0, 0),
-            offset: new kakao.maps.Point(12, 60),
-        },
-        markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
-        marker = new kakao.maps.Marker({
-            position: new kakao.maps.LatLng(latitude, longitude), // 위도(latitude), 경도(longitude) 순서로 전달
-            // image: markerImage,
-        });
-
-    marker.setMap(map);
-    markers.push(marker);
-    return marker;
-}
-
-// 지도 위에 표시되고 있는 마커,오버레이 모두 제거합니다
-function removeMarker() {
-    for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap(null);
-    }
-
-    for (var i = 0; i < overlays.length; i++) {
-        overlays[i].setMap(null);
-    }
-    markers = [];
-    positions = [];
-    overlays = [];
-}
-
-//다른 오버레이 클릭시 기존에 열려있던 오버레이 창을 닫음
-function removeOverlay() {
-    for (var i = 0; i < overlays.length; i++) {
-        overlays[i].setMap(null);
-    }
-}
+const isModalVisible = ref(false);
+const clickedPlace = ref({
+    contentId: null,
+    title: '',
+    addr1: '',
+    overView: '',
+    firstImage: '',
+    isBookmarked: false
+});
 
 onMounted(() => {
     if (window.kakao && window.kakao.maps) {
@@ -177,19 +42,169 @@ onMounted(() => {
 onUpdated(() => {
 });
 
+watch(() => places.value, (newPlaces) => {
+    if (newPlaces.length != 0) {
+        displayPlaces(newPlaces)
+    } else {
+        alert("Search item does not exist.")
+    }
+}, { deep: true })
+
+const loadScript = () => {
+    const script = document.createElement("script");
+    script.onload = () => kakao.maps.load(initMap);
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${appKey}&libraries=services,clusterer,drawing`;
+    document.head.appendChild(script);
+};
+
+const initMap = () => {
+    const container = document.getElementById("map");
+    const options = {
+        center: new kakao.maps.LatLng(36.2683, 127.6358),
+        level: 12,
+    };
+    map = new kakao.maps.Map(container, options);
+
+
+    clusterer = new kakao.maps.MarkerClusterer({
+        map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
+        averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
+        minLevel: 10 // 클러스터 할 최소 지도 레벨 
+    });
+
+    const zoomControl = new kakao.maps.ZoomControl();
+    map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+    var mapTypeControl = new kakao.maps.MapTypeControl();
+    map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+};
+
+// 검색 결과 목록과 마커를 표출하는 함수입니다
+function displayPlaces(places) {
+    removeMarker(); // 기존 마커 제거
+    var bounds = new kakao.maps.LatLngBounds();
+    var newMarkers = [];
+
+    places.forEach(place => {
+        var position = new kakao.maps.LatLng(place.latitude, place.longitude);
+        var marker = new kakao.maps.Marker({
+            position: position
+        });
+        kakao.maps.event.addListener(marker, 'click', function () {
+            openModal(place.contentId, place.themeCode);
+        });
+        newMarkers.push(marker);
+        bounds.extend(position);
+    });
+
+    clusterer.addMarkers(newMarkers); // 클러스터를 사용하면 마커 클러스터가 자동으로 지도에 마커를 추가
+    map.setBounds(bounds); // 모든 마커가 보이도록 지도 범위 조정
+
+}
+
+function togleLike(contentId) {
+    const bookmarkItem = {
+        "memberId": userInfo.value.id,
+        "contentId": contentId
+    }
+    togleBookmark((bookmarkItem),
+        (response) => {
+            if (response.data.status == "success") {
+                changeHeartIcon()
+            }
+        },
+        (error) => {
+            console.log(error.data);
+        }
+    )
+}
+
+function changeHeartIcon() {
+    clickedPlace.value.isBookmarked = !clickedPlace.value.isBookmarked;
+}
+
+function closeModal() {
+    clickedPlace.value = {
+        contentId: null,
+        title: '',
+        addr1: '',
+        overView: '',
+        firstImage: '',
+        isBookmarked: false
+    };
+    isModalVisible.value = false;
+}
+
+function openModal(contentId, themeCode) {
+    const wantItem = {
+        "memberId": userInfo.value.id,
+        "contentId": contentId
+    }
+    if (themeCode === 'E') {
+        getAttractionByAI((wantItem),
+            (response) => {
+                if (response.data.status == "success") {
+                    clickedPlace.value = {
+                        ...clickedPlace.value,
+                        ...response.data.data,
+                        isBookmarked: response.data.data.bookmarkId > 0
+                    };
+                }
+            },
+            (error) => {
+                console.log(error.data);
+            }
+        )
+    } else {
+        getAttraction((wantItem),
+            (response) => {
+                if (response.data.status == "success") {
+                    clickedPlace.value = {
+                        ...clickedPlace.value,
+                        ...response.data.data,
+                        isBookmarked: response.data.data.bookmarkId > 0
+                    };
+                }
+            },
+            (error) => {
+                console.log(error.data);
+            }
+        )
+    }
+    isModalVisible.value = true;
+}
+
+function removeMarker() {
+    clusterer.clear();
+    markers = [];
+}
+
 </script>
 
 <template>
     <div>
-        <div id="map" style="height: 600px;"></div>
+        <div id="map" class="mt-5" style="height: 800px;"></div>
     </div>
+    <div v-show="isModalVisible" class="modal" @click.self="closeModal">
+        <div class="modal-content">
+            <div class="image-container">
+                <img v-if="clickedPlace.firstImage" :src="clickedPlace.firstImage" alt="Place image"
+                    class="place-image">
+                <img v-else src="@/assets/img/no-picture.png" alt="Default image" class="place-image">
+                <img src="@/assets/img/like-before.png" v-if="!clickedPlace.isBookmarked" alt="Like" class="like-button"
+                    @click="togleLike(clickedPlace.contentId)">
+                <img src="@/assets/img/like-after.png" v-else alt="Liked" class="like-button"
+                    @click="togleLike(clickedPlace.contentId)">
 
+            </div>
+            <div class="title scroll">
+                <p class="font-bold">{{ clickedPlace.title }}</p>
+                {{ clickedPlace.addr1 }}
+            </div>
+            <div class=" description scroll">
+                {{ clickedPlace.overView }}
+            </div>
+        </div>
+    </div>
 </template>
 
-<style scoped>
-/* @import "/src/assets/css/tourist_spot.css" */
-
-/* #map {
-  flex: 1;
-} */
-</style>
+<style scoped></style>

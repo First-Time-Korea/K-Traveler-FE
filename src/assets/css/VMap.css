@@ -1,0 +1,65 @@
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 뷰포트에 상대적으로 위치 설정 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* 다른 요소보다 상위에 위치하도록 z-index 설정 */
+    z-index: 1000;
+}
+
+/* 모달 내용 설정 */
+.modal-content {
+    width: 340px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.image-container {
+    position: relative;
+    width: 300px;
+    height: 200px;
+}
+
+.place-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.like-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.description {
+    padding: 5px;
+    margin-top: 5px;
+    max-height: 150px;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.title {
+    padding: 5px;
+    margin-top: 5px;
+    max-height: 150px;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.6;
+    background-color: #f5f6f8;
+}
