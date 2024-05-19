@@ -1,5 +1,7 @@
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import ChipItemVue from "@/components/board/item/ChipItem.vue";
+
 const buttonBasicStyle =
   "w-full align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none";
 
@@ -8,9 +10,44 @@ const buttonDisabledStyle = "pointer-events-none bg-second-500 text-second-700/1
 const buttonAbledStyle = "bg-first-300 text-white";
 
 const buttonStyle = computed(() => {
-  return true
+  return canDone.value
     ? `${buttonBasicStyle} ${buttonAbledStyle}`
     : `${buttonBasicStyle} ${buttonDisabledStyle}`;
+});
+
+const tag = ref();
+const tags = ref([]);
+const createTag = () => {
+  // 이미 태그를 3개 입력한 경우
+  if (tags.value.length === 3) {
+    console.log("최대 태그 입력 개수 초과");
+  } else {
+    // 이미 입력한 태그인지 확인하기
+    if (tags.value.indexOf(tag.value) === -1) {
+      tags.value.push(tag.value);
+    } else {
+      console.log("이미 등록된 태그");
+    }
+  }
+
+  tag.value = "";
+};
+
+const handleRemoveEvent = (tag) => {
+  let index = tags.value.indexOf(tag);
+  if (index > -1) {
+    tags.value.splice(index, 1);
+  }
+};
+
+const showTags = computed(() => {
+  return tags.value.length > 0;
+});
+
+const content = ref("");
+
+const canDone = computed(() => {
+  return tags.value.length > 0 && content.value !== "";
 });
 </script>
 
@@ -45,16 +82,29 @@ const buttonStyle = computed(() => {
 
         <!-- 태그 & 내용 입력란 -->
         <div class="flex-1 flex flex-col justify-center items-center h-full ml-4">
+          <!-- 입력한 태그 -->
+          <div class="flex justify-center mb-2" v-show="showTags">
+            <ChipItemVue
+              v-for="tag in tags"
+              :key="tag"
+              :tag="tag"
+              @remove-event="handleRemoveEvent"
+            />
+          </div>
+
           <div class="relative w-full">
             <input
               class="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900"
               placeholder="TAG"
+              v-model="tag"
+              @keydown.enter="createTag"
             />
           </div>
           <div class="relative h-3/4 w-full mt-4">
             <textarea
               class="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900"
               placeholder="CONTENT"
+              v-model="content"
             ></textarea>
           </div>
           <div class="mt-4 w-full">
