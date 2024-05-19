@@ -4,6 +4,7 @@ import UserRouter from "@/router/userRouter.js";
 import AttractionRouter from "@/router/attractionRouter";
 import ThemeRouter from "@/router/themeRouter.js";
 import PlanRouter from "@/router/planRouter";
+import BoardRouter from "@/router/boardRouter.js";
 
 import { storeToRefs } from "pinia";
 
@@ -38,6 +39,7 @@ const router = createRouter({
     ...AttractionRouter,
     ...ThemeRouter,
     ...PlanRouter,
+    ...BoardRouter,
   ],
 });
 
