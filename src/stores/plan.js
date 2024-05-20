@@ -15,7 +15,11 @@ export const usePlanStore = defineStore("planStore", () => {
   });
 
   // 여행 장소를 관리할 상태
-  const places = ref([]);
+  const places = ref({
+    // 찜한 관광지 (key:날짜.toISOString, value:관광지[])
+  });
+
+  const clickedDate = ref();
 
   // 다음 단계로 진행할 수 있는지 확인하는 상태
   const canGoNext = ref(false);
@@ -30,8 +34,22 @@ export const usePlanStore = defineStore("planStore", () => {
     checkCanProceed();
   };
 
-  const addPlace = (place) => {
-    places.value.push(place);
+  const addPlace = (dateString, attraction) => {
+    const updatedPlaces = { ...places.value };
+    if (!updatedPlaces[dateString]) {
+      updatedPlaces[dateString] = [];
+    }
+    updatedPlaces[dateString].push(attraction);
+    places.value = updatedPlaces;
+    checkCanProceed();
+  };
+
+  const deletePlace = (dateString, attraction) => {
+    const deletedPlaces = places.value[dateString].filter(
+      (attr) => attr.contentId != attraction.contentId
+    );
+    places.value[dateString] = deletedPlaces;
+    console.log("여행지 삭제", places);
     checkCanProceed();
   };
 
@@ -62,5 +80,7 @@ export const usePlanStore = defineStore("planStore", () => {
     updateSchedule,
     addPlace,
     submitAllData,
+    deletePlace,
+    clickedDate,
   };
 });

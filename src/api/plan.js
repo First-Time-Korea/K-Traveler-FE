@@ -15,9 +15,23 @@ async function getBookmarkedAttraction(memberId, success, fail) {
 }
 
 async function getAttractionBySidoCode(sidoCode, success, fail) {
-  console.log("시도코드!!!!");
-  console.log(sidoCode);
   await http.get(`/attraction/sido/${sidoCode}`).then(success).catch(fail);
 }
 
-export { getRegions, getAttractionBySidoCode, getBookmarkedAttraction };
+async function createPlan(formData, success, fail) {
+  await http
+    .post("/plan", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then(success)
+    .catch(fail);
+}
+
+export {
+  getRegions,
+  getAttractionBySidoCode,
+  getBookmarkedAttraction,
+  createPlan,
+};

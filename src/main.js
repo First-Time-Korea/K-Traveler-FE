@@ -14,11 +14,11 @@ import "v-calendar/style.css";
 const app = createApp(App);
 const pinia = createPinia();
 
-pinia.use(piniaPluginPersistedstate);
-app.use(pinia);
-// app.use(createPinia().use(piniaPluginPersistedstate));
 app.use(router);
 app.use(VCalendar, {});
+app.use(pinia);
+
+pinia.use(piniaPluginPersistedstate);
 
 router.isReady().then(() => {
   app.mount("#app");

@@ -9,7 +9,7 @@ const { clickedRegion } = storeToRefs(usePlanStore());
 <template>
     <div class="flex flex-col items-center jusify-start">
         <div
-            class="relative w-10/12 bg-second-50 h-auto flex flex-col overflow-hidden rounded-sm text-gray-700 shadow-md">
+            class="relative w-10/12 bg-second-50 h-auto flex flex-col overflow-hidden rounded-sm text-gray-700 shadow-second-100 shadow-lg">
             <div class="overflow-hidden">
                 <img v-if="clickedRegion.sidoImage" :src="clickedRegion.sidoImage" alt="Region Image"
                     class="w-full h-64 object-cover" />

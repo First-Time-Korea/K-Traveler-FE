@@ -8,7 +8,8 @@ import { useMemberStore } from "@/stores/member"
 const planStore = usePlanStore();
 const memberStore = useMemberStore();
 const { userInfo } = storeToRefs(memberStore);
-const { clickedRegion, schedule } = storeToRefs(planStore);
+const { clickedRegion, schedule, clickedDate } = storeToRefs(planStore);
+const { addPlace, deletePlace } = planStore;
 
 const currentTab = ref('selected regions');  // 기본적으로 선택된 탭 설정
 const tabs = ['selected regions', 'bookmarked', 'other regions'];  // 탭 목록
@@ -19,7 +20,9 @@ const otherRegions = ref([]);
 const attracionBySidoCode = ref([]);
 const attractionsToShow = ref([]); //지금 보여줄 관광지 목록
 const selectedDate = ref(); //현재 선택 중인 날짜
-const travelPlans = ref({}); //찜한 관광지 (key:날짜.toISOString, value:관광지)
+const travelPlans = ref({
+    날짜: [{}, {}, {}]
+}); //찜한 관광지 (key:날짜.toISOString, value:관광지)
 const filteredPlans = ref(); //선택한 날짜에 해당하는, 선택한 관광지 담은 목록
 
 const dateRange = computed(() => {
@@ -29,7 +32,8 @@ const dateRange = computed(() => {
         dates.push(new Date(currentDate).toISOString());
         currentDate.setDate(currentDate.getDate() + 1);
     }
-    selectedDate.value = dates[dates.length - 1] //초기 날짜 설정
+    selectedDate.value = dates[dates.length - 1] //초기 날짜 설정 TODO: 리펙토링 할 때 피니아 객체랑 통합시키기..^^
+    clickedDate.value = dates[dates.length - 1]; //피니아에서도 초기 값 설정
     return dates;
 })
 
@@ -39,23 +43,30 @@ function changeTab(tab) { //탭 변경
 
 function changeDate(date) { //날짜 변경
     selectedDate.value = date;
-    console.log("날짜", date);
+    clickedDate.value = date;
 }
 
 function loadDataForTab(tab) {
     console.log(`Loading data for ${tab}`);
 }
 
-function addToPlan(date, attraction) {
-    console.log(date);
-    const dateString = date;
+function addToPlan(dateString, attraction) {
     const updatedPlans = { ...travelPlans.value };
     if (!updatedPlans[dateString]) {
         updatedPlans[dateString] = [];
     }
     updatedPlans[dateString].push(attraction);
     travelPlans.value = updatedPlans;
+
+    addPlace(dateString, attraction); //pinia에 추가
     console.log("여행지 목록", travelPlans.value);
+}
+
+function deleteAtPlan(dateString, attrraction) {
+    const deletedPlans = travelPlans.value[dateString].filter(attr => attr.contentId != attrraction.contentId);
+    travelPlans.value[dateString] = deletedPlans;
+
+    deletePlace(dateString, attrraction);
 }
 
 function isInPlan(date, contentId) {
@@ -70,7 +81,6 @@ onMounted(() => {
             attracionBySidoCode.value = data.data;
         }
         , (error) => console.log(error))
-    console.log();
     const memberId = userInfo.value.id;
     getBookmarkedAttraction((memberId) //조회 2: 회원이 북마크 한 관광지 
         , ({ data }) => {
@@ -99,9 +109,13 @@ watch(() => selectedDate.value, (newDate) => {
 <template>
     <div class="flex justify-center">
         <!-- 날짜 선택 -->
-        <div class="flex flex-col px-4 w-full divide-y divide-second-800">
+        <div class="flex flex-col px-4 pt-1 w-full divide-y divide-second-800">
             <button v-for="date in dateRange" :key="date" @click=" changeDate(date)"
-                class="align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-second-900 text-white shadow-lg hover:bg-second-800 focus:opacity-85 active:opacity-85 block mb-1">
+                class="mt-2 select-none rounded-lg border border-gray-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                :class="{
+                    'select-none rounded-lg border border-second-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none': true,
+                    'bg-second-900 text-white': selectedDate === date
+                }" type="button">
                 {{ new Date(date).toLocaleDateString('en-US', { month: 'long', day: '2-digit' }) }}
             </button>
         </div>
@@ -143,14 +157,14 @@ watch(() => selectedDate.value, (newDate) => {
             </nav>
         </div>
 
-        <!-- 리스트 -->
+        <!-- 선택된 항목 리스트 -->
         <div class="flex-1 flex px-4">
-
             <div class="flex flex-col text-gray-700 bg-white w-96 rounded-xl overflow-y-auto">
                 <div class="selected-container scroll">
                     <div v-if="travelPlans[selectedDate] && travelPlans[selectedDate].length > 0">
                         <div v-for="(attraction, index) in travelPlans[selectedDate]" :key="index">
-                            <button class="p-2 rounded-full cursor-pointer absolute right-2 ">
+                            <button class="p-2 rounded-full cursor-pointer absolute right-2"
+                                @click="deleteAtPlan(selectedDate, attraction)">
                                 <span class="text-xl">x</span>
                             </button>
                             <div class="m-3 p-3 bg-second-50 rounded-md">

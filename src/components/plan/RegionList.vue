@@ -22,7 +22,6 @@ const setRegions = () => {
 }
 
 const handleRegionClick = (region) => {
-    console.log("간다간다간다", region);
     updateClickedRegion(region);
 }
 
@@ -50,7 +49,7 @@ watch(() => keyword.value, (newKeyword) => {
             class="mb-1 relative flex flex-col shadow-md text-gray-700 bg-white border-solid w-3/4 rounded-xl bg-clip-border ">
             <nav class="flex min-w-[240px] flex-col gap-1 p-2 font-sans text-base font-normal text-blue-gray-700">
                 <div role="button" v-for="(region, index) in filteredRegions" :key="index"
-                    class="flex items-center w-full p-3 leading-tight transition-all rounded-lg outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
+                    class="flex items-center w-full p-2.5 leading-tight transition-all rounded-lg outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
                     @click="handleRegionClick(region)">
                     {{ region.sidoName }} {{ region.gugunName }}
                 </div>

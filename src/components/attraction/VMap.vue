@@ -65,7 +65,6 @@ const initMap = () => {
     };
     map = new kakao.maps.Map(container, options);
 
-
     clusterer = new kakao.maps.MarkerClusterer({
         map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
         averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
@@ -139,6 +138,8 @@ function openModal(contentId, themeCode) {
         "memberId": userInfo.value.id,
         "contentId": contentId
     }
+    console.log("테마코드", themeCode)
+    console.log("콘텐트 아이디", contentId)
     if (themeCode === 'E') {
         getAttractionByAI((wantItem),
             (response) => {
