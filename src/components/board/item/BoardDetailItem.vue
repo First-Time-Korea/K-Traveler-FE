@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { useBoardStore } from "@/stores/board";
+import CommentListItem from "@/components/board/item/CommentListItem.vue";
 
 const store = useBoardStore();
 
@@ -12,11 +13,11 @@ const imgSrc = ref(`${VITE_VUE_API_URL}/article/img/${article.value.img.src}`);
 </script>
 
 <template>
-  <div class="flex justify-center h-screen">
+  <div class="flex justify-center">
     <div
-      class="relative flex flex-col text-gray-700 bg-white shadow-md bg-clip-border rounded-xl w-96"
+      class="relative flex flex-col text-gray-700 bg-white shadow-md bg-clip-border rounded-xl card-width min-h-[200px]"
     >
-      <div class="flex flex-row h-full">
+      <div class="flex flex-row">
         <!-- 여행 후기 자세한 정보 -->
         <div class="flex-1 m-4">
           <img
@@ -88,9 +89,19 @@ const imgSrc = ref(`${VITE_VUE_API_URL}/article/img/${article.value.img.src}`);
             </button>
           </div>
         </div>
+
+        <!-- 여행 후기 댓글 -->
+        <div class="flex-1 m-4 overflow-y-auto">
+          <CommentListItem />
+          <CommentListItem />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.card-width {
+  width: 60%;
+}
+</style>
