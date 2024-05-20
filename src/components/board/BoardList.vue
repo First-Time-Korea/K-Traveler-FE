@@ -42,7 +42,6 @@ const searchedWord = ref("");
 const searchArticles = () => {
   articles.value = {};
   searchedWord.value = param.value.word;
-  console.log(searchedWord.value);
   tryGetArticles();
 };
 
@@ -53,7 +52,7 @@ const tryMoreGetArticles = () => {
 };
 
 const showNoSearchedResult = computed(() => {
-  return Object.keys(articles.value).length === 0;
+  return Object.keys(articles.value).length === 0 && searchedWord.value !== "";
 });
 
 const canMoreGetArticles = computed(() => {
