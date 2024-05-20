@@ -20,6 +20,11 @@ export default [
         name: "board-modify",
         component: () => import("@/components/board/BoardModify.vue"),
       },
+      {
+        path: "detail/:articleid",
+        name: "board-detail",
+        component: () => import("@/components/board/BoardDetail.vue"),
+      },
     ],
   },
 ];
