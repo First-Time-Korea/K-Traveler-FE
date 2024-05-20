@@ -36,4 +36,15 @@ function modifyArticle(article, success, fail) {
     .catch(fail);
 }
 
-export { writeArticle, getArticles, getArticle, getArticleForModification, modifyArticle };
+function deleteArticle(articleId, success, fail) {
+  local.delete(`/article/delete/${articleId}`).then(success).catch(fail);
+}
+
+export {
+  writeArticle,
+  getArticles,
+  getArticle,
+  getArticleForModification,
+  modifyArticle,
+  deleteArticle,
+};

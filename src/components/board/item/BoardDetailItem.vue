@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useBoardStore } from "@/stores/board";
-import { getArticle } from "@/api/board";
+import { getArticle, deleteArticle } from "@/api/board";
 import CommentListItem from "@/components/board/item/CommentListItem.vue";
 import "@/assets/css/common.css";
 
@@ -62,6 +62,23 @@ const tryGetArticle = () => {
     (error) => {
       console.log(error);
       alert("여행 후기 조회하기 실패...");
+    }
+  );
+};
+
+const tryDeleteArticle = () => {
+  deleteArticle(
+    article.value.id,
+    (response) => {
+      if (response.status == 200) {
+        alert("여행 후기 삭제가 정상적으로 완료되었습니다.");
+      }
+
+      router.replace({ name: "board-list" });
+    },
+    (error) => {
+      console.log(error);
+      alert("여행 후기 삭제가 실패했습니다...");
     }
   );
 };
@@ -144,7 +161,7 @@ const goModify = () => {
             <button
               class="flex justify-center items-center relative align-middle select-none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-8 max-w-[40px] h-8 max-h-[40px] rounded-lg text-xs text-red-500 hover:bg-red-700/10 active:bg-red-700/20"
               type="button"
-              @click="goBack"
+              @click="tryDeleteArticle"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
