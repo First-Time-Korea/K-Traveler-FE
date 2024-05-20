@@ -260,6 +260,7 @@ export const useThemeTestStore = defineStore("themeTest", () => {
   });
 
   const result = ref();
+  const selectedThemeCode = ref();
   const calcualteResult = () => {
     questions.value.forEach((question) => {
       theme.value[question.theme].score += question.value;
@@ -270,6 +271,7 @@ export const useThemeTestStore = defineStore("themeTest", () => {
     for (let key in theme.value) {
       if (maxScore < theme.value[key].score) {
         maxScore = theme.value[key].score;
+        selectedThemeCode.value = theme.value[key].code;
         maxTheme = key;
       }
     }
@@ -277,5 +279,12 @@ export const useThemeTestStore = defineStore("themeTest", () => {
     result.value = maxTheme;
   };
 
-  return { questions, isDone, result, calculateValueOfQuestion, calcualteResult };
+  return {
+    questions,
+    isDone,
+    result,
+    selectedThemeCode,
+    calculateValueOfQuestion,
+    calcualteResult,
+  };
 });
