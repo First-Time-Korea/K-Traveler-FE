@@ -3,10 +3,12 @@ import { ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 import { useAttracionStore } from "@/stores/attraction";
+import { useThemeTestStore } from "@/stores/themeTest";
 
 const router = useRouter();
 
-const store = useAttracionStore();
+const attractionStore = useAttracionStore();
+const themeStore = useThemeTestStore();
 
 const props = defineProps({
   location: Object,
@@ -24,9 +26,11 @@ const unshowOverlay = () => {
   isShowned.value = false;
 };
 
-const { selectedSidoCode } = storeToRefs(store);
+const { selectedSidoCode } = storeToRefs(attractionStore);
+const { selectedThemeCode } = storeToRefs(attractionStore);
 const goAttraction = () => {
   selectedSidoCode.value = props.location.code;
+  selectedThemeCode.value = themeStore.maxThemeCode;
 
   router.push({ name: "attraction" });
 };
