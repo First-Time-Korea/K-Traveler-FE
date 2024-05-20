@@ -3,12 +3,13 @@ import { defineStore } from "pinia";
 
 export const useMenuStore = defineStore("menuStore", () => {
   const menuList = ref([
-    { name: "Theme Test", show: false, routeName: "theme-test" },
+    { name: "ThemeTest", show: false, routeName: "theme-test" },
     { name: "Travel", show: false, routeName: "attraction" },
-    { name: "Sign Up", show: true, routeName: "user-join" },
-    { name: "Sign In", show: true, routeName: "user-login" },
+    { name: "Plan", show: false, routeName: "plan" },
+    { name: "SignUp", show: true, routeName: "user-join" },
+    { name: "SignIn", show: true, routeName: "user-login" },
     { name: "Profile", show: false, routeName: "user-mypage" },
-    { name: "Sign Out", show: false, routeName: "user-logout" },
+    { name: "SignOut", show: false, routeName: "user-logout" },
   ]);
 
   const changeMenuState = () => {

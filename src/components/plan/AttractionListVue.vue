@@ -1,0 +1,189 @@
+<script setup>
+import { onMounted, ref, computed, watch } from 'vue';
+import { getAttractionBySidoCode, getBookmarkedAttraction } from "@/api/plan.js";
+
+import { storeToRefs } from "pinia";
+import { usePlanStore } from "@/stores/plan.js";
+import { useMemberStore } from "@/stores/member"
+const planStore = usePlanStore();
+const memberStore = useMemberStore();
+const { userInfo } = storeToRefs(memberStore);
+const { clickedRegion, schedule } = storeToRefs(planStore);
+
+const currentTab = ref('selected regions');  // 기본적으로 선택된 탭 설정
+const tabs = ['selected regions', 'bookmarked', 'other regions'];  // 탭 목록
+
+const selectedRegions = ref([]);
+const bookmarkedAttractions = ref([]);
+const otherRegions = ref([]);
+const attracionBySidoCode = ref([]);
+const attractionsToShow = ref([]); //지금 보여줄 관광지 목록
+const selectedDate = ref(); //현재 선택 중인 날짜
+const travelPlans = ref({}); //찜한 관광지 (key:날짜.toISOString, value:관광지)
+const filteredPlans = ref(); //선택한 날짜에 해당하는, 선택한 관광지 담은 목록
+
+const dateRange = computed(() => {
+    const dates = [];
+    let currentDate = new Date(schedule.value.start);
+    while (currentDate <= schedule.value.end) {
+        dates.push(new Date(currentDate).toISOString());
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+    selectedDate.value = dates[dates.length - 1] //초기 날짜 설정
+    return dates;
+})
+
+function changeTab(tab) { //탭 변경
+    currentTab.value = tab;
+}
+
+function changeDate(date) { //날짜 변경
+    selectedDate.value = date;
+    console.log("날짜", date);
+}
+
+function loadDataForTab(tab) {
+    console.log(`Loading data for ${tab}`);
+}
+
+function addToPlan(date, attraction) {
+    console.log(date);
+    const dateString = date;
+    const updatedPlans = { ...travelPlans.value };
+    if (!updatedPlans[dateString]) {
+        updatedPlans[dateString] = [];
+    }
+    updatedPlans[dateString].push(attraction);
+    travelPlans.value = updatedPlans;
+    console.log("여행지 목록", travelPlans.value);
+}
+
+function isInPlan(date, contentId) {
+    if (!travelPlans.value[date]) return false;
+    return travelPlans.value[date].some(attraction => attraction.contentId === contentId);
+}
+
+onMounted(() => {
+    const sidoCode = clickedRegion.value.sidoCode;
+    getAttractionBySidoCode((sidoCode) //조회 1: 선택한 지역의 관광지
+        , ({ data }) => {
+            attracionBySidoCode.value = data.data;
+        }
+        , (error) => console.log(error))
+    console.log();
+    const memberId = userInfo.value.id;
+    getBookmarkedAttraction((memberId) //조회 2: 회원이 북마크 한 관광지 
+        , ({ data }) => {
+            bookmarkedAttractions.value = data.data;
+            console.log(bookmarkedAttractions.value);
+        }
+        , (error) => console.log(error));
+})
+
+watch(() => currentTab.value, (newTab) => {
+    if (newTab === 'bookmarked') {
+        attractionsToShow.value = bookmarkedAttractions.value;
+    } else if (newTab === 'selected regions') {
+        attractionsToShow.value = attracionBySidoCode.value;
+    } else {
+        attractionsToShow.value = otherRegions.value;
+    }
+})
+
+watch(() => selectedDate.value, (newDate) => {
+    filteredPlans.value = travelPlans.value[newDate] || [];
+});
+
+</script>
+
+<template>
+    <div class="flex justify-center">
+        <!-- 날짜 선택 -->
+        <div class="flex flex-col px-4 w-full divide-y divide-second-800">
+            <button v-for="date in dateRange" :key="date" @click=" changeDate(date)"
+                class="align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-second-900 text-white shadow-lg hover:bg-second-800 focus:opacity-85 active:opacity-85 block mb-1">
+                {{ new Date(date).toLocaleDateString('en-US', { month: 'long', day: '2-digit' }) }}
+            </button>
+        </div>
+
+        <!-- 상단 탭 -->
+        <div class="flex flex-1 justify-center">
+            <nav class="text-sm w-96">
+                <div v-for="tab in tabs" :key="tab"
+                    :class="{ 'border-b-2 border-first-500 text-first-500 font-semibold': currentTab === tab, 'text-gray-700 hover:text-black': currentTab !== tab }"
+                    class="inline-block px-4 py-2 cursor-pointer" @click="changeTab(tab)">
+                    {{ tab }}
+                </div>
+                <div class="relative w-full min-w-[200px] h-15 py-2">
+                    <input
+                        class="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-lg border-blue-gray-200 focus:border-second-300"
+                        placeholder=" " />
+                </div>
+                <div class="scrollable-container custom-scroll ">
+                    <div class=" flex bg-white border border-gray-300 mb-2 p-2 rounded-lg relative"
+                        v-for="attraction in attractionsToShow" :key="attraction.id">
+                        <div class="w-24 h-48 overflow-hidden">
+                            <img :src="attraction.firstImage" alt="" class="w-auto h-full object-cover object-center">
+                        </div>
+                        <div class="flex-grow px-2 w-48 h-48 overflow-y-auto scroll">
+                            <h5 class="text-md font-semibold">{{ attraction.title }}</h5>
+                            <p class="text-sm text-gray-600 overflow-y-auto">{{ attraction.overView }}</p>
+                        </div>
+                        <button v-if="isInPlan(selectedDate, attraction.contentId)"
+                            @click="addToPlan(selectedDate, attraction)"
+                            class="bg-third-300 text-white p-2 rounded-md cursor-pointer absolute top-2 right-2">
+                            <span class="text-xl">✓</span>
+                        </button>
+                        <button v-else @click="addToPlan(selectedDate, attraction)"
+                            class="bg-second-300 text-white p-2 rounded-md cursor-pointer absolute top-2 right-2">
+                            <span class="text-xl">+</span>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- 리스트 -->
+        <div class="flex-1 flex px-4">
+
+            <div class="flex flex-col text-gray-700 bg-white w-96 rounded-xl overflow-y-auto">
+                <div class="selected-container scroll">
+                    <div v-if="travelPlans[selectedDate] && travelPlans[selectedDate].length > 0">
+                        <div v-for="(attraction, index) in travelPlans[selectedDate]" :key="index">
+                            <button class="p-2 rounded-full cursor-pointer absolute right-2 ">
+                                <span class="text-xl">x</span>
+                            </button>
+                            <div class="m-3 p-3 bg-second-50 rounded-md">
+                                <h5 class="text-sm font-semibold">{{ attraction.title }}</h5>
+                                <p class="text-xs">{{ attraction.addr1 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<style scoped>
+.scrollable-container {
+    width: 100%;
+    max-width: 768px;
+    /* 높이 */
+    height: 600px;
+    background-color: white;
+    border-radius: 0.5rem;
+    overflow-y: auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    position: relative;
+}
+
+.selected-container {
+    width: 100%;
+    max-width: 768px;
+    height: 700px;
+    background-color: white;
+    border-radius: 0.5rem;
+    overflow-y: auto;
+    position: relative;
+}
+</style>
