@@ -15,11 +15,10 @@ export const useMenuStore = defineStore("menuStore", () => {
   const menuList = ref([
     { name: "ThemeTest", show: !isLogged.value, routeName: "theme-test" },
     { name: "ThemeTest", show: isLogged.value, routeName: "theme-test" },
-    { name: "Travel", show: !isLogged.value, routeName: "attraction" },
     { name: "Travel", show: isLogged.value, routeName: "attraction" },
     { name: "Plan", show: isLogged.value, routeName: "plan" },
-    {name: "Review", show: !isLogged.value, routeName: "board"},
-    {name: "Review", show: isLogged.value, routeName: "board"},
+    { name: "Review", show: !isLogged.value, routeName: "board" },
+    { name: "Review", show: isLogged.value, routeName: "board" },
     { name: "SignUp", show: !isLogged.value, routeName: "user-join" },
     { name: "SignIn", show: !isLogged.value, routeName: "user-login" },
     { name: "Profile", show: isLogged.value, routeName: "user-mypage" },

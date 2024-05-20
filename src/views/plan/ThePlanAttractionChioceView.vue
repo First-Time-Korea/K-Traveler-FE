@@ -16,7 +16,7 @@ const memberStore = useMemberStore();
 const { userInfo } = storeToRefs(memberStore);
 const { clickedRegion, schedule, places } = storeToRefs(planStore);
 
-const buttonStyle = "fixed bottom-0 left-0 right-0 mx-auto font-sans font-bold uppercase text-center text-xs py-3 px-6 shadow-md transition-all block w-full bg-first-900 text-white hover:bg-first-700 focus:opacity-85 active:opacity-85"
+const buttonStyle = "fixed bottom-10 inset-x-0 mx-auto w-64 h-10 align-middle select-none font-sans font-bold text-center bg-second-300 uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg shadow-md shadow-gray-900/10 hover:bg-second-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
 
 const formattedStartDate = computed(() => formatDateString(schedule.value.start));
 const formattedEndDate = computed(() => formatDateString(schedule.value.end));
@@ -43,7 +43,7 @@ onMounted(() => {
 const formatDateString = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('ko-KR', {
+    return new Intl.DateTimeFormat('en-US', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
@@ -132,11 +132,11 @@ const savePlan = () => {
                     Please make a thumbnail?
                 </label>
             </div>
-            <button @click="savePlan"
-                class="align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-second-900 text-white shadow-md shadow-second-900/10 hover:shadow-lg hover:shadow-second-900 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none block w-full"
-                type="button">
-                SAVE
-            </button>
+            <div class="flex justify-center">
+                <button :class="buttonStyle" type="button" @click="savePlan">
+                    SAVE
+                </button>
+            </div>
         </div>
     </div>
 </template>
