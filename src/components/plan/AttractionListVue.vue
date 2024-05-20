@@ -8,7 +8,8 @@ import { useMemberStore } from "@/stores/member"
 const planStore = usePlanStore();
 const memberStore = useMemberStore();
 const { userInfo } = storeToRefs(memberStore);
-const { clickedRegion, schedule } = storeToRefs(planStore);
+const { clickedRegion, schedule, clickedDate } = storeToRefs(planStore);
+const { addPlace, deletePlace } = planStore;
 
 const currentTab = ref('selected regions');  // 기본적으로 선택된 탭 설정
 const tabs = ['selected regions', 'bookmarked', 'other regions'];  // 탭 목록
@@ -19,7 +20,9 @@ const otherRegions = ref([]);
 const attracionBySidoCode = ref([]);
 const attractionsToShow = ref([]); //지금 보여줄 관광지 목록
 const selectedDate = ref(); //현재 선택 중인 날짜
-const travelPlans = ref({}); //찜한 관광지 (key:날짜.toISOString, value:관광지)
+const travelPlans = ref({
+    날짜: [{}, {}, {}]
+}); //찜한 관광지 (key:날짜.toISOString, value:관광지)
 const filteredPlans = ref(); //선택한 날짜에 해당하는, 선택한 관광지 담은 목록
 
 const dateRange = computed(() => {
@@ -29,7 +32,8 @@ const dateRange = computed(() => {
         dates.push(new Date(currentDate).toISOString());
         currentDate.setDate(currentDate.getDate() + 1);
     }
-    selectedDate.value = dates[dates.length - 1] //초기 날짜 설정
+    selectedDate.value = dates[dates.length - 1] //초기 날짜 설정 TODO: 리펙토링 할 때 피니아 객체랑 통합시키기..^^
+    clickedDate.value = dates[dates.length - 1]; //피니아에서도 초기 값 설정
     return dates;
 })
 
@@ -39,30 +43,30 @@ function changeTab(tab) { //탭 변경
 
 function changeDate(date) { //날짜 변경
     selectedDate.value = date;
-    console.log("날짜", date);
+    clickedDate.value = date;
 }
 
 function loadDataForTab(tab) {
     console.log(`Loading data for ${tab}`);
 }
 
-function addToPlan(date, attraction) {
-    console.log(date);
-    const dateString = date;
+function addToPlan(dateString, attraction) {
     const updatedPlans = { ...travelPlans.value };
     if (!updatedPlans[dateString]) {
         updatedPlans[dateString] = [];
     }
     updatedPlans[dateString].push(attraction);
     travelPlans.value = updatedPlans;
+
+    addPlace(dateString, attraction); //pinia에 추가
     console.log("여행지 목록", travelPlans.value);
 }
 
-function deleteAtPlan(date, attrraction) {
-    console.log("삭제", date, attrraction);
-    console.log(attrraction.contentId);
-    const deletedPlans = travelPlans.value[date].filter(attr => attr.contentId != attrraction.contentId);
-    travelPlans.value[date] = deletedPlans;
+function deleteAtPlan(dateString, attrraction) {
+    const deletedPlans = travelPlans.value[dateString].filter(attr => attr.contentId != attrraction.contentId);
+    travelPlans.value[dateString] = deletedPlans;
+
+    deletePlace(dateString, attrraction);
 }
 
 function isInPlan(date, contentId) {
