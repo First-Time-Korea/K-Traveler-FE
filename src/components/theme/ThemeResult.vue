@@ -1,11 +1,12 @@
 <script setup>
 import { onMounted, ref, computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useMemberStore } from "@/stores/member";
 import { theme } from "@/assets/js/Theme";
 import LocationItem from "@/components/theme/item/LocationItem.vue";
 
 const route = useRoute();
+const router = useRouter();
 const store = useMemberStore();
 
 const themeKey = ref(route.params.theme);
@@ -33,8 +34,7 @@ const buttonStyle = computed(() => {
 });
 
 const goRecommendedAttraction = () => {
-  // TODO: 테마 추천 여행지 페이지로 이동하기
-  console.log("go recommended attraction");
+  router.push({ name: "attraction" });
 };
 </script>
 
