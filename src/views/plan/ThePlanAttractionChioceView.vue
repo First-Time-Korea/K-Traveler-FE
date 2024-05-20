@@ -1,23 +1,28 @@
 <script setup>
 import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
 import AttracionListVue from "@/components/plan/AttractionListVue.vue"
 import PMap from "@/components/plan/PMap.vue"
 
+import { createPlan } from "@/api/plan.js";
 import { usePlanStore } from "@/stores/plan.js";
 import { useMemberStore } from "@/stores/member"
 import { onMounted } from "vue";
 import { storeToRefs } from "pinia";
 
+const router = useRouter();
 const planStore = usePlanStore();
 const memberStore = useMemberStore();
 const { userInfo } = storeToRefs(memberStore);
-const { clickedRegion, schedule } = storeToRefs(planStore);
+const { clickedRegion, schedule, places } = storeToRefs(planStore);
 
 const buttonStyle = "fixed bottom-0 left-0 right-0 mx-auto font-sans font-bold uppercase text-center text-xs py-3 px-6 shadow-md transition-all block w-full bg-first-900 text-white hover:bg-first-700 focus:opacity-85 active:opacity-85"
 
 const formattedStartDate = computed(() => formatDateString(schedule.value.start));
 const formattedEndDate = computed(() => formatDateString(schedule.value.end));
 const isModalVisible = ref(false);
+
+const fileInput = ref(null); // 입력 받는 파일
 
 const goNext = () => {
     // 모달 띄우기
@@ -46,10 +51,39 @@ const formatDateString = (dateString) => {
     }).format(date).replace(/\. /g, '.');
 };
 
-const createPlan = () => {
+const savePlan = () => {
+    const formData = new FormData();
+    const attractionsPerDate = Object.entries(places.value).map(([date, attractions]) => {
+        return {
+            date: date,
+            contentId: attractions.map(attraction => attraction.contentId)
+        };
+    });
+    let planRequest = {
+        "memberId": userInfo.value.id,
+        "title": document.getElementById('title').value,
+        "attractionsPerDate": attractionsPerDate
+    };
 
+    const planRequestBlob = new Blob([JSON.stringify(planRequest)], { type: 'application/json' }); //json을 파일 형태로 담는다. (multipart form data로 보내려고)
+    formData.append("planRequest", planRequestBlob);
+
+    if (fileInput.value.files[0]) {
+        formData.append('file', fileInput.value.files[0]);
+    }
+
+    createPlan((formData)
+        , ({ data }) => {
+            if (data.status === "fail") {
+                alert("Save failed");
+            } else {
+                alert("Plan saved successfully");
+                router.push({ name: "main" }); //성공하면 메인 화면으로
+            }
+        }
+        , (error) => console.log(error)
+    )
 }
-
 </script>
 
 <template>
@@ -81,7 +115,7 @@ const createPlan = () => {
         @click.self="togleModal">
         <div class="modal-content bg-white p-6 rounded-lg shadow-lg w-96">
             <div class="relative w-full min-w-[200px] h-12 mb-4">
-                <input
+                <input id="title"
                     class="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline-none transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-md border-blue-gray-200 focus:border-blue-500"
                     placeholder=" " />
                 <label
@@ -90,7 +124,7 @@ const createPlan = () => {
                 </label>
             </div>
             <div class="relative w-full min-w-[200px] h-12 mb-4">
-                <input @change="addFile($event)" ref="file" type="file" id="file" name="file"
+                <input type="file" ref="fileInput"
                     class="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline-none transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-md border-blue-gray-200 focus:border-blue-500"
                     placeholder=" " />
                 <label
@@ -98,10 +132,10 @@ const createPlan = () => {
                     Please make a thumbnail?
                 </label>
             </div>
-            <button @click="createPlan"
-                class="align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none block w-full"
+            <button @click="savePlan"
+                class="align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-second-900 text-white shadow-md shadow-second-900/10 hover:shadow-lg hover:shadow-second-900 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none block w-full"
                 type="button">
-                DONE
+                SAVE
             </button>
         </div>
     </div>

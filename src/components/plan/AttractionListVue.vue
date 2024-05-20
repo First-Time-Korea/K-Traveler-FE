@@ -81,7 +81,6 @@ onMounted(() => {
             attracionBySidoCode.value = data.data;
         }
         , (error) => console.log(error))
-    console.log();
     const memberId = userInfo.value.id;
     getBookmarkedAttraction((memberId) //조회 2: 회원이 북마크 한 관광지 
         , ({ data }) => {
