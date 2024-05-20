@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useBoardStore } from "@/stores/board";
+import { useMemberStore } from "@/stores/member";
 import { getArticle, deleteArticle } from "@/api/board";
 import CommentListItem from "@/components/board/item/CommentListItem.vue";
 import "@/assets/css/common.css";
@@ -9,7 +9,7 @@ import "@/assets/css/common.css";
 const route = useRoute();
 const router = useRouter();
 
-const store = useBoardStore();
+const store = useMemberStore();
 
 const { VITE_VUE_API_URL } = import.meta.env;
 
@@ -28,6 +28,10 @@ const article = ref({
 const comments = ref();
 
 const imgSrc = ref();
+
+const isShowedModifyButtons = computed(() => {
+  return store.userInfo !== undefined && article.value.memberId === store.userInfo.id;
+});
 
 onMounted(() => {
   tryGetArticle();
@@ -137,7 +141,7 @@ const goModify = () => {
           </div>
 
           <!-- 수정 & 삭제 버튼 -->
-          <div class="flex justify-end mt-4">
+          <div class="flex justify-end mt-4" v-if="isShowedModifyButtons">
             <button
               class="mr-1 flex justify-center items-center relative align-middle select-none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-8 max-w-[40px] h-8 max-h-[40px] rounded-lg text-xs text-blue-500 hover:bg-blue-700/10 active:bg-blue-700/20"
               type="button"
