@@ -45,10 +45,21 @@ const currnetQuestions = computed(() => {
 
 const goPre = () => {
   currentPage.value--;
+
+  scrollToTop();
 };
 
 const goNext = () => {
   currentPage.value++;
+
+  scrollToTop();
+};
+
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 };
 </script>
 
