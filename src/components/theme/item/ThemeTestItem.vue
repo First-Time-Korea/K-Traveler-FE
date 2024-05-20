@@ -20,11 +20,14 @@ const checkboxes = ref([
 ]);
 
 onMounted(() => {
-  let index = 6;
-  checkboxes.value.forEach((checkbox) => {
-    checkbox.checked = props.question.value === index;
-    index--;
-  });
+  if (props.question.value > -1) {
+    let index = 6;
+    checkboxes.value.forEach((checkbox) => {
+      checkbox.checked = props.question.value === index;
+      index--;
+    });
+    checkedIndex = Math.abs(6 - props.question.value);
+  }
 });
 
 let checkedIndex = -1;
