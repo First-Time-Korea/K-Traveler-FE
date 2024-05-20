@@ -1,16 +1,70 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useBoardStore } from "@/stores/board";
+import { getArticle } from "@/api/board";
 import CommentListItem from "@/components/board/item/CommentListItem.vue";
 import "@/assets/css/common.css";
+
+const route = useRoute();
+const router = useRouter();
 
 const store = useBoardStore();
 
 const { VITE_VUE_API_URL } = import.meta.env;
 
-const article = ref(store.article);
+const article = ref({
+  id: "",
+  memberId: "",
+  content: "",
+  time: "",
+  hit: 0,
+  img: {
+    src: "",
+    name: "",
+  },
+});
 
-const imgSrc = ref(`${VITE_VUE_API_URL}/article/img/${article.value.img.src}`);
+const comments = ref();
+
+const imgSrc = ref();
+
+onMounted(() => {
+  tryGetArticle();
+});
+
+const tryGetArticle = () => {
+  getArticle(
+    route.params.articleid,
+    ({ data }) => {
+      article.value.id = data.article.id;
+      article.value.memberId = data.article.memberId;
+      article.value.content = data.article.content;
+      if (data.article.createdTime === data.article.modifiedTime) {
+        article.value.time = data.article.createdTime;
+      } else {
+        article.value.time = `${data.article.modifiedTime} (modified)`;
+      }
+      article.value.hit = data.article.hit;
+      article.value.img.src = `${data.article.file.saveFolder}/${data.article.file.saveFile}`;
+      let index = data.article.file.originFile.indexOf(".");
+
+      if (index !== -1) {
+        article.value.img.name = data.article.file.originFile.slice(0, index);
+      } else {
+        article.value.img.name = data.article.file.originFile;
+      }
+
+      imgSrc.value = `${VITE_VUE_API_URL}/article/img/${article.value.img.src}`;
+
+      comments.value = data.article.comments;
+    },
+    (error) => {
+      console.log(error);
+      alert("여행 후기 조회하기 실패...");
+    }
+  );
+};
 
 const leftBody = ref(null);
 const isShowedCommentList = ref(false);
@@ -18,9 +72,6 @@ const commentListHeight = computed(() => {
   if (leftBody.value === null) {
     return;
   } else {
-    // console.log(leftBody.value.clientHeight);
-    // console.log(leftBody.value.clientHeight / 100);
-    // console.log((leftBody.value.clientHeight / 100) * 90);
     let result = (leftBody.value.clientHeight / 100) * 90;
     isShowedCommentList.value = true;
     return result;
@@ -32,42 +83,9 @@ const commentListStyle = computed(() => {
   };
 });
 
-onMounted(() => {
-  console.log(leftBody.value.clientHeight);
-});
-
-const comments = ref([
-  {
-    id: 1,
-  },
-  {
-    id: 2,
-  },
-  {
-    id: 3,
-  },
-  {
-    id: 4,
-  },
-  {
-    id: 5,
-  },
-  {
-    id: 6,
-  },
-  {
-    id: 7,
-  },
-  {
-    id: 8,
-  },
-  {
-    id: 9,
-  },
-  {
-    id: 10,
-  },
-]);
+const goModify = () => {
+  router.push({ name: "board-modify", params: { articleid: article.id } });
+};
 </script>
 
 <template>
@@ -87,19 +105,17 @@ const comments = ref([
             <h6
               class="mr-2 flex-none w-3/10 block font-sans text-sm antialiased font-semibold leading-relaxed tracking-normal text-inherit"
             >
-              사용자 이름
+              {{ article.memberId }}
             </h6>
             <p
               class="flex-auto w-7/10 block font-sans text-sm antialiased font-normal leading-relaxed text-inherit"
             >
-              Material Tailwind is an easy to use components library for Tailwind CSS and Material
-              Design. It provides a simple way to customize your components, you can change the
-              colors, fonts, breakpoints and everything you need.
+              {{ article.content }}
             </p>
           </div>
           <div class="text-right mt-4">
             <p class="block font-sans text-xs antialiased font-light leading-normal text-inherit">
-              2024.05.20
+              {{ article.time }}
             </p>
           </div>
 
@@ -108,7 +124,7 @@ const comments = ref([
             <button
               class="mr-1 flex justify-center items-center relative align-middle select-none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-8 max-w-[40px] h-8 max-h-[40px] rounded-lg text-xs text-blue-500 hover:bg-blue-700/10 active:bg-blue-700/20"
               type="button"
-              @click="goBack"
+              @click="goModify"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

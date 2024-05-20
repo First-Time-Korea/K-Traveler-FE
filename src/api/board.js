@@ -17,8 +17,12 @@ function getArticles(param, success, fail) {
   local.get(`/article/list`, { params: param }).then(success).catch(fail);
 }
 
+function getArticle(articleId, success, fail) {
+  local.get(`/article/detail/${articleId}`).then(success).catch(fail);
+}
+
 function getArticleForModification(articleId, success, fail) {
-  local.get(`/article/modify/${articleId}`).then(success).catch(false);
+  local.get(`/article/modify/${articleId}`).then(success).catch(fail);
 }
 
 function modifyArticle(article, success, fail) {
@@ -32,4 +36,4 @@ function modifyArticle(article, success, fail) {
     .catch(fail);
 }
 
-export { writeArticle, getArticles, getArticleForModification, modifyArticle };
+export { writeArticle, getArticles, getArticle, getArticleForModification, modifyArticle };

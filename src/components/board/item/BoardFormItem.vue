@@ -158,7 +158,9 @@ const tryModifyArticle = () => {
     formData,
     (response) => {
       if (response.status == 200) {
-        alert("여행 후기 수정이 정삭정으로 완료되었습니다.");
+        alert("여행 후기 수정이 정상적으로 완료되었습니다.");
+
+        router.replace({ name: "board-detail", params: { articleid: articleId.value } });
       }
     },
     (error) => {
