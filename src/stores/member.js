@@ -110,6 +110,7 @@ export const useMemberStore = defineStore("memberStore", () => {
   const userLogout = async () => {
     console.log("로그아웃 아이디 : " + userInfo.value.id);
     await logout(
+      //db에 저장된 토큰 실제 제거
       userInfo.value.id,
       (response) => {
         if (response.status === httpStatusCode.OK) {
@@ -128,6 +129,18 @@ export const useMemberStore = defineStore("memberStore", () => {
       }
     );
   };
+
+  const checkLoginStatus = () => {
+    const token = sessionStorage.getItem("accessToken");
+    if (token !== null) {
+      getUserInfo(token);
+      isLogin.value = true;
+      isLoginError.value = false;
+      isValidToken.value = true;
+    }
+  };
+
+  checkLoginStatus();
 
   return {
     isLogin,
