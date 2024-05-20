@@ -58,6 +58,13 @@ function addToPlan(date, attraction) {
     console.log("여행지 목록", travelPlans.value);
 }
 
+function deleteAtPlan(date, attrraction) {
+    console.log("삭제", date, attrraction);
+    console.log(attrraction.contentId);
+    const deletedPlans = travelPlans.value[date].filter(attr => attr.contentId != attrraction.contentId);
+    travelPlans.value[date] = deletedPlans;
+}
+
 function isInPlan(date, contentId) {
     if (!travelPlans.value[date]) return false;
     return travelPlans.value[date].some(attraction => attraction.contentId === contentId);
@@ -101,7 +108,11 @@ watch(() => selectedDate.value, (newDate) => {
         <!-- 날짜 선택 -->
         <div class="flex flex-col px-4 w-full divide-y divide-second-800">
             <button v-for="date in dateRange" :key="date" @click=" changeDate(date)"
-                class="align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-second-900 text-white shadow-lg hover:bg-second-800 focus:opacity-85 active:opacity-85 block mb-1">
+                class="mt-2 select-none rounded-lg border border-gray-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                :class="{
+                    'select-none rounded-lg border border-second-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none': true,
+                    'bg-second-900 text-white': selectedDate === date
+                }" type="button">
                 {{ new Date(date).toLocaleDateString('en-US', { month: 'long', day: '2-digit' }) }}
             </button>
         </div>
@@ -143,14 +154,14 @@ watch(() => selectedDate.value, (newDate) => {
             </nav>
         </div>
 
-        <!-- 리스트 -->
+        <!-- 선택된 항목 리스트 -->
         <div class="flex-1 flex px-4">
-
             <div class="flex flex-col text-gray-700 bg-white w-96 rounded-xl overflow-y-auto">
                 <div class="selected-container scroll">
                     <div v-if="travelPlans[selectedDate] && travelPlans[selectedDate].length > 0">
                         <div v-for="(attraction, index) in travelPlans[selectedDate]" :key="index">
-                            <button class="p-2 rounded-full cursor-pointer absolute right-2 ">
+                            <button class="p-2 rounded-full cursor-pointer absolute right-2"
+                                @click="deleteAtPlan(selectedDate, attraction)">
                                 <span class="text-xl">x</span>
                             </button>
                             <div class="m-3 p-3 bg-second-50 rounded-md">
