@@ -244,13 +244,14 @@ export const useThemeTestStore = defineStore("themeTest", () => {
   const calculateValueOfQuestion = (id, value) => {
     questions.value.findIndex((question) => {
       if (question.id === id) {
+        if (question.value > -1 && value == -1) {
+          restOfQuestions.value++;
+        } else if (question.value == -1 && value > -1) {
+          restOfQuestions.value--;
+        }
         question.value = value;
 
-        if (value > -1) {
-          restOfQuestions.value--;
-        } else {
-          restOfQuestions.value++;
-        }
+        console.log("restOfQuestion.value: " + restOfQuestions.value);
       }
     });
   };
