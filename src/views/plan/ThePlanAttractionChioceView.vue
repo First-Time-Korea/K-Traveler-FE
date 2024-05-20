@@ -1,4 +1,5 @@
 <script setup>
+import { computed, ref } from "vue";
 import AttracionListVue from "@/components/plan/AttractionListVue.vue"
 import PMap from "@/components/plan/PMap.vue"
 
@@ -12,9 +13,19 @@ const memberStore = useMemberStore();
 const { userInfo } = storeToRefs(memberStore);
 const { clickedRegion, schedule } = storeToRefs(planStore);
 
+const buttonStyle = "fixed bottom-0 left-0 right-0 mx-auto font-sans font-bold uppercase text-center text-xs py-3 px-6 shadow-md transition-all block w-full bg-first-900 text-white hover:bg-first-700 focus:opacity-85 active:opacity-85"
+
+const formattedStartDate = computed(() => formatDateString(schedule.value.start));
+const formattedEndDate = computed(() => formatDateString(schedule.value.end));
+const isModalVisible = ref(false);
+
 const goNext = () => {
     // 모달 띄우기
     // router.push({ name: "choice-schedule" })
+}
+
+const togleModal = () => {
+    isModalVisible.value = !isModalVisible.value;
 }
 
 onMounted(() => {
@@ -24,11 +35,31 @@ onMounted(() => {
     console.log(userInfo);
 })
 
-const buttonStyle = "fixed bottom-0 left-0 right-0 mx-auto font-sans font-bold uppercase text-center text-xs py-3 px-6 shadow-md transition-all block w-full bg-first-900 text-white hover:bg-first-700 focus:opacity-85 active:opacity-85"
+const formatDateString = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        weekday: 'short'
+    }).format(date).replace(/\. /g, '.');
+};
+
+const createPlan = () => {
+
+}
 
 </script>
 
 <template>
+    <!-- 앞서 선택한 정보 -->
+    <div class="ms-5">
+        <h1 class="text-xl font-bold">{{ clickedRegion.sidoName }}</h1>
+        <h2 class="text-md text- mt-2">{{ formattedStartDate }} - {{ formattedEndDate }}</h2>
+    </div>
+
+    <!-- 메인 컨텐츠 -->
     <div class="flex justify-center ">
         <div class="flex-1 flex justify-between">
             <AttracionListVue class="w-full">
@@ -39,9 +70,65 @@ const buttonStyle = "fixed bottom-0 left-0 right-0 mx-auto font-sans font-bold u
             </PMap>
         </div>
     </div>
-    <button @click="goNext()" :class="buttonStyle" type="button">
+
+    <!-- 다음 버튼 (누르면 모달 창이 뜬다.) -->
+    <button @click="togleModal()" :class="buttonStyle" type="button">
         NEXT
     </button>
+
+    <!-- 모달 -->
+    <div v-if="isModalVisible" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+        @click.self="togleModal">
+        <div class="modal-content bg-white p-6 rounded-lg shadow-lg w-96">
+            <div class="relative w-full min-w-[200px] h-12 mb-4">
+                <input
+                    class="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline-none transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-md border-blue-gray-200 focus:border-blue-500"
+                    placeholder=" " />
+                <label
+                    class="flex w-full h-full select-none pointer-events-none absolute left-0 font-normal overflow-visible truncate peer-placeholder-shown:text-blue-gray-500 leading-tight peer-focus:leading-tight transition-all -top-1.5 peer-placeholder-shown:text-sm text-xs peer-focus:text-xs before:content[' '] before:block before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:transition-all after:content[' '] after:block after:flex-grow after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:transition-all text-blue-gray-400 peer-focus:text-blue-500 before:border-blue-gray-200 peer-focus:before:border-blue-500 after:border-blue-gray-200 peer-focus:after:border-blue-500">
+                    Please enter a travel name
+                </label>
+            </div>
+            <div class="relative w-full min-w-[200px] h-12 mb-4">
+                <input @change="addFile($event)" ref="file" type="file" id="file" name="file"
+                    class="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline-none transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-md border-blue-gray-200 focus:border-blue-500"
+                    placeholder=" " />
+                <label
+                    class="flex w-full h-full select-none pointer-events-none absolute left-0 font-normal overflow-visible truncate peer-placeholder-shown:text-blue-gray-500 leading-tight peer-focus:leading-tight transition-all -top-1.5 peer-placeholder-shown:text-sm text-xs peer-focus:text-xs before:content[' '] before:block before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:transition-all after:content[' '] after:block after:flex-grow after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:transition-all text-blue-gray-400 peer-focus:text-blue-500 before:border-blue-gray-200 peer-focus:before:border-blue-500 after:border-blue-gray-200 peer-focus:after:border-blue-500">
+                    Please make a thumbnail?
+                </label>
+            </div>
+            <button @click="createPlan"
+                class="align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none block w-full"
+                type="button">
+                DONE
+            </button>
+        </div>
+    </div>
 </template>
 
-<style></style>
+<style scoped>
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 뷰포트에 상대적으로 위치 설정 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* 다른 요소보다 상위에 위치하도록 z-index 설정 */
+    z-index: 1000;
+}
+
+/* 모달 내용 설정 */
+.modal-content {
+    width: 340px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+</style>
