@@ -1,5 +1,12 @@
 <script setup>
 import { ref } from "vue";
+import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
+import { useAttracionStore } from "@/stores/attraction";
+
+const router = useRouter();
+
+const store = useAttracionStore();
 
 const props = defineProps({
   location: Object,
@@ -16,10 +23,22 @@ const showOverlay = () => {
 const unshowOverlay = () => {
   isShowned.value = false;
 };
+
+const { selectedSidoCode } = storeToRefs(store);
+const goAttraction = () => {
+  selectedSidoCode.value = props.location.code;
+
+  router.push({ name: "attraction" });
+};
 </script>
 
 <template>
-  <div class="relative" @mouseenter="showOverlay" @mouseleave="unshowOverlay">
+  <div
+    class="hover:cursor-pointer relative"
+    @mouseenter="showOverlay"
+    @mouseleave="unshowOverlay"
+    @click="goAttraction"
+  >
     <img
       class="object-cover object-center w-full h-40 max-w-full rounded-lg"
       :src="img.src"

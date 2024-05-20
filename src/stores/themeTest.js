@@ -250,8 +250,6 @@ export const useThemeTestStore = defineStore("themeTest", () => {
           restOfQuestions.value--;
         }
         question.value = value;
-
-        console.log("restOfQuestion.value: " + restOfQuestions.value);
       }
     });
   };
@@ -261,6 +259,7 @@ export const useThemeTestStore = defineStore("themeTest", () => {
     return restOfQuestions.value == 0;
   });
 
+  const result = ref();
   const calcualteResult = () => {
     questions.value.forEach((question) => {
       theme.value[question.theme].score += question.value;
@@ -275,8 +274,8 @@ export const useThemeTestStore = defineStore("themeTest", () => {
       }
     }
 
-    console.log(`result: ${maxTheme}`);
+    result.value = maxTheme;
   };
 
-  return { questions, isDone, calculateValueOfQuestion, calcualteResult };
+  return { questions, isDone, result, calculateValueOfQuestion, calcualteResult };
 });

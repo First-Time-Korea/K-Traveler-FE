@@ -1,7 +1,10 @@
 <script setup>
 import { computed } from "vue";
+import { useRouter } from "vue-router";
 import { useThemeTestStore } from "@/stores/themeTest";
 import ThemeTestItem from "@/components/theme/item/ThemeTestItem.vue";
+
+const router = useRouter();
 
 const store = useThemeTestStore();
 
@@ -17,6 +20,11 @@ const buttonStyle = computed(() => {
     ? `${buttonBasicStyle} ${buttonAbledStyle}`
     : `${buttonBasicStyle} ${buttonDisabledStyle}`;
 });
+
+const done = () => {
+  store.calcualteResult();
+  router.push({ name: "theme-result", params: { theme: store.result } });
+};
 </script>
 
 <template>
@@ -24,7 +32,7 @@ const buttonStyle = computed(() => {
     <div class="container text-center">
       <ThemeTestItem v-for="question in store.questions" :key="question.id" :question="question" />
     </div>
-    <button :class="buttonStyle" type="button" @click="store.calcualteResult">DONE</button>
+    <button :class="buttonStyle" type="button" @click="done">DONE</button>
   </div>
 </template>
 
