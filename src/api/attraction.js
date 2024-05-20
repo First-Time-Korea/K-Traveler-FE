@@ -1,6 +1,10 @@
 import { localAxios } from "@/util/http-commons.js";
 const http = localAxios();
 
+function getSido(success, fail) {
+  http.get("attraction/region").then(success).catch(fail);
+}
+
 function getTheme(success, fail) {
   http.get("attraction/theme").then(success).catch(fail);
 }
@@ -35,4 +39,5 @@ export {
   getAttraction,
   getAttractionByAI,
   togleBookmark,
+  getSido,
 };

@@ -138,6 +138,8 @@ function openModal(contentId, themeCode) {
         "memberId": userInfo.value.id,
         "contentId": contentId
     }
+    console.log("테마코드", themeCode)
+    console.log("콘텐트 아이디", contentId)
     if (themeCode === 'E') {
         getAttractionByAI((wantItem),
             (response) => {

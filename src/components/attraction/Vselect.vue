@@ -1,24 +1,44 @@
 <script setup>
 import { onMounted, ref } from "vue";
-import { getTheme, getCategory } from "@/api/attraction.js";
+import { getTheme, getCategory, getSido } from "@/api/attraction.js";
 import { useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
 import { useAttracionStore } from "@/stores/attraction.js";
 
 const router = useRouter();
 const attractionStore = useAttracionStore();
 const { searchAttraction } = attractionStore;
+const { selectedSidoCode, selectedThemeCode } = storeToRefs(attractionStore);
 
 const themeList = ref({})
 const categoryList = ref({})
+const sidoList = ref({})
+
 const searchItem = ref({
     keyword: "",
     themeCode: "", //TODO: select 했을 때 지정되게 만들기
-    categoryCode: ""
+    categoryCode: "",
+    sidoCode: ""
 })
 
 onMounted(() => {
     goGetTheme();
+    goGetSido();
+    if (selectedSidoCode.value && selectedThemeCode.value) {
+        searchItem.value.themeCode = selectedThemeCode.value;
+        searchItem.value.sidoCode = selectedSidoCode.value;
+        handleSearch();
+    }
 })
+
+const goGetSido = () => {
+    getSido(({ data }) => {
+        console.log(data.data)
+        sidoList.value = data.data.map((item) => {
+            return { "value": item.sidoCode, 'text': item.sidoName }
+        })
+    }, (error) => console.log(error))
+}
 
 const goGetTheme = () => {
     getTheme(({ data }) => {
@@ -47,9 +67,14 @@ const handleCategoryChange = (categoryCode) => {
     searchItem.value.categoryCode = categoryCode;
 }
 
+const handleSidoChange = (sidoCode) => {
+    searchItem.value.sidoCode = sidoCode;
+}
+
 const handleSearch = async () => {
     await searchAttraction(searchItem)
         .then(console.log("끝"));
+    console.log(searchItem.value);
 }
 
 </script>
@@ -58,12 +83,28 @@ const handleSearch = async () => {
     <div class=" flex justify-center mt-10">
         <div class="row justify-content-center">
             <div class="col-8 flex justify-content-center align-items-center">
+
+                <!-- 시도로 검색 -->
+                <div class="mr-3 flex-grow-1">
+                    <select v-model="sidoList.sidoCode" @change="handleSidoChange($event.target.value)"
+                        class="scroll select-box peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50">
+                        <option value="" selected disabled>Select a Region</option>
+                        <option v-for="sido in sidoList" :key="sido.value" :value="sido.value">
+                            {{ sido.text }}
+                        </option>
+                    </select>
+                    <label
+                        class="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-gray-900 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
+                        Select a Region
+                    </label>
+                </div>
+
                 <!-- Theme Select Box -->
                 <div class="mr-3 flex-grow-1">
                     <select v-model="themeList.themeCode" @change="handleThemeChange($event.target.value)"
                         style="width:350px"
                         class="scroll select-box peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50">
-                        <option value="" selected disabled>Choice detail</option>
+                        <option value="" selected disabled>Select a theme</option>
                         <option v-for="theme in themeList" :key="theme.value" :value="theme.value">
                             {{ theme.text }}
                         </option>
@@ -78,30 +119,14 @@ const handleSearch = async () => {
                 <div class="mr-3 flex-grow-1">
                     <select v-model="categoryList.categoryCode" @change="handleCategoryChange($event.target.value)"
                         class="scroll select-box peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50">
-                        <option value="" selected disabled>Choice detail</option>
+                        <option value="" selected disabled>Select a detail</option>
                         <option v-for="category in categoryList" :key="category.value" :value="category.value">
                             {{ category.text }}
                         </option>
                     </select>
                     <label
                         class="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-gray-900 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
-                        Select a details
-                    </label>
-                </div>
-
-
-                <!-- 랭킹순 Select Box -->
-                <div class="mr-3 flex-grow-1">
-                    <select v-model="categoryList.categoryCode" @change="handleCategoryChange($event.target.value)"
-                        class="scroll select-box peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50">
-                        <option value="" selected disabled>Choice detail</option>
-                        <option v-for="category in categoryList" :key="category.value" :value="category.value">
-                            {{ category.text }}
-                        </option>
-                    </select>
-                    <label
-                        class="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-gray-900 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
-                        Select a details
+                        Select a detail
                     </label>
                 </div>
 
