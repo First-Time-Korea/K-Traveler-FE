@@ -1,12 +1,11 @@
 <script setup>
-import { useRouter } from "vue-router";
-import BoardFormItem from "@/components/board/item/BoardFormItem.vue";
+import { ref } from "vue";
+import { useRoute } from "vue-router";
+import BoardDetailItem from "@/components/board/item/BoardDetailItem.vue";
 
-const router = useRouter();
+const route = useRoute();
 
-const goBack = () => {
-  router.replace({ name: "board-list" });
-};
+const articleId = ref(route.params.articleid);
 </script>
 
 <template>
@@ -15,7 +14,7 @@ const goBack = () => {
     <button
       class="mt-6 ml-6 flex justify-center items-center relative align-middle select-none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-8 max-w-[40px] h-8 max-h-[40px] rounded-lg text-xs text-gray-900 hover:bg-gray-900/10 active:bg-gray-900/20"
       type="button"
-      @clic="goBack"
+      @click="goBack"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -34,9 +33,9 @@ const goBack = () => {
     </button>
 
     <div class="mt-4 mb-20">
-      <BoardFormItem type="modify" />
+      <BoardDetailItem />
     </div>
   </div>
 </template>
 
-<style></style>
+<style scoped></style>

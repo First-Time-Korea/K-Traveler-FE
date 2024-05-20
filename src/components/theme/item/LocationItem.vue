@@ -1,5 +1,14 @@
 <script setup>
 import { ref } from "vue";
+import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
+import { useAttracionStore } from "@/stores/attraction";
+import { useThemeTestStore } from "@/stores/themeTest";
+
+const router = useRouter();
+
+const attractionStore = useAttracionStore();
+const themeStore = useThemeTestStore();
 
 const props = defineProps({
   location: Object,
@@ -16,10 +25,24 @@ const showOverlay = () => {
 const unshowOverlay = () => {
   isShowned.value = false;
 };
+
+const { selectedSidoCode } = storeToRefs(attractionStore);
+const { selectedThemeCode } = storeToRefs(attractionStore);
+const goAttraction = () => {
+  selectedSidoCode.value = props.location.code;
+  selectedThemeCode.value = themeStore.maxThemeCode;
+
+  router.push({ name: "attraction" });
+};
 </script>
 
 <template>
-  <div class="relative" @mouseenter="showOverlay" @mouseleave="unshowOverlay">
+  <div
+    class="hover:cursor-pointer relative"
+    @mouseenter="showOverlay"
+    @mouseleave="unshowOverlay"
+    @click="goAttraction"
+  >
     <img
       class="object-cover object-center w-full h-40 max-w-full rounded-lg"
       :src="img.src"

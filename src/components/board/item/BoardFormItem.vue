@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useMemberStore } from "@/stores/member";
 import { writeArticle, getArticleForModification, modifyArticle } from "@/api/board";
 import ChipItemVue from "@/components/board/item/ChipItem.vue";
 
@@ -9,9 +10,9 @@ const router = useRouter();
 
 const { VITE_VUE_API_URL } = import.meta.env;
 
-const props = defineProps({ type: String });
+const store = useMemberStore();
 
-const isModifyMode = ref(false);
+const props = defineProps({ type: String });
 
 const articleId = ref(route.params.articleid);
 onMounted(() => {
@@ -119,7 +120,7 @@ const onSubmit = () => {
 const tryWriteArticle = () => {
   const formData = new FormData();
 
-  formData.append("userid", "ssafy");
+  formData.append("userid", store.userInfo.id);
   formData.append("tags", tags.value);
   formData.append("content", content.value);
   formData.append("file", file.value);

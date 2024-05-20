@@ -6,6 +6,9 @@ import { getSearch } from "@/api/attraction.js";
 import {} from "@/api/attraction";
 
 export const useAttracionStore = defineStore("attractionStore", () => {
+  const selectedSidoCode = ref();
+  const selectedThemeCode = ref();
+
   const places = ref([]);
 
   const searchAttraction = async (searchItem) => {
@@ -28,6 +31,8 @@ export const useAttracionStore = defineStore("attractionStore", () => {
 
   return {
     searchAttraction,
+    selectedSidoCode,
+    selectedThemeCode,
     places,
   };
 });

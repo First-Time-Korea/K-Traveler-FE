@@ -3,6 +3,7 @@ export default [
     path: "/board",
     name: "board",
     component: () => import("@/views/TheBoardView.vue"),
+    redirect: {name: "board-list"},
     children: [
       {
         path: "list",
@@ -18,6 +19,11 @@ export default [
         path: "modify/:articleid",
         name: "board-modify",
         component: () => import("@/components/board/BoardModify.vue"),
+      },
+      {
+        path: "detail/:articleid",
+        name: "board-detail",
+        component: () => import("@/components/board/BoardDetail.vue"),
       },
     ],
   },
