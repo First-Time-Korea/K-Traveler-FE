@@ -10,6 +10,11 @@ export default [
         name: "mypage-plan-list",
         component: () => import("@/components/myPage/PlanList.vue"),
       },
+      {
+        path: "attraction",
+        name: "mypage-attraction-list",
+        component: () => import("@/components/myPage/AttractionList.vue"),
+      },
     ],
   },
 ];

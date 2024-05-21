@@ -1,5 +1,8 @@
 <script setup>
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const props = defineProps({
   menu: String,
@@ -27,12 +30,20 @@ onMounted(() => {
     attractionButtonStyle.value = `${attractionButtonStyle.value} ${buttonBasicStyle} ${selectedButtonStyle}`;
   }
 });
+
+const goPlan = () => {
+  router.push({ name: "mypage-plan-list" });
+};
+
+const goAttraction = () => {
+  router.push({ name: "mypage-attraction-list" });
+};
 </script>
 
 <template>
   <div class="flex divide-x divide-third-300/70 row w-[65%]">
-    <button :class="planButtonStyle" type="button">PLAN</button>
-    <button :class="attractionButtonStyle" type="button">ATTRACTION</button>
+    <button :class="planButtonStyle" type="button" @click="goPlan">PLAN</button>
+    <button :class="attractionButtonStyle" type="button" @click="goAttraction">ATTRACTION</button>
   </div>
 </template>
 

@@ -38,18 +38,18 @@ const goAttraction = () => {
 
 <template>
   <div
-    class="hover:cursor-pointer relative"
+    class="hover:cursor-pointer hover:shadow-xl hover:shadow-gray-800/30 transition duration-300 rounded-xl relative"
     @mouseenter="showOverlay"
     @mouseleave="unshowOverlay"
     @click="goAttraction"
   >
     <img
-      class="object-cover object-center w-full h-40 max-w-full rounded-lg"
+      class="object-cover object-center w-full h-44 max-w-full rounded-xl"
       :src="img.src"
       :alt="img.alt"
     />
     <div
-      class="duration-200 absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 text-white object-cover object-center w-full h-40 max-w-full rounded-lg block"
+      class="duration-200 absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 text-white object-cover object-center w-full h-44 max-w-full rounded-xl block"
       v-show="isShowned"
     >
       <p class="text-xl font-bold">{{ img.alt }}</p>
