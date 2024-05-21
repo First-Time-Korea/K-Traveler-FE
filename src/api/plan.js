@@ -14,16 +14,8 @@ async function getBookmarkedAttraction(memberId, success, fail) {
     .catch(fail);
 }
 
-async function getAttractionBySidoCode(sidoCode, gugunCode, success, fail) {
-  await http
-    .get(`/attraction`, {
-      params: {
-        sidoCode: sidoCode,
-        gugunCode: gugunCode,
-      },
-    })
-    .then(success)
-    .catch(fail);
+async function getAttractionBySidoCode(sidoCode, success, fail) {
+  await http.get(`/attraction/sido/${sidoCode}`).then(success).catch(fail);
 }
 
 async function createPlan(formData, success, fail) {

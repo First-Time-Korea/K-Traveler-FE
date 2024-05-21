@@ -71,7 +71,6 @@ function addToPlan(dateString, attraction) {
     travelPlans.value = updatedPlans;
 
     addPlace(dateString, attraction); //pinia에 추가
-    console.log("여행지 목록", travelPlans.value);
 }
 
 function deleteAtPlan(dateString, attrraction) {
@@ -89,11 +88,13 @@ function isInPlan(date, contentId) {
 onMounted(() => {
     const sidoCode = clickedRegion.value.sidoCode;
     const gugunCode = clickedRegion.value.gugunCode;
-    getAttractionBySidoCode((sidoCode, gugunCode) //조회 1: 선택한 지역의 관광지
+    getAttractionBySidoCode((sidoCode) //조회 1: 선택한 지역의 관광지
         , ({ data }) => {
             attracionBySidoCode.value = data.data;
-            attractionsToShow.value = attracionBySidoCode.value; //첫 조회는 선택한 지역의 관광지로 보여준다.
-            // filteredAttractionsToShow.value = attractionsToShow.value;
+            //첫 조회는 선택한 지역의 관광지로 보여준다.
+            console.log("attracionBySidoCode", attracionBySidoCode.value)
+            filteredAttractionsToShow.value = attracionBySidoCode.value; //첫 조회는 선택한 지역의 관광지로 보여준다.
+
         }
         , (error) => console.log(error))
     const memberId = userInfo.value.id;
@@ -121,11 +122,11 @@ function debounce(func, wait) {
 //탭 변경
 watch(() => currentTab.value, (newTab) => {
     if (newTab === 'bookmarked') {
-        attractionsToShow.value = bookmarkedAttractions.value;
+        filteredAttractionsToShow.value = bookmarkedAttractions.value;
     } else if (newTab === 'selected regions') {
-        attractionsToShow.value = attracionBySidoCode.value;
+        filteredAttractionsToShow.value = attracionBySidoCode.value;
     } else {
-        attractionsToShow.value = otherRegions.value;
+        filteredAttractionsToShow.value = otherRegions.value;
     }
 })
 
@@ -135,7 +136,7 @@ watch(() => selectedDate.value, (newDate) => {
 });
 
 //보여줄 관광지의 후보 리스트
-watch(attractionsToShow, (newAttractions) => {
+watch(filteredAttractionsToShow, (newAttractions) => {
     fuseIndex.value = new Fuse(newAttractions, fuseOptions);
 });
 
