@@ -279,6 +279,18 @@ export const useThemeTestStore = defineStore("themeTest", () => {
     result.value = maxTheme;
   };
 
+  const init = () => {
+    for (let key in theme.value) {
+      theme.value[key].score = 0;
+    }
+
+    questions.value.forEach((q) => {
+      q.value = -1;
+    });
+
+    restOfQuestions.value = questions.value.length;
+  };
+
   return {
     questions,
     isDone,
@@ -286,5 +298,6 @@ export const useThemeTestStore = defineStore("themeTest", () => {
     maxThemeCode,
     calculateValueOfQuestion,
     calcualteResult,
+    init,
   };
 });

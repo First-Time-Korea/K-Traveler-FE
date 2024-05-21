@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from "vue";
+import { computed, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useThemeTestStore } from "@/stores/themeTest";
 import ThemeTestItem from "@/components/theme/item/ThemeTestItem.vue";
@@ -7,6 +7,10 @@ import ThemeTestItem from "@/components/theme/item/ThemeTestItem.vue";
 const router = useRouter();
 
 const store = useThemeTestStore();
+
+onUnmounted(() => {
+  store.init();
+});
 
 const buttonBasicStyle =
   "mt-10 mb-20 align-middle select-none font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none";
@@ -45,10 +49,21 @@ const currnetQuestions = computed(() => {
 
 const goPre = () => {
   currentPage.value--;
+
+  scrollToTop();
 };
 
 const goNext = () => {
   currentPage.value++;
+
+  scrollToTop();
+};
+
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 };
 </script>
 
