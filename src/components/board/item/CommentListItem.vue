@@ -1,8 +1,37 @@
-<script setup></script>
+<script setup>
+import { ref, onMounted } from "vue";
+import { useMemberStore } from "@/stores/member";
+
+const store = useMemberStore();
+
+const props = defineProps({
+  comment: Object,
+});
+
+onMounted(() => {
+  canDeleteComment.value = store.userInfo !== null && store.userInfo.id === comment.value.memberId;
+});
+
+const emit = defineEmits(["changeParentCommentIdEvent", "deleteCommentEvent"]);
+
+const changeParentCommentId = () => {
+  emit("changeParentCommentIdEvent", comment.value);
+};
+
+const comment = ref(props.comment);
+
+const marginLeft = ref(`${comment.value.depth * 24}px`);
+
+const deleteCommentEvent = () => {
+  emit("deleteCommentEvent", comment.value.id);
+};
+
+const canDeleteComment = ref(false);
+</script>
 
 <template>
   <div>
-    <div class="flex mt-5">
+    <div class="flex mt-5" :style="{ marginLeft: marginLeft }">
       <img
         src="https://docs.material-tailwind.com/img/face-2.jpg"
         alt="avatar"
@@ -12,28 +41,29 @@
         <h6
           class="mr-2 flex-none block w-3/10 font-sans text-sm antialiased font-semibold leading-relaxed tracking-normal text-inherit"
         >
-          사용자 이름
+          {{ comment.memberId }}
         </h6>
         <p
           class="flex-auto w-7/10 block font-sans text-sm antialiased font-normal leading-relaxed text-inherit"
         >
-          Material Tailwind is an easy to use components library for Tailwind CSS and Material
-          Design. It provides a simple way to customize your components, you can change the colors,
-          fonts, breakpoints and everything you need.
+          {{ comment.content }}
         </p>
         <div class="flex flex-row items-center text-left mt-2">
           <p class="block font-sans text-xs antialiased font-light leading-normal text-inherit">
-            2024.05.20
+            {{ comment.createdTime }}
           </p>
           <button
             class="ml-2 flex items-center px-1 py-1 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none hover:bg-gray-900/10 active:bg-gray-900/20"
             type="button"
+            @click="changeParentCommentId"
           >
             REPLY
           </button>
           <button
             class="ml-2 flex items-center px-1 py-1 font-sans text-xs font-bold text-center text-red-500 uppercase align-middle transition-all rounded-lg select-none disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none hover:bg-red-700/10 active:bg-red-700/20"
             type="button"
+            @click="deleteCommentEvent"
+            v-if="canDeleteComment"
           >
             DELETE
           </button>

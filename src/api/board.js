@@ -40,6 +40,14 @@ function deleteArticle(articleId, success, fail) {
   local.delete(`/article/delete/${articleId}`).then(success).catch(fail);
 }
 
+function writeComment(comment, success, fail) {
+  local.post(`/comment/write`, comment).then(success).catch(fail);
+}
+
+function deleteComment(commentId, success, fail) {
+  local.delete(`/comment/delete/${commentId}`).then(success).catch(fail);
+}
+
 export {
   writeArticle,
   getArticles,
@@ -47,4 +55,6 @@ export {
   getArticleForModification,
   modifyArticle,
   deleteArticle,
+  writeComment,
+  deleteComment
 };

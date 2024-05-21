@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useMemberStore } from "@/stores/member";
-import { getArticle, deleteArticle } from "@/api/board";
+import { getArticle, deleteArticle, writeComment, deleteComment } from "@/api/board";
 import CommentListItem from "@/components/board/item/CommentListItem.vue";
 import "@/assets/css/common.css";
 
@@ -25,16 +25,21 @@ const article = ref({
   },
 });
 
-const comments = ref();
+const comments = ref([]);
 
 const imgSrc = ref();
 
 const isShowedModifyButtons = computed(() => {
-  return store.userInfo !== undefined && article.value.memberId === store.userInfo.id;
+  return store.userInfo !== null && article.value.memberId === store.userInfo.id;
 });
 
 onMounted(() => {
   tryGetArticle();
+
+  // 로그인한 경우
+  if (store.userInfo !== null) {
+    comment.value.memberId = store.userInfo.id;
+  }
 });
 
 const tryGetArticle = () => {
@@ -62,6 +67,8 @@ const tryGetArticle = () => {
       imgSrc.value = `${VITE_VUE_API_URL}/article/img/${article.value.img.src}`;
 
       comments.value = data.article.comments;
+
+      comment.value.articleId = article.value.id;
     },
     (error) => {
       console.log(error);
@@ -89,6 +96,97 @@ const tryDeleteArticle = () => {
 
 const goModify = () => {
   router.push({ name: "board-modify", params: { articleid: article.id } });
+};
+
+const comment = ref({
+  articleId: 0,
+  memberId: "",
+  content: "",
+  parentCommentId: 0,
+});
+
+const canWriteComment = ref(false);
+
+watch(
+  () => comment.value.content,
+  (content) => {
+    canWriteComment.value = content !== "" && content.length > 0 && store.userInfo !== null;
+  },
+  { immediate: true }
+);
+
+const writeCommentButtonBasicStyle =
+  "absolute grid w-5 h-5 place-items-center top-2/4 right-3 -translate-y-2/4";
+const writeCommentButtonStyle = computed(() => {
+  return canWriteComment.value
+    ? `${writeCommentButtonBasicStyle} hover:cursor-pointer`
+    : `pointer-events-none text-gray-300 ${writeCommentButtonBasicStyle}`;
+});
+
+const tryWriteComment = () => {
+  if (parentComment.value.id > 0) {
+    comment.value.parentCommentId = parentComment.value.id;
+  }
+
+  writeComment(
+    comment.value,
+    (response) => {
+      if (response.status == 201) {
+        comments.value = response.data.comments;
+
+        comment.value.content = "";
+        comment.value.parentCommentId = 0;
+        clearParentComment();
+      }
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
+
+const parentComment = ref({
+  id: 0,
+  memberId: "",
+  content: "",
+});
+
+const handleChangeParentCommentIdEvent = (comment) => {
+  parentComment.value.id = comment.id;
+  parentComment.value.memberId = comment.memberId;
+  parentComment.value.content =
+    comment.content.length > 8 ? comment.content.substring(0, 8) + "..." : comment.content;
+};
+
+const isShowedParentComment = computed(() => {
+  return parentComment.value.id > 0;
+});
+
+const clearParentComment = () => {
+  parentComment.value.id = 0;
+  parentComment.value.content = "";
+};
+
+const handleDeleteCommentEvent = (commentId) => {
+  tryDeleteComment(commentId);
+};
+
+const tryDeleteComment = (commentId) => {
+  deleteComment(
+    commentId,
+    (response) => {
+      if (response.status == 200) {
+        comments.value.forEach((comment) => {
+          if (comment.id === commentId) {
+            comment.content = "This comment has already been deleted.";
+          }
+        });
+      }
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
 };
 </script>
 
@@ -168,17 +266,37 @@ const goModify = () => {
         </div>
 
         <!-- 여행 후기 댓글 -->
-        <div class="flex-1 m-4 flex flex-col justify-between h-full pb-8">
+        <div class="flex-1 m-4 flex flex-col justify-between h-[98%]">
           <!-- 댓글 리스트 -->
           <div class="overflow-y-auto scroll max-h-3/4">
-            <CommentListItem v-for="comment in comments" :key="comment.id" />
+            <CommentListItem
+              v-for="comment in comments"
+              :key="comment.id"
+              :comment="comment"
+              @change-parent-comment-id-event="handleChangeParentCommentIdEvent"
+              @delete-comment-event="handleDeleteCommentEvent"
+            />
           </div>
 
-          <div>
-            <div class="relative ml-4 mr-2 h-10">
-              <div
-                class="hover:cursor-pointer absolute grid w-5 h-5 place-items-center top-2/4 right-3 -translate-y-2/4"
+          <div class="ml-4 mr-2 mt-2">
+            <div
+              class="flex flex-row mb-2 hover:cursor-pointer"
+              v-show="isShowedParentComment"
+              @click="clearParentComment"
+            >
+              <h6
+                class="mr-2 flex-none block w-3/10 font-sans text-sm antialiased font-semibold leading-relaxed tracking-normal text-inherit"
               >
+                @{{ parentComment.memberId }}
+              </h6>
+              <p
+                class="flex-auto w-7/10 block font-sans text-sm antialiased font-normal leading-relaxed text-inherit"
+              >
+                {{ parentComment.content }}
+              </p>
+            </div>
+            <div class="relative h-10">
+              <div :class="writeCommentButtonStyle" @click="tryWriteComment">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -192,7 +310,8 @@ const goModify = () => {
               </div>
               <input
                 class="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] !pr-9 border-blue-gray-200 focus:border-gray-900"
-                placeholder=" "
+                placeholder="comment"
+                v-model="comment.content"
               />
             </div>
           </div>
