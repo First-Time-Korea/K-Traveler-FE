@@ -1,4 +1,6 @@
 <script setup>
+import Fuse from 'fuse.js'; //검색을 위한 라이브러리
+
 import { onMounted, ref, computed, watch } from 'vue';
 import { getAttractionBySidoCode, getBookmarkedAttraction } from "@/api/plan.js";
 
@@ -11,6 +13,13 @@ const { userInfo } = storeToRefs(memberStore);
 const { clickedRegion, schedule, clickedDate } = storeToRefs(planStore);
 const { addPlace, deletePlace } = planStore;
 
+const fuseOptions = {
+    keys: ['title'],
+    includeScore: true,
+    threshold: 0.2
+};
+const fuseIndex = ref(new Fuse([], fuseOptions));
+
 const currentTab = ref('selected regions');  // 기본적으로 선택된 탭 설정
 const tabs = ['selected regions', 'bookmarked', 'other regions'];  // 탭 목록
 
@@ -20,11 +29,12 @@ const bookmarkedAttractions = ref([]);
 const otherRegions = ref([]);
 const attracionBySidoCode = ref([]);
 const attractionsToShow = ref([]); //지금 보여줄 관광지 목록
-const filteredAttractionsToShow = reft([]); //attractionsToShow에서 한술 더 떠서 검색 키워드까지,,
+const filteredAttractionsToShow = ref([]); //attractionsToShow에서 한술 더 떠서 검색 키워드까지,,
 const selectedDate = ref(); //현재 선택 중인 날짜
 const travelPlans = ref({
     날짜: [{}, {}, {}]
 }); //찜한 관광지 (key:날짜.toISOString, value:관광지)
+
 const filteredPlans = ref(); //선택한 날짜에 해당하는, 선택한 관광지 담은 목록
 
 const dateRange = computed(() => {
@@ -78,10 +88,12 @@ function isInPlan(date, contentId) {
 
 onMounted(() => {
     const sidoCode = clickedRegion.value.sidoCode;
-    getAttractionBySidoCode((sidoCode) //조회 1: 선택한 지역의 관광지
+    const gugunCode = clickedRegion.value.gugunCode;
+    getAttractionBySidoCode((sidoCode, gugunCode) //조회 1: 선택한 지역의 관광지
         , ({ data }) => {
             attracionBySidoCode.value = data.data;
             attractionsToShow.value = attracionBySidoCode.value; //첫 조회는 선택한 지역의 관광지로 보여준다.
+            // filteredAttractionsToShow.value = attractionsToShow.value;
         }
         , (error) => console.log(error))
     const memberId = userInfo.value.id;
@@ -93,6 +105,20 @@ onMounted(() => {
         , (error) => console.log(error));
 })
 
+//함수의 호출이 완전히 멈춘 뒤 일정 시간이 지난 뒤에 실행시키기 위해
+function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        }
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    }
+}
+
+//탭 변경
 watch(() => currentTab.value, (newTab) => {
     if (newTab === 'bookmarked') {
         attractionsToShow.value = bookmarkedAttractions.value;
@@ -103,14 +129,26 @@ watch(() => currentTab.value, (newTab) => {
     }
 })
 
-watch(() => keyword.value, (newKeyword) => {
-    filteredAttractionsToShow.vl
-})
-
-
+//날짜 변경
 watch(() => selectedDate.value, (newDate) => {
     filteredPlans.value = travelPlans.value[newDate] || [];
 });
+
+//보여줄 관광지의 후보 리스트
+watch(attractionsToShow, (newAttractions) => {
+    fuseIndex.value = new Fuse(newAttractions, fuseOptions);
+});
+
+//검색되어 보여줄 최종 리스트
+//퍼지 검색: 완벽하게 일치하지 않는 문자열도 검색 결과로 반환할 수 있는 검색 기능
+watch(() => keyword.value, debounce((newKeyword) => {
+    if (!newKeyword.trim()) {
+        filteredAttractionsToShow.value = attractionsToShow.value;
+    } else {
+        const results = fuseIndex.value.search(newKeyword);
+        filteredAttractionsToShow.value = results.map(result => result.item);
+    }
+}, 300)); //유저가 입력할 시간 300ms 주는 것
 
 </script>
 
@@ -137,13 +175,13 @@ watch(() => selectedDate.value, (newDate) => {
                     {{ tab }}
                 </div>
                 <div class="relative w-full min-w-[200px] h-15 py-2">
-                    <input
+                    <input v-model="keyword"
                         class="peer w-full h-full bg-transparent text-blue-gray-700  font-normal outline-none focus:outline-none disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-lg border-blue-gray-200 focus:border-second-300"
                         placeholder=" " />
                 </div>
                 <div class="scrollable-container custom-scroll ">
                     <div class=" flex bg-white border border-gray-300 mb-2 p-2 rounded-lg relative"
-                        v-for="attraction in attractionsToShow" :key="attraction.id">
+                        v-for="attraction in filteredAttractionsToShow" :key="attraction.id">
                         <div class="w-24 h-48 overflow-hidden">
                             <img :src="attraction.firstImage" alt="" class="w-auto h-full object-cover object-center">
                         </div>
