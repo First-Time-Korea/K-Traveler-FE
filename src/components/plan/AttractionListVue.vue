@@ -3,7 +3,7 @@ import Fuse from 'fuse.js'; //검색을 위한 라이브러리
 
 import { onMounted, ref, computed, watch } from 'vue';
 import { getAttractionBySidoCode, getBookmarkedAttraction } from "@/api/plan.js";
-
+import { getRegions } from "@/api/plan.js";
 import { storeToRefs } from "pinia";
 import { usePlanStore } from "@/stores/plan.js";
 import { useMemberStore } from "@/stores/member"
@@ -22,19 +22,18 @@ const fuseIndex = ref(new Fuse([], fuseOptions));
 
 const currentTab = ref('selected regions');  // 기본적으로 선택된 탭 설정
 const tabs = ['selected regions', 'bookmarked', 'other regions'];  // 탭 목록
+const otherRegions = ref([]); //다른 지역 종류 (셀렉트박스)
 
-const keyword = ref();
-const selectedRegions = ref([]);
-const bookmarkedAttractions = ref([]);
-const otherRegions = ref([]);
-const attracionBySidoCode = ref([]);
-const attractionsToShow = ref([]); //지금 보여줄 관광지 목록
-const filteredAttractionsToShow = ref([]); //attractionsToShow에서 한술 더 떠서 검색 키워드까지,,
+const keyword = ref();//키워드로 검색
+const bookmarkedAttractions = ref([]); //북마크된 attraction
+const attracionBySidoCode = ref([]); //시도코드로 조회한 attraction
+const otherRegionAttraction = ref([]); //다른 지역 attraction
+
+const filteredAttractionsToShow = ref([]); //키워드로 검색 후 필터링 된 목록(실제 조회)
+
 const selectedDate = ref(); //현재 선택 중인 날짜
 const travelPlans = ref({
-    날짜: [{}, {}, {}]
 }); //찜한 관광지 (key:날짜.toISOString, value:관광지)
-
 const filteredPlans = ref(); //선택한 날짜에 해당하는, 선택한 관광지 담은 목록
 
 const dateRange = computed(() => {
@@ -56,10 +55,6 @@ function changeTab(tab) { //탭 변경
 function changeDate(date) { //날짜 변경
     selectedDate.value = date;
     clickedDate.value = date;
-}
-
-function loadDataForTab(tab) {
-    console.log(`Loading data for ${tab}`);
 }
 
 function addToPlan(dateString, attraction) {
@@ -111,7 +106,25 @@ onMounted(() => {
             console.log(bookmarkedAttractions.value);
         }
         , (error) => console.log(error));
+
+    getRegions(({ data }) => {
+        otherRegions.value = data.data;
+        console.log(regions.value); //선택할 수 있는 다른 지역 목록 세팅(셀렉트 박스)
+    }, (error) => console.log(error))
 })
+
+const selectedRegion = ref(''); // 선택된 지역 코드 초기화
+
+function onSelectChange() {
+    const sidoCode = selectedRegion.value;
+    getAttractionBySidoCode(sidoCode, ({ data }) => {
+        otherRegionAttraction.value = data.data;
+        filteredAttractionsToShow.value = data.data;
+        console.log("새 지역 조회", otherRegionAttraction.value);
+    }, (error) => {
+        console.error(error);
+    });
+}
 
 //함수의 호출이 완전히 멈춘 뒤 일정 시간이 지난 뒤에 실행시키기 위해
 function debounce(func, wait) {
@@ -128,12 +141,14 @@ function debounce(func, wait) {
 
 //탭 변경
 watch(() => currentTab.value, (newTab) => {
+    keyword.value = null;
     if (newTab === 'bookmarked') {
         filteredAttractionsToShow.value = bookmarkedAttractions.value;
     } else if (newTab === 'selected regions') {
         filteredAttractionsToShow.value = attracionBySidoCode.value;
     } else {
-        filteredAttractionsToShow.value = otherRegions.value;
+        filteredAttractionsToShow.value = [];
+        //다른 지역 조회는 탭을 변경했다고 해서 당장 장소를 불러오지 않는다.
     }
 })
 
@@ -150,8 +165,8 @@ watch(filteredAttractionsToShow, (newAttractions) => {
 //검색되어 보여줄 최종 리스트
 //퍼지 검색: 완벽하게 일치하지 않는 문자열도 검색 결과로 반환할 수 있는 검색 기능
 watch(() => keyword.value, debounce((newKeyword) => {
-    if (!newKeyword.trim()) {
-        filteredAttractionsToShow.value = attractionsToShow.value;
+    if (newKeyword == null || !newKeyword.trim()) {
+        filteredAttractionsToShow.value = filteredAttractionsToShow.value;
     } else {
         const results = fuseIndex.value.search(newKeyword);
         filteredAttractionsToShow.value = results.map(result => result.item);
@@ -183,9 +198,17 @@ watch(() => keyword.value, debounce((newKeyword) => {
                     {{ tab }}
                 </div>
                 <div class="relative w-full min-w-[200px] h-15 py-2">
+                    <!-- 다른 지역 조회 할 때만 셀렉트 박스 등장.. 토글 -->
+                    <select v-if="currentTab === 'other regions'" v-model="selectedRegion" @change="onSelectChange"
+                        class="peer w-full h-full bg-transparent text-blue-gray-700 font-normal outline-none transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-lg border-blue-gray-200 focus:border-second-300">
+                        <option disabled value="">Select a region</option>
+                        <option v-for="(region, idx) in otherRegions" :key="idx" :value="region.sidoCode">
+                            {{ region.sidoName }}
+                        </option>
+                    </select>
                     <input v-model="keyword"
                         class="peer w-full h-full bg-transparent text-blue-gray-700  font-normal outline-none focus:outline-none disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-lg border-blue-gray-200 focus:border-second-300"
-                        placeholder=" " />
+                        placeholder="Search attractions" />
                 </div>
                 <div class="scrollable-container custom-scroll ">
                     <div class=" flex bg-white border border-gray-300 mb-2 p-2 rounded-lg relative"
