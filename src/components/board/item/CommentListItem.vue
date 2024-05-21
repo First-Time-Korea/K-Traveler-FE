@@ -6,11 +6,16 @@ const store = useMemberStore();
 
 const props = defineProps({
   comment: Object,
+  isExistedMember: Boolean,
 });
 
 onMounted(() => {
-  canDeleteComment.value = store.userInfo !== null && store.userInfo.id === comment.value.memberId;
-  isShowedModifyButtons.value = props.comment.existed;
+  canDeleteComment.value =
+    props.isExistedMember &&
+    store.userInfo !== null &&
+    store.userInfo.id === comment.value.memberId;
+  isShowedModifyButtons.value =
+    props.isExistedMember && props.comment.existedOfMember && props.comment.existed;
 });
 
 const emit = defineEmits(["changeParentCommentIdEvent", "deleteCommentEvent"]);

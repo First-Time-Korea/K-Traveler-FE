@@ -145,7 +145,7 @@ export const useMemberStore = defineStore("memberStore", () => {
       isValidToken.value = true;
       return true;
     }
-    return flase;
+    return false;
   };
 
   return {

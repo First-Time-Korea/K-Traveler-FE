@@ -16,6 +16,7 @@ const { VITE_VUE_API_URL } = import.meta.env;
 const article = ref({
   id: "",
   memberId: "",
+  existedOfMember: false,
   content: "",
   time: "",
   hit: 0,
@@ -42,12 +43,23 @@ onMounted(() => {
   }
 });
 
+const inputBasicStyle =
+  "peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] !pr-9 border-blue-gray-200 focus:border-gray-900";
+const inputStyle = ref();
+
 const tryGetArticle = () => {
   getArticle(
     route.params.articleid,
     ({ data }) => {
       article.value.id = data.article.id;
       article.value.memberId = data.article.memberId;
+      article.value.existedOfMember = data.article.existedOfMember;
+      if (!article.value.existedOfMember) {
+        inputStyle.value = `pointer-events-none ${inputBasicStyle}`;
+      } else {
+        inputStyle.value = `${inputBasicStyle}`;
+      }
+
       article.value.content = data.article.content;
       if (data.article.createdTime === data.article.modifiedTime) {
         article.value.time = data.article.createdTime;
@@ -273,6 +285,7 @@ const tryDeleteComment = (commentId) => {
               v-for="comment in comments"
               :key="comment.id"
               :comment="comment"
+              :isExistedMember="article.existedOfMember"
               @change-parent-comment-id-event="handleChangeParentCommentIdEvent"
               @delete-comment-event="handleDeleteCommentEvent"
             />
@@ -308,11 +321,7 @@ const tryDeleteComment = (commentId) => {
                   />
                 </svg>
               </div>
-              <input
-                class="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] !pr-9 border-blue-gray-200 focus:border-gray-900"
-                placeholder="comment"
-                v-model="comment.content"
-              />
+              <input :class="inputStyle" placeholder="comment" v-model="comment.content" />
             </div>
           </div>
         </div>
