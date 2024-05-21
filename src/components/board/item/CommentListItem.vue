@@ -10,6 +10,7 @@ const props = defineProps({
 
 onMounted(() => {
   canDeleteComment.value = store.userInfo !== null && store.userInfo.id === comment.value.memberId;
+  isShowedModifyButtons.value = props.comment.existed;
 });
 
 const emit = defineEmits(["changeParentCommentIdEvent", "deleteCommentEvent"]);
@@ -27,6 +28,8 @@ const deleteCommentEvent = () => {
 };
 
 const canDeleteComment = ref(false);
+
+const isShowedModifyButtons = ref(false);
 </script>
 
 <template>
@@ -52,21 +55,23 @@ const canDeleteComment = ref(false);
           <p class="block font-sans text-xs antialiased font-light leading-normal text-inherit">
             {{ comment.createdTime }}
           </p>
-          <button
-            class="ml-2 flex items-center px-1 py-1 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none hover:bg-gray-900/10 active:bg-gray-900/20"
-            type="button"
-            @click="changeParentCommentId"
-          >
-            REPLY
-          </button>
-          <button
-            class="ml-2 flex items-center px-1 py-1 font-sans text-xs font-bold text-center text-red-500 uppercase align-middle transition-all rounded-lg select-none disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none hover:bg-red-700/10 active:bg-red-700/20"
-            type="button"
-            @click="deleteCommentEvent"
-            v-if="canDeleteComment"
-          >
-            DELETE
-          </button>
+          <div class="flex flex-row" v-if="isShowedModifyButtons">
+            <button
+              class="ml-2 flex items-center px-1 py-1 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none hover:bg-gray-900/10 active:bg-gray-900/20"
+              type="button"
+              @click="changeParentCommentId"
+            >
+              REPLY
+            </button>
+            <button
+              class="ml-2 flex items-center px-1 py-1 font-sans text-xs font-bold text-center text-red-500 uppercase align-middle transition-all rounded-lg select-none disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none hover:bg-red-700/10 active:bg-red-700/20"
+              type="button"
+              @click="deleteCommentEvent"
+              v-if="canDeleteComment"
+            >
+              DELETE
+            </button>
+          </div>
         </div>
       </div>
     </div>
