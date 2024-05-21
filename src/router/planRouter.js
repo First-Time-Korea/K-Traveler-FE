@@ -28,9 +28,8 @@ export default [
   {
     path: "/plan",
     name: "plan",
-    // beforeEnter: onlyAuthUser,
-    component: ThePlanView,
-    redirect: "/plan/region",
+    beforeEnter: onlyAuthUser,
+    component: ThePlanRegionChoiceView,
     children: [
       {
         path: "region",

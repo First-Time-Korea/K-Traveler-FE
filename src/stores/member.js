@@ -11,7 +11,7 @@ export const useMemberStore = defineStore("memberStore", () => {
 
   const isLogin = ref(false);
   const isLoginError = ref(false);
-  const userInfo = ref(); //서버의 memberDto에서 userId를 id라 저장하고 있어서 여기서도 id로 조회
+  const userInfo = ref(null); //서버의 memberDto에서 userId를 id라 저장하고 있어서 여기서도 id로 조회
   const isValidToken = ref(false);
 
   const userLogin = async (loginUser) => {
