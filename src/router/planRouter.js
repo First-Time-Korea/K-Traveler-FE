@@ -43,7 +43,7 @@ export default [
         component: () => ThePlanScheduleChoiceView,
       },
       {
-        path: "attraction",
+        path: "spot",
         name: "choice-attraction",
         component: () => ThePlanAttractionChoiceView,
       },

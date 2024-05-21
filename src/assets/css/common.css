@@ -18,8 +18,31 @@
 	font-style: normal;
 }
 
+
+@font-face {
+    font-family: 'RIDIBatang';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'ChosunSm';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.1/ChosunSm.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
 * {
-	/* font-family: 'TTHakgyoansimYeohaengR', sans-serif; */
+	font-family: 'Pretendard-Regular', 'RIDIBatang', 'TTHakgyoansimYeohaengR', sans-serif;
 	/* WAGURITTF 폰트 적용, 폰트가 로드되지 않았을 경우에는 sans-serif 폰트를 대체로 사용 */
 }
 

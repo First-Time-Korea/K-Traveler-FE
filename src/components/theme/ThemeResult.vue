@@ -21,7 +21,7 @@ onMounted(() => {
 });
 
 const buttonBasicStyle =
-  "align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none";
+  "align-middle select-none  font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none";
 
 const buttonDisabledStyle = "pointer-events-none bg-second-500 text-second-700/100";
 
@@ -40,27 +40,20 @@ const goRecommendedAttraction = () => {
 
 <template>
   <div class="flex justify-center mt-10 mb-20">
-    <div
-      class="relative flex flex-col text-gray-700 bg-white shadow-md bg-clip-border rounded-xl p-8 card-width"
-    >
+    <div class="relative flex flex-col text-gray-700 bg-white shadow-md bg-clip-border rounded-xl p-8 card-width">
       <!-- 여행지 테마 -->
       <div class="p-6">
         <div class="flex justify-center mb-8">
           <img :src="img.src" :alt="img.alt" class="w-50 h-50" />
         </div>
         <h3
-          class="text-center mb-4 block font-sans text-3xl antialiased font-semibold leading-snug tracking-normal text-inherit"
-        >
+          class="text-center mb-4 block  text-3xl antialiased font-semibold leading-snug tracking-normal text-inherit">
           {{ resultTheme.subject }}
         </h3>
-        <p
-          class="mb-2 text-center block font-sans text-base antialiased font-light leading-relaxed text-inherit"
-        >
+        <p class="mb-2 text-center block  text-base antialiased font-light leading-relaxed text-inherit">
           {{ resultTheme.content }}
         </p>
-        <p
-          class="text-center block font-sans text-base antialiased font-light leading-relaxed text-inherit"
-        >
+        <p class="text-center block  text-base antialiased font-light leading-relaxed text-inherit">
           {{ resultTheme.recommendation }}
         </p>
       </div>
@@ -73,22 +66,14 @@ const goRecommendedAttraction = () => {
       </div>
 
       <!-- 추천 여행지 TOP 3 지역 -->
-      <h4
-        class="text-center mb-4 block font-sans text-2xl antialiased font-semibold leading-snug tracking-normal text-inherit"
-      >
+      <h4 class="text-center mb-4 block  text-2xl antialiased font-semibold leading-snug tracking-normal text-inherit">
         TOP 3
       </h4>
-      <p
-        class="mb-6 text-center block font-sans text-base antialiased font-light leading-relaxed text-inherit"
-      >
+      <p class="mb-6 text-center block  text-base antialiased font-light leading-relaxed text-inherit">
         The top three regions with the most destinations that suit your theme.
       </p>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-        <LocationItem
-          v-for="location in resultTheme.locations"
-          :key="location.code"
-          :location="location"
-        />
+        <LocationItem v-for="location in resultTheme.locations" :key="location.code" :location="location" />
       </div>
     </div>
   </div>

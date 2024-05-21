@@ -3,7 +3,7 @@ export default [
     path: "/theme",
     name: "theme",
     component: () => import("@/views/TheThemeView.vue"),
-    redirect: {name: "theme-test"},
+    redirect: "/theme/test",
     children: [
       {
         path: "test",
