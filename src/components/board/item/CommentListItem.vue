@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useMemberStore } from "@/stores/member";
 
 const store = useMemberStore();
@@ -14,8 +14,6 @@ onMounted(() => {
     props.isExistedMember &&
     store.userInfo !== null &&
     store.userInfo.id === comment.value.memberId;
-  isShowedModifyButtons.value =
-    props.isExistedMember && props.comment.existedOfMember && props.comment.existed;
 });
 
 const emit = defineEmits(["changeParentCommentIdEvent", "deleteCommentEvent"]);
@@ -34,7 +32,9 @@ const deleteCommentEvent = () => {
 
 const canDeleteComment = ref(false);
 
-const isShowedModifyButtons = ref(false);
+const isShowedModifyButtons = computed(() => {
+  return props.isExistedMember && props.comment.existedOfMember && props.comment.existed;
+});
 </script>
 
 <template>

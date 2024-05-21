@@ -191,6 +191,7 @@ const tryDeleteComment = (commentId) => {
         comments.value.forEach((comment) => {
           if (comment.id === commentId) {
             comment.content = "This comment has already been deleted.";
+            comment.existed = false;
           }
         });
       }
