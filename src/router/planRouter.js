@@ -5,22 +5,13 @@ import ThePlanRegionChoiceView from "@/views/plan/ThePlanRegionChoiceView.vue";
 import ThePlanScheduleChoiceView from "@/views/plan/ThePlanScheduleChoiceView.vue";
 import ThePlanAttractionChoiceView from "@/views/plan/ThePlanAttractionChioceView.vue";
 
-// import PlaceChoiceView from "@/views/plan/PlaceChoiceView.vue";
-
 const onlyAuthUser = async (to, from, next) => {
   const memberStore = useMemberStore();
-  const { userInfo, isValidToken } = storeToRefs(memberStore);
-  const { getUserInfo } = memberStore;
-
-  let token = sessionStorage.getItem("accessToken");
-
-  if (userInfo.value != null && token) {
-    await getUserInfo(token);
-  }
-  if (!isValidToken.value || userInfo.value === null) {
-    next({ name: "user-login" });
-  } else {
+  const { checkLoginStatus } = memberStore;
+  if (checkLoginStatus()) {
     next();
+  } else {
+    next({ name: "user-login" });
   }
 };
 
@@ -28,7 +19,7 @@ export default [
   {
     path: "/plan",
     name: "plan",
-    // beforeEnter: onlyAuthUser,
+    beforeEnter: onlyAuthUser,
     component: ThePlanView,
     redirect: "/plan/region",
     children: [

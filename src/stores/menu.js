@@ -13,8 +13,8 @@ export const useMenuStore = defineStore("menuStore", () => {
   checkLoginStatus();
 
   const menuList = ref([
-    { name: "ThemeTest", show: !isLogged.value, routeName: "theme-test" },
-    { name: "ThemeTest", show: isLogged.value, routeName: "theme-test" },
+    { name: "ThemeTest", show: !isLogged.value, routeName: "theme" },
+    { name: "ThemeTest", show: isLogged.value, routeName: "theme" },
     { name: "Travel", show: isLogged.value, routeName: "attraction" },
     { name: "Plan", show: isLogged.value, routeName: "plan" },
     { name: "Review", show: !isLogged.value, routeName: "board" },

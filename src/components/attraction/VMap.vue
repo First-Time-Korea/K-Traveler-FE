@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUpdated, ref, watch } from "vue";
+import { onMounted, onUnmounted, onUpdated, ref, watch } from "vue";
 import { useRouter } from "vue-router"
 import { storeToRefs } from "pinia"
 import { useAttracionStore } from "@/stores/attraction.js";
@@ -19,7 +19,7 @@ const appKey = import.meta.env.VITE_KAKAO_MAP_SERVICE_KEY;
 
 var markers = [];
 let map = null;
-var clusterer;
+var clusterer = null;
 
 const isModalVisible = ref(false);
 const clickedPlace = ref({
@@ -41,6 +41,13 @@ onMounted(() => {
 
 onUpdated(() => {
 });
+
+onUnmounted(() => {
+    console.log("places", places);
+    if (places.value) {
+        places.value = [];
+    }
+})
 
 watch(() => places.value, (newPlaces) => {
     if (newPlaces.length != 0) {
@@ -68,7 +75,8 @@ const initMap = () => {
     clusterer = new kakao.maps.MarkerClusterer({
         map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
         averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
-        minLevel: 10 // 클러스터 할 최소 지도 레벨 
+        minLevel: 12, // 클러스터 할 최소 지도 레벨 
+        maxLevel: 12
     });
 
     const zoomControl = new kakao.maps.ZoomControl();
@@ -173,7 +181,10 @@ function openModal(contentId, themeCode) {
 }
 
 function removeMarker() {
-    clusterer.clear();
+    console.log("clusterer", clusterer);
+    if (clusterer != null) {
+        clusterer.clear();
+    }
     markers = [];
 }
 
