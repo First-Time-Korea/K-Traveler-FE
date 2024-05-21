@@ -9,7 +9,7 @@ const router = useRouter();
 const store = useThemeTestStore();
 
 const buttonBasicStyle =
-  "mt-10 mb-20 align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none";
+  "mt-10 mb-20 align-middle select-none font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none";
 
 const buttonDisabledStyle = "pointer-events-none bg-second-500 text-second-700/100";
 
@@ -56,13 +56,8 @@ const goNext = () => {
   <div class="flex justify-center mt-10">
     <div class="flex flex-col w-[45%]">
       <div
-        class="p-10 relative flex flex-col text-gray-700 bg-white shadow-md bg-clip-border rounded-xl min-h-[200px] w-full"
-      >
-        <ThemeTestItem
-          v-for="question in currnetQuestions"
-          :key="question.id"
-          :question="question"
-        />
+        class="p-10 relative flex flex-col text-gray-700 bg-white shadow-md bg-clip-border rounded-xl min-h-[200px] w-full">
+        <ThemeTestItem v-for="question in currnetQuestions" :key="question.id" :question="question" />
       </div>
       <div class="flex flex-row justify-between" v-show="!isLast">
         <button :class="preButtonStyle" type="button" @click="goPre">PRE</button>

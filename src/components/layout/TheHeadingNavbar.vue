@@ -24,8 +24,8 @@ const route = useRoute();
   <nav
     class="flex items-center justify-between sticky top-0 z-10 block w-full max-w-full px-4 py-2 text-white bg-white border rounded-none shadow-md h-20 border-white/80 bg-opacity-80 backdrop-blur-2xl backdrop-saturate-200 lg:px-8 lg:py-4">
     <div class="m-5 flex items-center justify-between text-blue-gray-900 h-full w-full">
-      <router-link :to="{ name: 'main' }" class="navbar-brand">
-        <h1 style="color: #5FBDFF;">LOGO</h1>
+      <router-link :to="{ name: 'main' }" class="navbar-brand text-lg">
+        <h1 style="color: #5FBDFF;" class="font-bold">K-TRAVELER</h1>
       </router-link>
       <div class="flex items-center gap-4" style="color:black;  list-style-type: none;">
         <div class="flex items-center gap-x-5">
@@ -43,7 +43,7 @@ const route = useRoute();
                 <li class="nav-item">
                   <!-- , 'text-black': route.name !== menu.routeName -->
                   <router-link :to="{ name: menu.routeName }" class="nav-link flex items-center"
-                    :class="{ 'text-first-300': route.name === menu.routeName }">
+                    :class="{ 'text-first-300': route.path.includes(menu.routeName) }">
                     {{ menu.name }}
                   </router-link>
                 </li>

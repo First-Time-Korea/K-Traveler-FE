@@ -7,7 +7,7 @@ import { useScreens } from 'vue-screen-utils';
 
 const planStore = usePlanStore();
 const router = useRouter();
-const buttonStyle = "fixed bottom-10 inset-x-0 mx-auto w-64 h-10 align-middle select-none font-sans font-bold text-center bg-second-300 uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg shadow-md shadow-gray-900/10 hover:bg-second-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+const buttonStyle = "fixed bottom-10 inset-x-0 mx-auto w-64 h-10 align-middle select-none font-bold text-center bg-second-300 uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg shadow-md shadow-gray-900/10 hover:bg-second-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
 
 const { updateSchedule } = planStore;
 const { mapCurrent } = useScreens({ xs: '0px', sm: '640px', md: '768px', lg: '1024px' });
@@ -63,10 +63,10 @@ const goNext = () => {
 
     <div class="flex flex-col items-center jusify-center mt-36">
         <h4 class="text-2xl font-semibold leading-snug tracking-normal text-blue-gray-900">How long is your trip?</h4>
-        <h5 class="mt-3 font-mono">Please enter your local travel period</h5>
-        <h5 class="font-mono">(Date of Arrival to your destination, Date of Departure to your
+        <h5 class="mt-3 ">Please enter your local travel period</h5>
+        <h5 class="">(Date of Arrival to your destination, Date of Departure to your
             destination).</h5>
-        <h5 class="font-mono">Please make your trip up to 10 days</h5>
+        <h5 class="">Please make your trip up to 10 days</h5>
         <VDatePicker class=" mt-10" v-model="date" mode="date" :attributes="attrs" transparent borderless locale="en"
             :columns="columns" />
     </div>
