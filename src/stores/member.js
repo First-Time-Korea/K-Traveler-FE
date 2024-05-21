@@ -132,15 +132,21 @@ export const useMemberStore = defineStore("memberStore", () => {
 
   const checkLoginStatus = () => {
     const token = sessionStorage.getItem("accessToken");
+
+    console.log("userInfo.value", userInfo.value);
+    console.log("token", token);
+    console.log("isValidToken.value", isValidToken.value);
+    console.log("userInfo.value", userInfo.value);
+
     if (token !== null) {
       getUserInfo(token);
       isLogin.value = true;
       isLoginError.value = false;
       isValidToken.value = true;
+      return true;
     }
+    return flase;
   };
-
-  checkLoginStatus();
 
   return {
     isLogin,
@@ -151,5 +157,6 @@ export const useMemberStore = defineStore("memberStore", () => {
     getUserInfo,
     tokenRegenerate,
     userLogout,
+    checkLoginStatus,
   };
 });

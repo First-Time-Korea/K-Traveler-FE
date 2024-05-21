@@ -8,6 +8,7 @@ import LocationItem from "@/components/theme/item/LocationItem.vue";
 const route = useRoute();
 const router = useRouter();
 const store = useMemberStore();
+const isLogin = store.checkLoginStatus();
 
 const themeKey = ref(route.params.theme);
 
@@ -28,7 +29,8 @@ const buttonDisabledStyle = "pointer-events-none bg-second-500 text-second-700/1
 const buttonAbledStyle = "bg-first-300 text-white";
 
 const buttonStyle = computed(() => {
-  return store.isLogin
+
+  return isLogin
     ? `${buttonBasicStyle} ${buttonAbledStyle}`
     : `${buttonBasicStyle} ${buttonDisabledStyle}`;
 });

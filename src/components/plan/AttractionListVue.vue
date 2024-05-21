@@ -14,11 +14,13 @@ const { addPlace, deletePlace } = planStore;
 const currentTab = ref('selected regions');  // 기본적으로 선택된 탭 설정
 const tabs = ['selected regions', 'bookmarked', 'other regions'];  // 탭 목록
 
+const keyword = ref();
 const selectedRegions = ref([]);
 const bookmarkedAttractions = ref([]);
 const otherRegions = ref([]);
 const attracionBySidoCode = ref([]);
 const attractionsToShow = ref([]); //지금 보여줄 관광지 목록
+const filteredAttractionsToShow = reft([]); //attractionsToShow에서 한술 더 떠서 검색 키워드까지,,
 const selectedDate = ref(); //현재 선택 중인 날짜
 const travelPlans = ref({
     날짜: [{}, {}, {}]
@@ -79,6 +81,7 @@ onMounted(() => {
     getAttractionBySidoCode((sidoCode) //조회 1: 선택한 지역의 관광지
         , ({ data }) => {
             attracionBySidoCode.value = data.data;
+            attractionsToShow.value = attracionBySidoCode.value; //첫 조회는 선택한 지역의 관광지로 보여준다.
         }
         , (error) => console.log(error))
     const memberId = userInfo.value.id;
@@ -100,6 +103,11 @@ watch(() => currentTab.value, (newTab) => {
     }
 })
 
+watch(() => keyword.value, (newKeyword) => {
+    filteredAttractionsToShow.vl
+})
+
+
 watch(() => selectedDate.value, (newDate) => {
     filteredPlans.value = travelPlans.value[newDate] || [];
 });
@@ -111,9 +119,9 @@ watch(() => selectedDate.value, (newDate) => {
         <!-- 날짜 선택 -->
         <div class="flex flex-col px-4 pt-1 w-full divide-y divide-second-800">
             <button v-for="date in dateRange" :key="date" @click=" changeDate(date)"
-                class="mt-2 select-none rounded-lg border border-gray-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                class="mt-2 select-none rounded-lg border border-gray-900 py-3 px-6 text-center align-middle  text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 :class="{
-                    'select-none rounded-lg border border-second-900 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none': true,
+                    'select-none rounded-lg border border-second-900 py-3 px-6 text-center align-middle  text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none': true,
                     'bg-second-900 text-white': selectedDate === date
                 }" type="button">
                 {{ new Date(date).toLocaleDateString('en-US', { month: 'long', day: '2-digit' }) }}
@@ -130,7 +138,7 @@ watch(() => selectedDate.value, (newDate) => {
                 </div>
                 <div class="relative w-full min-w-[200px] h-15 py-2">
                     <input
-                        class="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline-none focus:outline-none disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-lg border-blue-gray-200 focus:border-second-300"
+                        class="peer w-full h-full bg-transparent text-blue-gray-700  font-normal outline-none focus:outline-none disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-lg border-blue-gray-200 focus:border-second-300"
                         placeholder=" " />
                 </div>
                 <div class="scrollable-container custom-scroll ">
