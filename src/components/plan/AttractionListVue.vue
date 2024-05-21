@@ -63,6 +63,13 @@ function loadDataForTab(tab) {
 }
 
 function addToPlan(dateString, attraction) {
+    if (travelPlans.value[dateString] !== undefined) {
+        const attractionContentId = attraction.contentId;
+        //배열을 돌면서 같은 contentId가 하나라도 있는지 확인 (중복 방지)
+        if (travelPlans.value[dateString].some(attraction => attraction.contentId === attractionContentId)) {
+            return;
+        }
+    }
     const updatedPlans = { ...travelPlans.value };
     if (!updatedPlans[dateString]) {
         updatedPlans[dateString] = [];
