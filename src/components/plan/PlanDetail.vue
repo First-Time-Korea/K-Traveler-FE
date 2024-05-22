@@ -1,24 +1,33 @@
 <script setup>
 import { onMounted, ref, computed, watch, onUnmounted, defineExpose } from 'vue';
-import { storeToRefs } from "pinia";
-import { usePlanDetailStore } from "@/stores/planDetail.js";
 import { updateMemo } from "@/api/plan";
 
-const planDetailStore = usePlanDetailStore();
-const { planTitle,
-    travelPlans,
-    selectedDate, dateRange } = storeToRefs(planDetailStore);
-
-function changeDate(date) { //날짜 변경
-    selectedDate.value = date;
-}
+const props = defineProps({
+    pplanId: Number,
+    planTitle: String,
+    travelPlans: Object,
+    selectedDate: String,
+    dateRange: Object
+})
 
 const updatedMemos = ref({});
+
+onMounted(async () => {
+    console.log("리스트")
+    console.log("컴포넌트 마운트됨");
+    console.log("날짜 범위 시작:", props.dateRange.startDate);
+    console.log("선택된 날짜:", props.selectedDate);
+    console.log("여행 계획:", props.travelPlans);
+})
 
 function openModal(attraction, index) {
     currentMemo.value = attraction.memoText;
     currentAttractionIndex.value = index;
     isModalVisible.value = true;
+}
+
+function changeDate(date) { //날짜 변경
+    props.selectedDate.value = date;
 }
 
 const togleModal = () => {
@@ -28,13 +37,13 @@ const togleModal = () => {
 function saveMemo() {
     console.log(currentAttractionIndex.value);
     if (currentAttractionIndex.value !== null) {
-        travelPlans.value[selectedDate.value][currentAttractionIndex.value].memoText = currentMemo.value;
+        props.travelPlans.value[props.selectedDate.value][currentAttractionIndex.value].memoText = currentMemo.value;
     }
-    console.log(travelPlans.value[selectedDate.value][currentAttractionIndex.value]);
+    console.log(props.travelPlans.value[props.selectedDate.value][currentAttractionIndex.value]);
     console.log(currentMemo);
     isModalVisible.value = false;
 
-    const paaId = travelPlans.value[selectedDate.value][currentAttractionIndex.value].paaId;
+    const paaId = props.travelPlans.value[props.selectedDate.value][currentAttractionIndex.value].paaId;
     updatedMemos.value[paaId] = currentMemo.value;
 }
 
@@ -63,10 +72,6 @@ function finalSave() {
     );
 }
 
-//날짜 변경
-watch(() => selectedDate.value, (newDate) => {
-});
-
 const isModalVisible = ref(false);
 const currentMemo = ref('');
 const currentAttractionIndex = ref(null);
@@ -79,19 +84,19 @@ import defaultImg from '@/assets/img/southsouth.jpg'; // 이미지 경로를 imp
     <div class="flex justify-center me-10 ms-5 mt-5 w-full">
         <!-- 날짜 선택 -->
         <div class="flex flex-col px-4 pt-1 w-1/4 divide-y divide-gray-800"> <!-- w-1/4 클래스 추가 --> <button
-                v-for="date in dateRange" :key="date" @click=" changeDate(date)"
+                v-for="date in props.dateRange" :key="date" @click=" changeDate(date)"
                 class="mt-2 select-none rounded-lg border border-gray-900 py-3 px-6 text-center align-middle  text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 :class="{
                     'select-none rounded-lg border border-second-900 py-3 px-6 text-center align-middle  text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none': true,
-                    'bg-second-900 text-white': selectedDate === date
+                    'bg-second-900 text-white': props.selectedDate === date
                 }" type="button">
                 {{ new Date(date).toLocaleDateString('en-US', { month: 'long', day: '2-digit' }) }}
             </button>
         </div>
 
         <div class="scrollable-container custom-scroll w-3/4  ">
-            <div class=" flex bg-white mb-2 p-2 rounded-lg relative hover:shadow-lg transition-shadow"
-                v-for="(attraction, index) in travelPlans[selectedDate]" :key="index">
+            <div class=" flex bg-white mb-2 p-2 rounded-lg relative hover:shadow-lg hover:opacity-75 focus:ring focus:ring-gray-300 transition-shadow"
+                v-for="(attraction, index) in props.travelPlans[props.selectedDate]" :key="index">
                 <div class="w-32 h-24 overflow-hidden">
                     <img :src="attraction.firstImage || defaultImg" alt="Attraction Image"
                         class="w-auto h-full object-cover object-center rounded-md">
