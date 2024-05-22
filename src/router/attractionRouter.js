@@ -1,11 +1,9 @@
 import TheAttractionView from "@/views/TheAttractionView.vue";
-import { storeToRefs } from "pinia";
 import { useMemberStore } from "@/stores/member";
 
 const onlyAuthUser = async (to, from, next) => {
-  const memberStore = useMemberStore();
-  const { checkLoginStatus } = memberStore;
-  if (checkLoginStatus()) {
+  const store = useMemberStore();
+  if (store.isLogin) {
     next();
   } else {
     next({ name: "user-login" });
@@ -23,8 +21,8 @@ export default [
       {
         path: "search",
         name: "attraction-search",
-        component: () => TheAttractionView
-      }
-    ]
+        component: () => TheAttractionView,
+      },
+    ],
   },
 ];

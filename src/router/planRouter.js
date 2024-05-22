@@ -1,4 +1,3 @@
-import { storeToRefs } from "pinia";
 import { useMemberStore } from "@/stores/member";
 import ThePlanView from "@/views/ThePlanView.vue";
 import ThePlanRegionChoiceView from "@/views/plan/ThePlanRegionChoiceView.vue";
@@ -7,9 +6,8 @@ import ThePlanAttractionChoiceView from "@/views/plan/ThePlanAttractionChioceVie
 import ThePlanDetailView from "@/views/plan/ThePlanDetailView.vue";
 
 const onlyAuthUser = async (to, from, next) => {
-  const memberStore = useMemberStore();
-  const { checkLoginStatus } = memberStore;
-  if (checkLoginStatus()) {
+  const store = useMemberStore();
+  if (store) {
     next();
   } else {
     next({ name: "user-login" });

@@ -11,7 +11,6 @@ import LocationItem from "@/components/theme/item/LocationItem.vue";
 const route = useRoute();
 const router = useRouter();
 const memberStore = useMemberStore();
-const isLogin = memberStore.checkLoginStatus();
 const themeStore = useThemeTestStore();
 const attractionStore = useAttracionStore();
 
@@ -34,7 +33,7 @@ const buttonDisabledStyle = "pointer-events-none bg-second-500 text-second-700/1
 const buttonAbledStyle = "bg-first-300 text-white";
 
 const buttonStyle = computed(() => {
-  return isLogin
+  return memberStore.isLogin
     ? `${buttonBasicStyle} ${buttonAbledStyle}`
     : `${buttonBasicStyle} ${buttonDisabledStyle}`;
 });
