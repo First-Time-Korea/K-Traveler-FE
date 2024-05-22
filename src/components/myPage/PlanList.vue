@@ -23,7 +23,7 @@ const planInfos = ref([]);
 const currentPage = ref(1);
 const totalPageCount = ref(0);
 const param = ref({
-  memberId: "ssafy",
+  memberId: "",
   pgno: currentPage.value,
 });
 
