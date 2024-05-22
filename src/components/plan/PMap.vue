@@ -4,7 +4,7 @@ import { storeToRefs } from "pinia";
 import { usePlanStore } from "@/stores/plan.js";
 
 const planStore = usePlanStore();
-const { places, clickedDate } = storeToRefs(planStore); //AttractionListVue: (travelPlans, selectedDate) 와 동일
+const { places } = storeToRefs(planStore); //AttractionListVue: (travelPlans, selectedDate) 와 동일
 
 const appKey = import.meta.env.VITE_KAKAO_MAP_SERVICE_KEY;
 

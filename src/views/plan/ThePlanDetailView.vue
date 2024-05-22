@@ -1,7 +1,7 @@
 <script setup>
-import { computed, ref, onMounted, onUnmounted } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import { getPlanDetail, updateMemo } from "@/api/plan";
+import { computed, ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { getPlanDetail } from "@/api/plan";
 
 import PlanDetail from "@/components/plan/PlanDetail.vue";
 import PDtatilMap from "@/components/plan/PDetailMap.vue";
@@ -22,11 +22,14 @@ onMounted(async () => {
     try {
         await loadPlanDetails(planId.value);  // 비동기 데이터 로드
         isLoading.value = false;  // 데이터 로드 완료
+        // selectedDate.value = dateRange.startDate;
+        //시작 날짜는 start date로 세팅
     } catch (error) {
         console.error('데이터 로딩 중 오류 발생:', error);
         isLoading.value = false;  // 에러 발생 시에도 로딩 상태 업데이트
     }
 });
+
 const dateRange = computed(() => {
     const dates = Object.keys(travelPlans.value);
     if (dates.length === 0) return { startDate: null, endDate: null };
@@ -38,24 +41,15 @@ const dateRange = computed(() => {
 }
 )
 
+
 const loadPlanDetails = async (id) => {
     return getPlanDetail(
         id,
         ({ data }) => {
-            console.log("디테일 함수 내부(store)!!!!!!!!!!!!!", data.data);
             planId.value = data.data.planId;
             planTitle.value = data.data.planTitle;
             travelPlans.value = data.data.attractions;
             selectedDate.value = Object.keys(data.data.attractions)[0]; // 첫 번째 날짜를 초기값으로 설정
-
-            console.log(dateRange.value[0]);
-            console.log("date", selectedDate.value);
-            console.log("places", travelPlans.value);
-            console.log("placese[date]", travelPlans.value[selectedDate.value]);
-
-            console.log("");
-
-            alert(selectedDate.value);
         },
         (error) => console.log(error)
     );
@@ -95,7 +89,7 @@ const handleDateChange = (newDate) => {
 
     <!-- 로딩이 완료되면 자식 컴포넌트 렌더링 -->
     <div v-else>
-        <div class="ms-5">
+        <div class="ms-10">
             <h1 class="text-xl font-bold">{{ planTitle }}</h1>
             <h2 class="text-md text- mt-2"> {{ formatDateString(dateRange.startDate) }} ~ {{
                 formatDateString(dateRange.endDate) }}</h2>

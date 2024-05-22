@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import AttracionListVue from "@/components/plan/AttractionListVue.vue"
 import PMap from "@/components/plan/PMap.vue"
@@ -7,7 +7,6 @@ import PMap from "@/components/plan/PMap.vue"
 import { createPlan } from "@/api/plan.js";
 import { usePlanStore } from "@/stores/plan.js";
 import { useMemberStore } from "@/stores/member"
-import { onMounted } from "vue";
 import { storeToRefs } from "pinia";
 
 const router = useRouter();
@@ -24,21 +23,12 @@ const isModalVisible = ref(false);
 
 const fileInput = ref(null); // 입력 받는 파일
 
-const goNext = () => {
-    // 모달 띄우기
-    // router.push({ name: "choice-schedule" })
-}
 
 const togleModal = () => {
     isModalVisible.value = !isModalVisible.value;
 }
 
-onMounted(() => {
-    console.log("ThePlanAttractionCoiceView");
-    console.log(schedule);
-    console.log(clickedRegion);
-    console.log(userInfo);
-})
+on
 
 const formatDateString = (dateString) => {
     if (!dateString) return '';

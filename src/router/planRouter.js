@@ -23,6 +23,7 @@ export default [
     beforeEnter: onlyAuthUser,
     component: ThePlanView,
     redirect: "/plan/region",
+    meta: { keepPlanState: true },
     children: [
       {
         path: "region",

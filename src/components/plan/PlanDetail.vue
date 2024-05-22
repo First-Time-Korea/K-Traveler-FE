@@ -87,7 +87,7 @@ import defaultImg from '@/assets/img/southsouth.jpg'; // 이미지 경로를 imp
     <div class="flex justify-center me-10 ms-5 mt-5 w-full">
         <!-- 날짜 선택 -->
         <div class="flex flex-col px-4 pt-1 w-1/4 divide-y divide-gray-800"> <!-- w-1/4 클래스 추가 --> <button
-                v-for="date in props.dateRange" :key="date" @click=" changeDate(date)"
+                v-for="date in Object.keys(props.travelPlans)" :key="date" @click=" changeDate(date)"
                 class="mt-2 select-none rounded-lg border border-gray-900 py-3 px-6 text-center align-middle  text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 :class="{
                     'select-none rounded-lg border border-second-900 py-3 px-6 text-center align-middle  text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none': true,
