@@ -10,6 +10,11 @@ const props = defineProps({
     dateRange: Object
 })
 
+const emits = defineEmits(['dateChanged']);
+
+function changeDate(date) {
+    emits('dateChanged', date);
+}
 const updatedMemos = ref({});
 
 onMounted(async () => {
@@ -20,14 +25,12 @@ onMounted(async () => {
     console.log("여행 계획:", props.travelPlans);
 })
 
+
+
 function openModal(attraction, index) {
     currentMemo.value = attraction.memoText;
     currentAttractionIndex.value = index;
     isModalVisible.value = true;
-}
-
-function changeDate(date) { //날짜 변경
-    props.selectedDate.value = date;
 }
 
 const togleModal = () => {
@@ -37,13 +40,13 @@ const togleModal = () => {
 function saveMemo() {
     console.log(currentAttractionIndex.value);
     if (currentAttractionIndex.value !== null) {
-        props.travelPlans.value[props.selectedDate.value][currentAttractionIndex.value].memoText = currentMemo.value;
+        props.travelPlans[props.selectedDate][currentAttractionIndex.value].memoText = currentMemo.value;
     }
-    console.log(props.travelPlans.value[props.selectedDate.value][currentAttractionIndex.value]);
+    console.log(props.travelPlans[props.selectedDate][currentAttractionIndex.value]);
     console.log(currentMemo);
     isModalVisible.value = false;
 
-    const paaId = props.travelPlans.value[props.selectedDate.value][currentAttractionIndex.value].paaId;
+    const paaId = props.travelPlans[props.selectedDate][currentAttractionIndex.value].paaId;
     updatedMemos.value[paaId] = currentMemo.value;
 }
 

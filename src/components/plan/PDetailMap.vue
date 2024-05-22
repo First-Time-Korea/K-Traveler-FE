@@ -41,6 +41,8 @@ const initMap = () => {
     map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
     var mapTypeControl = new kakao.maps.MapTypeControl();
     map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+    displaytravelPlans(props.travelPlans[props.selectedDate]);
 };
 
 const loadScript = () => {

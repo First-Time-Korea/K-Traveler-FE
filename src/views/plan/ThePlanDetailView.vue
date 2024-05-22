@@ -7,7 +7,6 @@ import PlanDetail from "@/components/plan/PlanDetail.vue";
 import PDtatilMap from "@/components/plan/PDetailMap.vue";
 
 const route = useRoute();
-const router = useRouter();
 const planDetailRef = ref(null);
 
 const isLoading = ref(true);  // 데이터 로딩 상태를 추적하는 변수
@@ -16,6 +15,8 @@ const planId = ref(route.params.planId);
 const planTitle = ref();
 const travelPlans = ref({});
 const selectedDate = ref();
+
+const buttonStyle = "fixed bottom-10 inset-x-0 mx-auto w-64 h-10 align-middle select-none font-bold text-center bg-second-300 uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg shadow-md shadow-gray-900/10 hover:bg-second-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
 
 onMounted(async () => {
     try {
@@ -26,7 +27,6 @@ onMounted(async () => {
         isLoading.value = false;  // 에러 발생 시에도 로딩 상태 업데이트
     }
 });
-
 const dateRange = computed(() => {
     const dates = Object.keys(travelPlans.value);
     if (dates.length === 0) return { startDate: null, endDate: null };
@@ -80,7 +80,9 @@ const formatDateString = (dateString) => {
     }).format(date).replace(/\. /g, '.');
 };
 
-const buttonStyle = "fixed bottom-10 inset-x-0 mx-auto w-64 h-10 align-middle select-none font-bold text-center bg-second-300 uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg shadow-md shadow-gray-900/10 hover:bg-second-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+const handleDateChange = (newDate) => {
+    selectedDate.value = newDate;
+}
 
 </script>
 
@@ -102,8 +104,9 @@ const buttonStyle = "fixed bottom-10 inset-x-0 mx-auto w-64 h-10 align-middle se
         <!-- 메인 컨텐츠 -->
         <div class="flex justify-center ">
             <div class="flex-1 flex justify-between">
-                <PlanDetail :plan-title="planTitle" :travel-plans="travelPlans" :selected-date="selectedDate"
-                    :date-range="dateRange" ref="planDetailRef" class="w-full"></PlanDetail>
+                <PlanDetail @dateChanged="handleDateChange" :plan-title="planTitle" :travel-plans="travelPlans"
+                    :selected-date="selectedDate" :date-range="dateRange" ref="planDetailRef" class="w-full">
+                </PlanDetail>
             </div>
             <div class="flex-1 flex justify-center ">
                 <PDtatilMap :plan-title="planTitle" :travel-plans="travelPlans" :selected-date="selectedDate"
@@ -112,7 +115,6 @@ const buttonStyle = "fixed bottom-10 inset-x-0 mx-auto w-64 h-10 align-middle se
             </div>
         </div>
 
-        <!-- 다음 버튼 (누르면 모달 창이 뜬다.) -->
         <button @click="saveInChild" :class="buttonStyle" type="button">
             SAVE
         </button>

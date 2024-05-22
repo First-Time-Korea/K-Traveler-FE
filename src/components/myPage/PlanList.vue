@@ -55,12 +55,8 @@ const handleChangeCurrentPage = (pageNo) => {
     <div class="mt-6 w-[65%] grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
       <PlanListItem v-for="planInfo in planInfos" :key="planInfo.id" :plan="planInfo" />
     </div>
-    <PageNavigationItem
-      class="mt-24"
-      :current-page="currentPage"
-      :total-page-count="totalPageCount"
-      @change-current-page-event="handleChangeCurrentPage"
-    />
+    <PageNavigationItem class="mt-24" :current-page="currentPage" :total-page-count="totalPageCount"
+      @change-current-page-event="handleChangeCurrentPage" />
   </div>
 </template>
 
