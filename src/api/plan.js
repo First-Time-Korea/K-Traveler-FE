@@ -61,7 +61,7 @@ export {
   getAttractionBySidoCode,
   getBookmarkedAttraction,
   createPlan,
-  getPlanInfos
+  getPlanInfos,
   updateMemo,
   clearData,
 };
