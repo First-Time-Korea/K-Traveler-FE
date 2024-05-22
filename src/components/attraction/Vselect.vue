@@ -24,7 +24,7 @@ const searchItem = ref({
 onMounted(() => {
     goGetTheme();
     goGetSido();
-    if (selectedSidoCode.value && selectedThemeCode.value) {
+    if (selectedSidoCode.value || selectedThemeCode.value) {
         searchItem.value.themeCode = selectedThemeCode.value;
         searchItem.value.sidoCode = selectedSidoCode.value;
         handleSearch();

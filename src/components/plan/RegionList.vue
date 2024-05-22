@@ -4,6 +4,7 @@ import { storeToRefs } from "pinia"
 import { usePlanStore } from "@/stores/plan.js";
 import { getRegions } from "@/api/plan.js";
 const { updateClickedRegion } = usePlanStore();
+const { clickedRegion } = storeToRefs(usePlanStore());
 
 const keyword = ref();
 const regions = ref([]);
@@ -12,6 +13,11 @@ const filteredRegions = ref([]);
 
 onMounted(() => {
     setRegions();
+    clickedRegion.value = {
+        sidoCode: "",
+        sidoName: "",
+        sidoDescription: "",
+    };
 })
 
 const setRegions = () => {
@@ -27,8 +33,7 @@ const handleRegionClick = (region) => {
 
 watch(() => keyword.value, (newKeyword) => {
     filteredRegions.value = regions.value.filter(region =>
-        region.sidoName.toLowerCase().includes(newKeyword.toLowerCase()) ||
-        region.gugunName.toLowerCase().includes(newKeyword.toLowerCase())
+        region.sidoName.toLowerCase().includes(newKeyword.toLowerCase())
     ).slice(0, 10);
 });
 
@@ -50,12 +55,13 @@ watch(() => keyword.value, (newKeyword) => {
             <nav class="flex min-w-[240px] flex-col gap-1 p-2  text-base font-normal text-blue-gray-700">
                 <div role="button" v-for="(region, index) in filteredRegions" :key="index"
                     class="flex items-center w-full p-2.5 leading-tight transition-all rounded-lg outline-none text-start hover:bg-blue-gray-50 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-blue-gray-50 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-blue-gray-50 active:bg-opacity-80 active:text-blue-gray-900"
+                    :class="{ 'font-extrabold bg-second-50': clickedRegion.sidoName === region.sidoName }"
                     @click="handleRegionClick(region)">
-                    {{ region.sidoName }} {{ region.gugunName }}
+                    {{ region.sidoName }}
                 </div>
             </nav>
         </div>
     </div>
 </template>
 
-<style></style>
+<style scoped></style>
