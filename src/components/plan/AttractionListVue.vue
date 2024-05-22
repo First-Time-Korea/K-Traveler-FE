@@ -211,7 +211,7 @@ watch(() => keyword.value, debounce((newKeyword) => {
                         placeholder="Search attractions" />
                 </div>
                 <div class="scrollable-container custom-scroll ">
-                    <div class=" flex bg-white border border-gray-300 mb-2 p-2 rounded-lg relative"
+                    <div class=" flex bg-white border border-gray-300 mb-2 p-2 rounded-lg relative hover:shadow-lg transition-shadow"
                         v-for="attraction in filteredAttractionsToShow" :key="attraction.id">
                         <div class="w-24 h-48 overflow-hidden">
                             <img :src="attraction.firstImage" alt="" class="w-auto h-full object-cover object-center">

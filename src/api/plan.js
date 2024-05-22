@@ -29,9 +29,33 @@ async function createPlan(formData, success, fail) {
     .catch(fail);
 }
 
+async function updateMemo(data, success, fail) {
+  console.log("data", data);
+  await http
+    .put("/plan/memo", data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then(success)
+    .catch(fail);
+}
+
+async function getPlanDetail(planId, success, fail) {
+  await http
+    .get("plan/info", { params: { planId: planId } })
+    .then(success)
+    .catch(fail);
+}
+
+function clearData() {}
+
 export {
   getRegions,
+  getPlanDetail,
   getAttractionBySidoCode,
   getBookmarkedAttraction,
   createPlan,
+  updateMemo,
+  clearData,
 };

@@ -4,6 +4,7 @@ import ThePlanView from "@/views/ThePlanView.vue";
 import ThePlanRegionChoiceView from "@/views/plan/ThePlanRegionChoiceView.vue";
 import ThePlanScheduleChoiceView from "@/views/plan/ThePlanScheduleChoiceView.vue";
 import ThePlanAttractionChoiceView from "@/views/plan/ThePlanAttractionChioceView.vue";
+import ThePlanDetailView from "@/views/plan/ThePlanDetailView.vue";
 
 const onlyAuthUser = async (to, from, next) => {
   const memberStore = useMemberStore();
@@ -37,6 +38,11 @@ export default [
         path: "spot",
         name: "choice-attraction",
         component: () => ThePlanAttractionChoiceView,
+      },
+      {
+        path: "detail/:planId",
+        name: "paln-detail",
+        component: () => ThePlanDetailView,
       },
     ],
   },
