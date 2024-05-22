@@ -1,4 +1,32 @@
-<script setup></script>
+<script setup>
+import { onMounted, ref } from "vue";
+
+const { VITE_VUE_API_URL } = import.meta.env;
+
+const props = defineProps({
+  plan: Object,
+});
+
+const plan = ref({
+  title: "",
+  period: "",
+  img: {
+    src: "",
+    alt: "",
+  },
+});
+
+onMounted(() => {
+  plan.value.title = props.plan.title;
+  plan.value.period =
+    props.plan.startDate.substring(0, 10).replace(/-/g, ".") +
+    " ~ " +
+    props.plan.endDate.substring(0, 10).replace(/-/g, ".");
+  plan.value.img.src = `${VITE_VUE_API_URL}/plan/img/${props.plan.file.saveFolder}/${props.plan.file.saveFile}`;
+  let index = props.plan.file.originFile.indexOf(".");
+  plan.value.img.alt = `${props.plan.file.originFile.substring(0, index)}`;
+});
+</script>
 
 <template>
   <figure
@@ -7,8 +35,8 @@
     <div class="w-full h-full rounded-xl overflow-hidden">
       <img
         class="transition-transform duration-300 transform hover:scale-105 object-cover object-center w-full h-full rounded-xl"
-        src="https://images.unsplash.com/photo-1682407186023-12c70a4a35e0?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=2832&amp;q=80"
-        alt="nature image"
+        :src="plan.img.src"
+        :alt="plan.img.alt"
       />
     </div>
     <figcaption
@@ -18,12 +46,12 @@
         <h5
           class="block font-sans text-base antialiased font-semibold leading-snug tracking-normal text-blue-gray-900"
         >
-          plan title
+          {{ plan.title }}
         </h5>
         <p
           class="block mt-2.5 font-sans text-xs antialiased font-normal leading-relaxed text-gray-700"
         >
-          2024.00.00 ~ 2024.00.00
+          {{ plan.period }}
         </p>
       </div>
     </figcaption>

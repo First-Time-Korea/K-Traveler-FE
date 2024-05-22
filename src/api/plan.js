@@ -1,5 +1,6 @@
-import { localAxios } from "@/util/http-commons.js";
+import { localAxios, localAxiosWithHeaders } from "@/util/http-commons.js";
 const http = localAxios();
+const local = localAxiosWithHeaders();
 
 async function getRegions(success, fail) {
   await http.get("/plan/regions").then(success).catch(fail);
@@ -29,9 +30,14 @@ async function createPlan(formData, success, fail) {
     .catch(fail);
 }
 
+function getPlanInfos(param, success, fail) {
+  local.get(`/plan/list`, { params: param }).then(success).catch(fail);
+}
+
 export {
   getRegions,
   getAttractionBySidoCode,
   getBookmarkedAttraction,
   createPlan,
+  getPlanInfos
 };
