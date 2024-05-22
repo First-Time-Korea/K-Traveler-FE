@@ -21,7 +21,7 @@ export const useMenuStore = defineStore("menuStore", () => {
     { name: "Review", show: isLogged.value, routeName: "board" },
     { name: "SignUp", show: !isLogged.value, routeName: "user-join" },
     { name: "SignIn", show: !isLogged.value, routeName: "user-login" },
-    { name: "Profile", show: isLogged.value, routeName: "user-mypage" },
+    { name: "MyPage", show: isLogged.value, routeName: "mypage" },
     { name: "SignOut", show: isLogged.value, routeName: "user-logout" },
   ]);
 

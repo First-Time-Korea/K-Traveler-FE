@@ -17,7 +17,14 @@ export default [
     path: "/attraction",
     name: "attraction",
     beforeEnter: onlyAuthUser,
-    component: TheAttractionView,
-    // redirect: "/n"
+    component: () => TheAttractionView,
+    redirect: "/attraction/search",
+    children: [
+      {
+        path: "search",
+        name: "attraction-search",
+        component: () => TheAttractionView
+      }
+    ]
   },
 ];
