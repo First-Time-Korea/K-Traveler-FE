@@ -5,7 +5,6 @@ export const usePlanStore = defineStore("planStore", () => {
   const clickedRegion = ref({
     sidoCode: "",
     sidoName: "",
-    gugunName: "",
     sidoDescription: "",
   });
 

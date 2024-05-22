@@ -43,7 +43,6 @@ onUpdated(() => {
 });
 
 onUnmounted(() => {
-    console.log("places", places);
     if (places.value) {
         places.value = [];
     }
