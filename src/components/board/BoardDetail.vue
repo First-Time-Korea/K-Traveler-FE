@@ -1,11 +1,16 @@
 <script setup>
 import { ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import BoardDetailItem from "@/components/board/item/BoardDetailItem.vue";
 
 const route = useRoute();
+const router = useRouter();
 
 const articleId = ref(route.params.articleid);
+
+const goBack = () => {
+  router.replace({ name: "board-list" });
+};
 </script>
 
 <template>
