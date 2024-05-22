@@ -48,9 +48,9 @@ const loadScript = () => {
 };
 
 watch(() => clickedDate.value, () => {
-    if (places.value[clickedDate.value] && places.value[clickedDate.value].length > 0) {
+    if (places.value[clickedDate.value]) {
         displayPlaces(places.value[clickedDate.value]);
-    } else if (places.value[clickedDate.value]) {
+    } else if (places.value[clickedDate.value] === undefined) {
         initMap();
     }
 }, { deep: true });
@@ -68,8 +68,7 @@ function displayPlaces(places) {
     var bounds = new kakao.maps.LatLngBounds();
     // 지도에 표시되고 있는 마커를 제거합니다
     removeMarker();
-    console.log("새로 찍을 장소들", places);
-    for (var i = 0; i < places.length; i++) {
+    for (var i = 0; i < places.length; i++) { //새로 찍을 장소들
         // 마커를 생성하고 지도에 표시합니다
         var placePosition = new kakao.maps.LatLng(places[i].latitude, places[i].longitude);
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
@@ -118,20 +117,6 @@ function removeMarker() {
         <div>
             <div id="map" class="mt-5 me-6" style="height: 670px;"></div>
         </div>
-        <!-- 날짜별로 관광지 객체 가져오기 -->
-        <!-- <div class="flex-1 flex px-4">
-            <div class="flex flex-col text-gray-700 bg-white w-96 rounded-xl overflow-y-auto">
-                <div class="selected-container scroll">
-                    <div v-if="places[clickedDate] && places[clickedDate].length > 0">
-                        <div v-for="(attraction, index) in places[clickedDate]" :key="index">
-                            <div class="m-3 p-3 bg-second-50 rounded-md">
-                                {{ attraction }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
     </div>
 </template>
 
