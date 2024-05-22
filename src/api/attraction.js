@@ -1,5 +1,6 @@
-import { localAxios } from "@/util/http-commons.js";
+import { localAxios, localAxiosWithHeaders } from "@/util/http-commons.js";
 const http = localAxios();
+const local = localAxiosWithHeaders();
 
 function getSido(success, fail) {
   http.get("attraction/region").then(success).catch(fail);
@@ -32,6 +33,10 @@ async function getAttractionByAI(wantItem, success, fail) {
   await http.post("attraction/ai", wantItem).then(success).catch(fail);
 }
 
+function getBookmarkedAttractionInfos(param, success, fail) {
+  local.get(`/attraction/list`, { params: param }).then(success).catch(fail);
+}
+
 export {
   getCategory,
   getTheme,
@@ -40,4 +45,5 @@ export {
   getAttractionByAI,
   togleBookmark,
   getSido,
+  getBookmarkedAttractionInfos
 };

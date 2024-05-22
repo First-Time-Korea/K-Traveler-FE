@@ -17,6 +17,9 @@ const logout = () => {
 };
 
 const route = useRoute();
+
+console.log(route.path);
+console.log(route.name);
 </script>
 
 <template>
@@ -52,7 +55,10 @@ const route = useRoute();
                   <router-link
                     :to="{ name: menu.routeName }"
                     class="nav-link flex items-center"
-                    :class="{ 'text-first-300': route.path.includes(menu.routeName) }"
+                    :class="{
+                      'text-first-300':
+                        route.path.substring(1, route.path.indexOf(`/`, 1)) === menu.routeName,
+                    }"
                   >
                     {{ menu.name }}
                   </router-link>
