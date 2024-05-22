@@ -72,15 +72,14 @@ const savePlan = () => {
         formData.append('file', fileInput.value.files[0]);
     }
 
-    createPlan((formData)
-        , ({ data }) => {
-            if (data.status === "fail") {
-                alert("Save failed");
-            } else {
-                alert("Plan saved successfully");
-                router.push({ name: "main" }); //성공하면 메인 화면으로
-            }
+    createPlan((formData), ({ data }) => {
+        if (data.status === "fail") {
+            alert("Save failed");
+        } else {
+            alert("Plan saved successfully");
+            router.push({ name: "main" }); //성공하면 메인 화면으로
         }
+    }
         , (error) => console.log(error)
     )
 }
