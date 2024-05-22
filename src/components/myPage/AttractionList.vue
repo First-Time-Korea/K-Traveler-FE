@@ -6,6 +6,7 @@ import { useMemberStore } from "@/stores/member";
 import ProfileItem from "@/components/myPage/item/ProfileItem.vue";
 import PlanAndAttractionNav from "@/components/myPage/item/PlanAndAttractionNav.vue";
 import AtttractionListItem from "@/components/myPage/item/AttractionListItem.vue";
+import PageNavigationItem from "@/components/myPage/item/PageNavigationItem.vue";
 
 const store = useMemberStore();
 
@@ -20,7 +21,7 @@ onMounted(() => {
 
 const bookmarkedAttractionInfos = ref([]);
 const currentPage = ref(1);
-const totalPage = ref(0);
+const totalPageCount = ref(0);
 const param = ref({
   memberId: "ssafy",
   pgno: currentPage.value,
@@ -30,8 +31,14 @@ const tryGetBookmarkedAttractionInfos = () => {
   getBookmarkedAttractionInfos(param.value, ({ data }) => {
     bookmarkedAttractionInfos.value = data.bookmarkedAttractionInfos;
     currentPage.value = data.currentPage;
-    totalPage.value = data.totalPageCount;
+    totalPageCount.value = data.totalPageCount;
   });
+};
+
+const handleChangeCurrentPage = (pageNo) => {
+  param.value.pgno = pageNo;
+
+  tryGetBookmarkedAttractionInfos();
 };
 </script>
 
@@ -46,6 +53,12 @@ const tryGetBookmarkedAttractionInfos = () => {
         :attraction="bookmarkedAttractionInfo"
       />
     </div>
+    <PageNavigationItem
+      class="mt-24"
+      :current-page="currentPage"
+      :total-page-count="totalPageCount"
+      @change-current-page-event="handleChangeCurrentPage"
+    />
   </div>
 </template>
 
