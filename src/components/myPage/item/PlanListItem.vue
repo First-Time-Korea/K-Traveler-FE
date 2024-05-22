@@ -8,6 +8,7 @@ const props = defineProps({
 });
 
 const plan = ref({
+  id: 0,
   title: "",
   period: "",
   img: {
@@ -17,6 +18,7 @@ const plan = ref({
 });
 
 onMounted(() => {
+  plan.value.id = props.plan.id;
   plan.value.title = props.plan.title;
   plan.value.period =
     props.plan.startDate.substring(0, 10).replace(/-/g, ".") +
