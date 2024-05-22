@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, computed, watch, onUnmounted } from 'vue';
+import { onMounted, ref, computed, watch, onUnmounted, defineExpose } from 'vue';
 import { storeToRefs } from "pinia";
 import { usePlanDetailStore } from "@/stores/planDetail.js";
 import { updateMemo } from "@/api/plan";
@@ -38,6 +38,9 @@ function saveMemo() {
     updatedMemos.value[paaId] = currentMemo.value;
 }
 
+defineExpose({
+    finalSave //바깥으로 노출시키기
+})
 
 function finalSave() {
     console.log(updatedMemos);
@@ -46,16 +49,16 @@ function finalSave() {
         text: updatedMemos.value[key]
     }));
 
-    // console.log("updatedMemos[key]", updatedMemos[key]);
-
     const requestData = { memos: memosArray };
     console.log("requestData", requestData);
     updateMemo(requestData,
         (response) => {
             console.log("Memo updated successfully:", response);
+            alert("updated successfully");
         },
         (error) => {
             console.error("Error updating memo:", error);
+            alert("failed to update");
         }
     );
 }
@@ -123,12 +126,6 @@ import defaultImg from '@/assets/img/southsouth.jpg'; // 이미지 경로를 imp
             </div>
         </div>
     </div>
-
-    <button @click="finalSave">버튼버튼</button>
-
-    <!-- <div class="flex justify-center mt-4">
-        <button type="button" @click="finalSave" class="px-4 py-2 bg-green-500 text-white rounded-md">최종 저장</button>
-    </div> -->
 </template>
 <style scoped>
 .selected-container {

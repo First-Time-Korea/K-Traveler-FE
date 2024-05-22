@@ -12,6 +12,7 @@ const route = useRoute();
 const router = useRouter();
 const planId = ref(route.params.planId);
 const planDetailStore = usePlanDetailStore();
+const planDetailRef = ref(null);
 const { planTitle,
     travelPlans,
     selectedDate, dateRange } = storeToRefs(planDetailStore);
@@ -23,6 +24,14 @@ onMounted(() => {
 onUnmounted(() => {
     planDetailStore.clearData();
 })
+
+const saveInChild = () => {
+    if (planDetailRef.value) {
+        planDetailRef.value.finalSave();
+    } else {
+        console.error('자식 컴포넌트의 참조가 없습니다.');
+    }
+};
 
 const formatDateString = (dateString) => {
     if (!dateString) return '';
@@ -50,7 +59,8 @@ const buttonStyle = "fixed bottom-10 inset-x-0 mx-auto w-64 h-10 align-middle se
     <!-- 메인 컨텐츠 -->
     <div class="flex justify-center ">
         <div class="flex-1 flex justify-between">
-            <PlanDetail class="w-full"></PlanDetail>
+            <!-- 자식 컴포넌트의 인스턴스에 접근한다. -->
+            <PlanDetail ref="planDetailRef" class="w-full"></PlanDetail>
         </div>
         <div class="flex-1 flex justify-center ">
             <PDtatilMap class="w-full">
@@ -58,6 +68,10 @@ const buttonStyle = "fixed bottom-10 inset-x-0 mx-auto w-64 h-10 align-middle se
         </div>
     </div>
 
+    <!-- 다음 버튼 (누르면 모달 창이 뜬다.) -->
+    <button @click="saveInChild" :class="buttonStyle" type="button">
+        SAVE
+    </button>
 </template>
 
 <style scoped></style>
