@@ -1,7 +1,13 @@
 <script setup>
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+import { storeToRefs } from "pinia";
+import { useAttracionStore } from "@/stores/attraction";
 
 const { VITE_VUE_API_URL } = import.meta.env;
+
+const router = useRouter();
+const store = useAttracionStore();
 
 const props = defineProps({
   attraction: Object,
@@ -42,6 +48,13 @@ onMounted(() => {
 
   attraction.value.alt = props.attraction.title;
 });
+
+const { selectedContentId } = storeToRefs(store);
+const goRecommendedAttraction = () => {
+  selectedContentId.value = attraction.value.contentId;
+
+  router.push({ name: "attraction" });
+};
 </script>
 
 <template>
@@ -49,6 +62,7 @@ onMounted(() => {
     class="hover:cursor-pointer hover:shadow-xl hover:shadow-gray-800/30 transition duration-300 rounded-xl relative"
     @mouseenter="showOverlay"
     @mouseleave="unshowOverlay"
+    @click="goRecommendedAttraction"
   >
     <img
       class="object-cover object-center w-full h-56 max-w-full rounded-xl"

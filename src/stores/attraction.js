@@ -8,6 +8,7 @@ import {} from "@/api/attraction";
 export const useAttracionStore = defineStore("attractionStore", () => {
   const selectedSidoCode = ref();
   const selectedThemeCode = ref();
+  const selectedContentId = ref();
 
   const places = ref([]);
 
@@ -33,6 +34,7 @@ export const useAttracionStore = defineStore("attractionStore", () => {
     searchAttraction,
     selectedSidoCode,
     selectedThemeCode,
+    selectedContentId,
     places,
   };
 });
