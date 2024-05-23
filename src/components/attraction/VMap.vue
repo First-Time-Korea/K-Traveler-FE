@@ -39,29 +39,11 @@ onMounted(() => {
     }
 });
 
-onUpdated(() => {
-});
-
 onUnmounted(() => {
     if (places.value) {
         places.value = [];
     }
 })
-
-watch(() => places.value, (newPlaces) => {
-    if (newPlaces.length != 0) {
-        displayPlaces(newPlaces)
-    } else {
-        alert("Search item does not exist.")
-    }
-}, { deep: true })
-
-const loadScript = () => {
-    const script = document.createElement("script");
-    script.onload = () => kakao.maps.load(initMap);
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${appKey}&libraries=services,clusterer,drawing`;
-    document.head.appendChild(script);
-};
 
 const initMap = () => {
     const container = document.getElementById("map");
@@ -82,6 +64,23 @@ const initMap = () => {
     map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
     var mapTypeControl = new kakao.maps.MapTypeControl();
     map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+};
+
+
+watch(() => places.value, (newPlaces) => {
+    console.log("watch")
+    if (newPlaces.length != 0) {
+        displayPlaces(newPlaces)
+    } else {
+        alert("Search item does not exist.")
+    }
+}, { deep: true })
+
+const loadScript = () => {
+    const script = document.createElement("script");
+    script.onload = () => kakao.maps.load(initMap);
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${appKey}&libraries=services,clusterer,drawing`;
+    document.head.appendChild(script);
 };
 
 // 검색 결과 목록과 마커를 표출하는 함수입니다
