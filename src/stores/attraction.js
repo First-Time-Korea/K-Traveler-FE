@@ -30,11 +30,18 @@ export const useAttracionStore = defineStore("attractionStore", () => {
     );
   };
 
+  const clearSearchData = () => {
+    selectedSidoCode.value = "";
+    selectedThemeCode.value = "";
+    selectedContentId.value = 0;
+  };
+
   return {
     searchAttraction,
     selectedSidoCode,
     selectedThemeCode,
     selectedContentId,
     places,
+    clearSearchData,
   };
 });
