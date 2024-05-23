@@ -40,20 +40,14 @@ const isShowedModifyButtons = computed(() => {
 <template>
   <div>
     <div class="flex mt-5" :style="{ marginLeft: marginLeft }">
-      <img
-        src="https://docs.material-tailwind.com/img/face-2.jpg"
-        alt="avatar"
-        class="mr-2 relative inline-block h-6 w-6 !rounded-full object-cover object-center"
-      />
+      <img src="@/assets/img/no-profile.png" alt="avatar"
+        class="mr-2 relative inline-block h-6 w-6 !rounded-full object-cover object-center" />
       <div class="flex flex-col">
         <h6
-          class="mr-2 flex-none block w-3/10 font-sans text-sm antialiased font-semibold leading-relaxed tracking-normal text-inherit"
-        >
+          class="mr-2 flex-none block w-3/10 font-sans text-sm antialiased font-semibold leading-relaxed tracking-normal text-inherit">
           {{ comment.memberId }}
         </h6>
-        <p
-          class="flex-auto w-7/10 block font-sans text-sm antialiased font-normal leading-relaxed text-inherit"
-        >
+        <p class="flex-auto w-7/10 block font-sans text-sm antialiased font-normal leading-relaxed text-inherit">
           {{ comment.content }}
         </p>
         <div class="flex flex-row items-center text-left mt-2">
@@ -63,17 +57,12 @@ const isShowedModifyButtons = computed(() => {
           <div class="flex flex-row" v-if="isShowedModifyButtons">
             <button
               class="ml-2 flex items-center px-1 py-1 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none hover:bg-gray-900/10 active:bg-gray-900/20"
-              type="button"
-              @click="changeParentCommentId"
-            >
+              type="button" @click="changeParentCommentId">
               REPLY
             </button>
             <button
               class="ml-2 flex items-center px-1 py-1 font-sans text-xs font-bold text-center text-red-500 uppercase align-middle transition-all rounded-lg select-none disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none hover:bg-red-700/10 active:bg-red-700/20"
-              type="button"
-              @click="deleteCommentEvent"
-              v-if="canDeleteComment"
-            >
+              type="button" @click="deleteCommentEvent" v-if="canDeleteComment">
               DELETE
             </button>
           </div>
