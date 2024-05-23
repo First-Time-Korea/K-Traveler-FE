@@ -1,12 +1,13 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { getPlanDetail } from "@/api/plan";
+import { useRoute, useRouter } from "vue-router";
+import { getPlanDetail, deletePlan } from "@/api/plan";
 
 import PlanDetail from "@/components/plan/PlanDetail.vue";
 import PDtatilMap from "@/components/plan/PDetailMap.vue";
 
 const route = useRoute();
+const router = useRouter();
 const planDetailRef = ref(null);
 
 const isLoading = ref(true); // 데이터 로딩 상태를 추적하는 변수
@@ -78,6 +79,27 @@ const formatDateString = (dateString) => {
 const handleDateChange = (newDate) => {
   selectedDate.value = newDate;
 };
+
+const confirmDelete = () => {
+  if (confirm('Are you sure you want to delete it?')) { // 삭제 확인 대화상자
+    goDeletePlan(); // 사용자가 '확인'을 누르면 삭제 실행
+  }
+};
+
+const goDeletePlan = () => {
+  deletePlan(planId.value,
+    ({ data }) => {
+      if (data.status === "success") {
+        console.log("삭제 성공");
+        router.replace({ name: "main" });
+      }
+    }, (error) => {
+      console.log(error);
+    })
+  console.log("The plan has been deleted."); // 실제 삭제 로직으로 교체 필요
+};
+
+
 </script>
 
 <template>
@@ -97,26 +119,17 @@ const handleDateChange = (newDate) => {
     <!-- 메인 컨텐츠 -->
     <div class="flex justify-center">
       <div class="flex-1 flex justify-between">
-        <PlanDetail
-          @dateChanged="handleDateChange"
-          :plan-title="planTitle"
-          :travel-plans="travelPlans"
-          :selected-date="selectedDate"
-          :date-range="dateRange"
-          ref="planDetailRef"
-          class="w-full"
-        >
+        <PlanDetail @dateChanged="handleDateChange" :plan-title="planTitle" :travel-plans="travelPlans"
+          :selected-date="selectedDate" :date-range="dateRange" ref="planDetailRef" class="w-full">
         </PlanDetail>
       </div>
       <div class="flex-1 flex justify-center">
-        <PDtatilMap
-          :plan-title="planTitle"
-          :travel-plans="travelPlans"
-          :selected-date="selectedDate"
-          :date-range="dateRange"
-          class="w-full"
-        >
+        <PDtatilMap :plan-title="planTitle" :travel-plans="travelPlans" :selected-date="selectedDate"
+          :date-range="dateRange" class="w-full">
         </PDtatilMap>
+        <button @click="confirmDelete" class="absolute top-0 right-0 mt-5 mr-10">
+          <img src="@/assets/img/delete-icon.png" alt="Delete" class="w-8 h-8"> <!-- 이미지 경로와 크기는 예시입니다 -->
+        </button>
       </div>
     </div>
 
