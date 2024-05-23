@@ -21,7 +21,6 @@ export default [
     beforeEnter: onlyAuthUser,
     component: ThePlanView,
     redirect: "/plan/region",
-    meta: { keepPlanState: true },
     children: [
       {
         path: "region",
@@ -37,6 +36,7 @@ export default [
         path: "spot",
         name: "choice-attraction",
         component: () => ThePlanAttractionChoiceView,
+        meta: { keepPlanState: true },
       },
       {
         path: "detail/:planId",

@@ -67,7 +67,6 @@ export const usePlanStore = defineStore("planStore", () => {
   };
 
   const clearPlans = () => {
-    alert("호출");
     clickedRegion.value = {};
     schedule.value = {};
     places.value = {};
