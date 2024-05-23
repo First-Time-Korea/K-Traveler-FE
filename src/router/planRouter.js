@@ -40,7 +40,7 @@ export default [
       },
       {
         path: "detail/:planId",
-        name: "paln-detail",
+        name: "plan-detail",
         component: () => ThePlanDetailView,
       },
     ],
