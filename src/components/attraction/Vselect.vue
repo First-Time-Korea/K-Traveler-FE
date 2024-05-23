@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { getTheme, getCategory, getSido } from "@/api/attraction.js";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
@@ -25,6 +25,7 @@ const searchItem = ref({
 onMounted(() => {
   goGetTheme();
   goGetSido();
+
   if (selectedSidoCode.value || selectedThemeCode.value || selectedContentId.value) {
     searchItem.value.themeCode = selectedThemeCode.value;
     searchItem.value.sidoCode = selectedSidoCode.value;
@@ -85,6 +86,27 @@ const handleSearch = async () => {
   await searchAttraction(searchItem).then(console.log("끝"));
   console.log(searchItem.value);
 };
+
+const canSearch = ref(false);
+
+watch(
+  () => searchItem.value,
+  () => {
+    let count = 0;
+    for (let key in searchItem.value) {
+      if (searchItem.value[key] !== "") {
+        count++;
+      }
+    }
+
+    if (count > 1) {
+      canSearch.value = true;
+    } else {
+      canSearch.value = false;
+    }
+  },
+  { deep: true }
+);
 </script>
 
 <template>
@@ -163,8 +185,9 @@ const handleSearch = async () => {
 
         <!-- 검색 박스 -->
         <button
-          class="bg-first-300 text-white relative flex-1 align-middle select-none font-medium text-center uppercase transition-all w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+          class="bg-first-300 text-white relative flex-1 align-middle select-none font-medium text-center uppercase transition-all w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:bg-second-500 disabled:text-second-700/100"
           type="button"
+          :disabled="!canSearch"
           @click="handleSearch"
         >
           <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
