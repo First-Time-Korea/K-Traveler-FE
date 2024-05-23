@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, computed, watch } from 'vue';
+import { onMounted, onBeforeMount, ref, computed, watch } from 'vue';
 import { storeToRefs } from "pinia";
 import { usePlanStore } from "@/stores/plan.js";
 
@@ -11,12 +11,16 @@ const appKey = import.meta.env.VITE_KAKAO_MAP_SERVICE_KEY;
 var markers = [];
 let map = null;
 
+onBeforeMount(() => {
+    loadScript();
+});
+
 onMounted(async () => {
-    if (window.kakao && window.kakao.maps) {
-        initMap();
-    } else {
-        loadScript();
-    }
+    // if (window.kakao && window.kakao.maps) {
+    //     initMap();
+    // } else {
+    //     loadScript();
+    // }
 });
 
 const initMap = () => {
@@ -43,7 +47,7 @@ watch(() => clickedDate.value, () => {
     if (places.value[clickedDate.value]) {
         displayPlaces(places.value[clickedDate.value]);
     } else if (places.value[clickedDate.value] === undefined) {
-        initMap();
+        removeMarker();
     }
 }, { deep: true });
 
@@ -51,28 +55,23 @@ watch(() => places.value, () => {
     console.log(places.value[clickedDate.value].length)
     if (places.value[clickedDate.value] && places.value[clickedDate.value].length > 0) {
         displayPlaces(places.value[clickedDate.value]);
-    } else if (places.value[clickedDate.value]) {
-        initMap();
+    } else if (places.value[clickedDate.value] === undefined) {
+        removeMarker();
     }
 }, { deep: true });
 
 function displayPlaces(places) {
     var bounds = new kakao.maps.LatLngBounds();
-    // 지도에 표시되고 있는 마커를 제거합니다
     removeMarker();
     for (var i = 0; i < places.length; i++) { //새로 찍을 장소들
-        // 마커를 생성하고 지도에 표시합니다
         var placePosition = new kakao.maps.LatLng(places[i].latitude, places[i].longitude);
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-        // LatLngBounds 객체에 좌표를 추가합니다
         addMarker(placePosition, i)
         console.log(markers)
-
         bounds.extend(placePosition);
     }
-    // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
     map.setBounds(bounds);
 }
+
 function addMarker(position, idx) {
     console.log("addMarker", position, idx)
     var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
@@ -88,10 +87,8 @@ function addMarker(position, idx) {
             image: markerImage
         });
 
-    console.log("marker", marker);
     marker.setMap(map); // 지도 위에 마커를 표출합니다
     markers.push(marker);  // 배열에 생성된 마커를 추가합니다
-
     return marker;
 }
 
