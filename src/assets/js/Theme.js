@@ -89,7 +89,7 @@ const theme = {
     ],
     locations: [locations.seoul, locations.incheon, locations.daejeon],
   },
-  kCulture: {
+  kculture: {
     code: "E",
     subject: "K-Culture Enthusiast",
     content:
@@ -170,7 +170,7 @@ const theme = {
     ],
     locations: [locations.seoul, locations.incheon, locations.daejeon],
   },
-  modernCulture: {
+  modernculture: {
     code: "H",
     subject: "Urban Explorer",
     content:
