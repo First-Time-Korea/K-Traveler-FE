@@ -36,7 +36,7 @@ export default [
         path: "spot",
         name: "choice-attraction",
         component: () => ThePlanAttractionChoiceView,
-        meta: { keepPlanState: true },
+        meta: { discardPlanState: true },
       },
       {
         path: "detail/:planId",
