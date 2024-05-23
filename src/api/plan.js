@@ -53,7 +53,12 @@ async function getPlanDetail(planId, success, fail) {
     .catch(fail);
 }
 
-function clearData() {}
+function deletePlan(planId, success, fail) {
+  http
+    .delete("plan", { params: { planId: planId } })
+    .then(success)
+    .catch(fail);
+}
 
 export {
   getRegions,
@@ -63,5 +68,5 @@ export {
   createPlan,
   getPlanInfos,
   updateMemo,
-  clearData,
+  deletePlan,
 };
