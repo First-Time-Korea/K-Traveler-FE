@@ -92,7 +92,7 @@ export const useMemberStore = defineStore(
                 } else {
                   console.log("리프레시 토큰 제거 실패");
                 }
-                alert("RefreshToken 기간 만료!!! 다시 로그인해 주세요.");
+                alert("Your login session has expired. Please log in again.");
                 isLogin.value = false;
                 userInfo.value = null;
                 isValidToken.value = false;

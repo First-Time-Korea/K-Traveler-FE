@@ -7,6 +7,8 @@ import { getRegions } from "@/api/plan.js";
 import { storeToRefs } from "pinia";
 import { usePlanStore } from "@/stores/plan.js";
 import { useMemberStore } from "@/stores/member"
+import defaultImg from "@/assets/img/no-image.jpg"
+
 const planStore = usePlanStore();
 const memberStore = useMemberStore();
 const { userInfo } = storeToRefs(memberStore);
@@ -173,6 +175,7 @@ watch(() => keyword.value, debounce((newKeyword) => {
     }
 }, 300)); //유저가 입력할 시간 300ms 주는 것
 
+
 </script>
 
 <template>
@@ -214,7 +217,8 @@ watch(() => keyword.value, debounce((newKeyword) => {
                     <div class=" flex bg-white hover:shadow-lg hover:opacity-75 focus:ring focus:ring-gray-300 mb-2 p-2 rounded-lg relative transition-shadow"
                         v-for="attraction in filteredAttractionsToShow" :key="attraction.id">
                         <div class="w-24 h-48 overflow-hidden">
-                            <img :src="attraction.firstImage" alt="" class="w-auto h-full object-cover object-center">
+                            <img :src="attraction.firstImage ? attraction.firstImage : defaultImg" alt=""
+                                class="w-auto h-full object-cover object-center">
                         </div>
                         <div class="flex-grow px-2 w-48 h-48 overflow-y-auto scroll">
                             <h5 class="text-md font-semibold">{{ attraction.title }}</h5>

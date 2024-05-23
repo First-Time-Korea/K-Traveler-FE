@@ -22,6 +22,7 @@ export default [
         path: "search",
         name: "attraction-search",
         component: () => TheAttractionView,
+        meta: { discardAttractionState: true },
       },
     ],
   },

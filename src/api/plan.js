@@ -64,5 +64,4 @@ export {
   getPlanInfos,
   updateMemo,
   clearData,
-  getPlanInfos,
 };

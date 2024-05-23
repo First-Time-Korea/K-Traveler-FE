@@ -29,7 +29,7 @@ onMounted(() => {
       },
       (error) => {
         console.log(error);
-        alert("여행 후기 조회하기 실패...");
+        alert("Travel review inquiry failed.");
       }
     );
   }
@@ -129,14 +129,14 @@ const tryWriteArticle = () => {
     formData,
     (response) => {
       if (response.status == 201) {
-        alert("여행 후기 작성이 정상적으로 완료되었습니다.");
+        alert("You have completed the travel review.");
       }
 
       goArticleList();
     },
     (error) => {
       console.log(error);
-      alert("여행 후기 작성이 실패했습니다...");
+      alert("Failed to write travel reviews.");
     }
   );
 };
@@ -158,14 +158,14 @@ const tryModifyArticle = () => {
     formData,
     (response) => {
       if (response.status == 200) {
-        alert("여행 후기 수정이 정상적으로 완료되었습니다.");
+        alert("You have completed the travel review.");
 
         router.replace({ name: "board-detail", params: { articleid: articleId.value } });
       }
     },
     (error) => {
       console.log(error);
-      alert("여행 후기 수정이 실패했습니다...");
+      alert("Modification of travel reviews failed.");
     }
   );
 };

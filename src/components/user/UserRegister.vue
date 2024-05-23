@@ -22,7 +22,7 @@ const isPwdValid = ref(null);
 async function goSignUp() {
   console.log("회원가입!!", user.value);
   if (user.value.password !== user.value.passwordCheck) {
-    alert("비밀번호가 일치하지 않습니다.");
+    alert("The password does not match.");
     return;
   }
   await signup(
@@ -30,13 +30,13 @@ async function goSignUp() {
     (response) => {
       console.log(response.data);
       if (response.data.status === "success") {
-        alert("회원가입이 완료되었습니다.");
+        alert("Membership has been completed.");
         router.push({ name: "main" });
       }
     },
     (error) => {
       console.log(error);
-      alert("회원가입이 실패하였습니다.");
+      alert("Membership failed.");
       router.push({ name: "user-join" });
     }
   );
@@ -101,89 +101,61 @@ const canSignup = computed(() => {
 <template>
   <div class="flex justify-center mt-20">
     <div class="relative flex flex-col text-gray-700 bg-white shadow-md rounded-xl p-10">
-      <h4
-        class="block text-2xl antialiased font-semibold leading-snug tracking-normal text-gray-900 text-center mb-6"
-      >
+      <h4 class="block text-2xl antialiased font-semibold leading-snug tracking-normal text-gray-900 text-center mb-6">
         SIGNUP
       </h4>
       <form class="max-w-screen-lg w-80 sm:w-96" @submit.prevent="goSignUp">
         <div class="flex flex-col gap-6 mb-1">
           <!-- 이름 -->
           <div class="relative h-11 w-full min-w-[200px]">
-            <input
-              placeholder="NAME"
-              v-model="user.name"
-              class="peer h-full w-full rounded-md border border-gray-300 bg-transparent px-3 py-3 text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-gray-300 placeholder-shown:leading-[4.1] focus:border-2 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-gray-50"
-            />
+            <input placeholder="NAME" v-model="user.name"
+              class="peer h-full w-full rounded-md border border-gray-300 bg-transparent px-3 py-3 text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-gray-300 placeholder-shown:leading-[4.1] focus:border-2 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-gray-50" />
           </div>
 
           <!-- 아이디 -->
           <div class="relative h-11 w-full min-w-[200px]">
-            <input
-              placeholder="ID"
-              v-model="user.id"
-              @blur="goIdCheck"
-              :class="{
-                'border-red-500': isIdValid === false,
-                'border-green-500': isIdValid === true,
-                'border-gray-300': isIdValid === null,
-              }"
-              class="peer h-full w-full rounded-md border bg-transparent px-3 py-3 text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-gray-300 placeholder-shown:leading-[4.1] focus:border-2 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-gray-50"
-            />
-            <p
-              v-if="idCheckMessage"
+            <input placeholder="ID" v-model="user.id" @blur="goIdCheck" :class="{
+              'border-red-500': isIdValid === false,
+              'border-green-500': isIdValid === true,
+              'border-gray-300': isIdValid === null,
+            }"
+              class="peer h-full w-full rounded-md border bg-transparent px-3 py-3 text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-gray-300 placeholder-shown:leading-[4.1] focus:border-2 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-gray-50" />
+            <p v-if="idCheckMessage"
               :class="{ 'text-red-500': isIdValid === false, 'text-green-500': isIdValid === true }"
-              class="text-sm mt-1"
-            >
+              class="text-sm mt-1">
               <!-- {{ idCheckMessage }} -->
             </p>
           </div>
 
           <!-- 비밀번호 -->
           <div class="relative h-11 w-full min-w-[200px]">
-            <input
-              type="password"
-              placeholder="PW"
-              v-model="user.password"
-              :class="{
-                'border-red-500': isPwdValid === false,
-                'border-green-500': isPwdValid === true,
-                'border-gray-300': isPwdValid === null,
-              }"
-              class="peer h-full w-full rounded-md border border-gray-300 bg-transparent px-3 py-3 text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-gray-300 placeholder-shown:leading-[4.1] focus:border-2 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-gray-50"
-            />
+            <input type="password" placeholder="PW" v-model="user.password" :class="{
+              'border-red-500': isPwdValid === false,
+              'border-green-500': isPwdValid === true,
+              'border-gray-300': isPwdValid === null,
+            }"
+              class="peer h-full w-full rounded-md border border-gray-300 bg-transparent px-3 py-3 text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-gray-300 placeholder-shown:leading-[4.1] focus:border-2 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-gray-50" />
           </div>
 
           <!-- 비밀번호 확인 -->
           <div class="relative h-11 w-full min-w-[200px]">
-            <input
-              type="password"
-              placeholder="CHECK PW"
-              v-model="user.passwordCheck"
-              @blur="goPwdCheck"
-              :class="{
-                'border-red-500': isPwdValid === false,
-                'border-green-500': isPwdValid === true,
-                'border-gray-300': isPwdValid === null,
-              }"
-              class="peer h-full w-full rounded-md border border-gray-300 bg-transparent px-3 py-3 text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-gray-300 placeholder-shown:leading-[4.1] focus:border-2 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-gray-50"
-            />
+            <input type="password" placeholder="CHECK PW" v-model="user.passwordCheck" @blur="goPwdCheck" :class="{
+              'border-red-500': isPwdValid === false,
+              'border-green-500': isPwdValid === true,
+              'border-gray-300': isPwdValid === null,
+            }"
+              class="peer h-full w-full rounded-md border border-gray-300 bg-transparent px-3 py-3 text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-gray-300 placeholder-shown:leading-[4.1] focus:border-2 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-gray-50" />
           </div>
 
           <!-- 이메일 -->
           <div class="flex gap-1">
-            <input
-              type="text"
-              v-model="user.emailId"
+            <input type="text" v-model="user.emailId"
               class="peer h-full w-1/2 rounded-md border border-gray-300 bg-transparent px-3 py-3 text-sm font-normal text-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-gray-300 placeholder-shown:leading-[4.1] focus:border-2 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-gray-50"
-              placeholder="Email ID"
-            />
+              placeholder="Email ID" />
             <span class="input-group-text">@</span>
             <select
               class="form-select w-1/2 rounded-md border border-gray-300 bg-transparent px-3 py-3 text-sm font-normal text-gray-700 outline outline-0 transition-all focus:border-2 focus:border-gray-900 focus:outline-0 disabled:border-0 disabled:bg-gray-50"
-              aria-label="이메일 도메인 선택"
-              v-model="user.emailDomain"
-            >
+              aria-label="이메일 도메인 선택" v-model="user.emailDomain">
               <option value="gmail.com">gmail.com</option>
               <option value="naver.com">naver.com</option>
               <option value="kakao.com">kakao.com</option>

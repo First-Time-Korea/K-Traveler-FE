@@ -23,10 +23,23 @@ const isModalVisible = ref(false);
 
 const fileInput = ref(null); // 입력 받는 파일
 
+const goNext = () => {
+  // 모달 띄우기
+  // router.push({ name: "choice-schedule" })
+};
 
 const togleModal = () => {
   isModalVisible.value = !isModalVisible.value;
 };
+
+onMounted(() => {
+  console.log("ThePlanAttractionCoiceView");
+  console.log(schedule);
+  console.log(clickedRegion);
+  console.log(userInfo);
+
+  calculatePeriod();
+});
 
 const formatDateString = (dateString) => {
   if (!dateString) return "";
