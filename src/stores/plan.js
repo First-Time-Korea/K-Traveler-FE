@@ -13,15 +13,11 @@ export const usePlanStore = defineStore("planStore", () => {
     end: null,
   });
 
-  // 여행 장소를 관리할 상태
   const places = ref({
     // 찜한 관광지 (key:날짜.toISOString, value:관광지[])
   });
 
-  const clickedDate = ref();
-
-  // 다음 단계로 진행할 수 있는지 확인하는 상태
-  const canGoNext = ref(false);
+  const clickedDate = ref(null);
 
   const updateClickedRegion = (region) => {
     clickedRegion.value = region;
@@ -70,16 +66,23 @@ export const usePlanStore = defineStore("planStore", () => {
     console.log("Submitting data to server:", fullData);
   };
 
+  const clearPlans = () => {
+    clickedRegion.value = {};
+    schedule.value = {};
+    places.value = {};
+    clickedDate.value = null;
+  };
+
   return {
     clickedRegion,
     schedule,
     places,
-    canGoNext,
+    clickedDate,
     updateClickedRegion,
     updateSchedule,
     addPlace,
     submitAllData,
     deletePlace,
-    clickedDate,
+    clearPlans,
   };
 });

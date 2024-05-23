@@ -10,9 +10,8 @@ const appKey = import.meta.env.VITE_KAKAO_MAP_SERVICE_KEY;
 
 var markers = [];
 let map = null;
-var clusterer;
 
-onMounted(() => {
+onMounted(async () => {
     if (window.kakao && window.kakao.maps) {
         initMap();
     } else {
@@ -27,13 +26,6 @@ const initMap = () => {
         level: 12,
     };
     map = new kakao.maps.Map(container, options);
-
-    clusterer = new kakao.maps.MarkerClusterer({
-        map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
-        averageCenter: true, // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정 
-        minLevel: 10 // 클러스터 할 최소 지도 레벨 
-    });
-
     const zoomControl = new kakao.maps.ZoomControl();
     map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
     var mapTypeControl = new kakao.maps.MapTypeControl();
@@ -43,7 +35,7 @@ const initMap = () => {
 const loadScript = () => {
     const script = document.createElement("script");
     script.onload = () => kakao.maps.load(initMap);
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${appKey}&libraries=services,clusterer,drawing`;
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${appKey}&libraries=services`;
     document.head.appendChild(script);
 };
 

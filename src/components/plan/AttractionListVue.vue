@@ -43,8 +43,8 @@ const dateRange = computed(() => {
         dates.push(new Date(currentDate).toISOString());
         currentDate.setDate(currentDate.getDate() + 1);
     }
-    selectedDate.value = dates[dates.length - 1] //초기 날짜 설정 TODO: 리펙토링 할 때 피니아 객체랑 통합시키기..^^
-    clickedDate.value = dates[dates.length - 1]; //피니아에서도 초기 값 설정
+    selectedDate.value = dates[0] //초기 날짜 설정 TODO: 리펙토링 할 때 피니아 객체랑 통합시키기..^^
+    clickedDate.value = dates[0]; //피니아에서도 초기 값 설정
     return dates;
 })
 
@@ -211,7 +211,7 @@ watch(() => keyword.value, debounce((newKeyword) => {
                         placeholder="Search attractions" />
                 </div>
                 <div class="scrollable-container custom-scroll ">
-                    <div class=" flex bg-white border border-gray-300 mb-2 p-2 rounded-lg relative hover:shadow-lg transition-shadow"
+                    <div class=" flex bg-white hover:shadow-lg hover:opacity-75 focus:ring focus:ring-gray-300 mb-2 p-2 rounded-lg relative transition-shadow"
                         v-for="attraction in filteredAttractionsToShow" :key="attraction.id">
                         <div class="w-24 h-48 overflow-hidden">
                             <img :src="attraction.firstImage" alt="" class="w-auto h-full object-cover object-center">
