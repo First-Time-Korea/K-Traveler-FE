@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, onUpdated, ref, watch } from "vue";
+import { onMounted, onUnmounted, onBeforeMount, onUpdated, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useAttracionStore } from "@/stores/attraction.js";
@@ -37,15 +37,29 @@ const clickedPlace = ref({
   isBookmarked: false,
 });
 
-onMounted(() => {
-  if (window.kakao && window.kakao.maps) {
-    initMap();
-  } else {
-    loadScript();
-  }
-});
+onBeforeMount(() => {
+  console.log("되거라~~~ BoforeMount")
+  loadScript();
+}),
 
-onUpdated(() => {});
+  onMounted(() => {
+    // if (window.kakao && window.kakao.maps) {
+    //   initMap();
+    // } else {
+    //   loadScript();
+    // }
+    if (window.kakao && window.kakao.maps) {
+      initMap();
+    } else {
+      loadScript()
+        .then(initMap) // Initialize the map after the script is loaded
+        .catch(error => {
+          console.error('Failed to load the Kakao Maps script:', error);
+        });
+    }
+  });
+
+onUpdated(() => { });
 
 onUnmounted(() => {
   if (places.value) {
@@ -53,23 +67,20 @@ onUnmounted(() => {
   }
 });
 
-watch(
-  () => places.value,
-  (newPlaces) => {
-    if (newPlaces.length != 0) {
-      displayPlaces(newPlaces);
-    } else {
-      alert("Search item does not exist.");
-    }
-  },
-  { deep: true }
-);
-
 const loadScript = () => {
-  const script = document.createElement("script");
-  script.onload = () => kakao.maps.load(initMap);
-  script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${appKey}&libraries=services,clusterer,drawing`;
-  document.head.appendChild(script);
+  // const script = document.createElement("script");
+  // script.onload = () => kakao.maps.load(initMap);
+  // script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${appKey}&libraries=services,clusterer,drawing`;
+  // document.head.appendChild(script);
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.onload = () => {
+      kakao.maps.load(resolve); // Resolve the promise once kakao maps load
+    };
+    script.onerror = reject; // Reject the promise if there is an error loading the script
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${appKey}&libraries=services,clusterer,drawing`;
+    document.head.appendChild(script);
+  });
 };
 
 const initMap = () => {
@@ -93,6 +104,20 @@ const initMap = () => {
   map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
 };
 
+watch(
+  () => places.value,
+  (newPlaces) => {
+    console.log("watch");
+    if (newPlaces.length != 0 || window.kakao && window.kakao.maps) {
+      setTimeout(displayPlaces(newPlaces), 200); //지도 불러오기 전에 좌표 찍으려고 하는 것 임시 해결
+    } else {
+      alert("Search results do not exist.");
+    }
+  },
+  { deep: true }
+);
+
+// 검색 결과 목록과 마커를 표출하는 함수입니다
 function displayPlaces(places) {
   removeMarker(); // 기존 마커 제거
   var bounds = new kakao.maps.LatLngBounds();
@@ -110,41 +135,7 @@ function displayPlaces(places) {
     bounds.extend(position);
   });
 
-  clusterer.addMarkers(newMarkers); // 클러스터를 사용하면 마커 클러스터가 자동으로 지도에 마커를 추가
-  map.setBounds(bounds); // 모든 마커가 보이도록 지도 범위 조정
-}
-
-watch(
-  () => places.value,
-  (newPlaces) => {
-    console.log("watch");
-    if (newPlaces.length != 0) {
-      setTimeout(displayPlaces(newPlaces), 100); //지도 불러오기 전에 좌표 찍으려고 하는 것 임시 해결
-    } else {
-      alert("Search item does not exist.");
-    }
-  },
-  { deep: true }
-);
-
-// 검색 결과 목록과 마커를 표출하는 함수입니다
-function q(places) {
-  removeMarker(); // 기존 마커 제거
-  var bounds = new kakao.maps.LatLngBounds();
-  var newMarkers = [];
-
-  places.forEach((place) => {
-    var position = new kakao.maps.LatLng(place.latitude, place.longitude);
-    var marker = new kakao.maps.Marker({
-      position: position,
-    });
-    kakao.maps.event.addListener(marker, "click", function () {
-      openModal(place.contentId, place.themeCode);
-    });
-    newMarkers.push(marker);
-    bounds.extend(position);
-  });
-
+  console.log("displayPlaces clusterer", clusterer);
   clusterer.addMarkers(newMarkers); // 클러스터를 사용하면 마커 클러스터가 자동으로 지도에 마커를 추가
   map.setBounds(bounds); // 모든 마커가 보이도록 지도 범위 조정
 }
@@ -227,7 +218,7 @@ function openModal(contentId, themeCode) {
 }
 
 function removeMarker() {
-  console.log("clusterer", clusterer);
+  console.log("removeMarker clusterer", clusterer);
   if (clusterer != null) {
     clusterer.clear();
   }
@@ -263,27 +254,12 @@ const loadKCultureImg = (categoryCode) => {
   <div v-show="isModalVisible" class="modal" @click.self="closeModal">
     <div class="modal-content">
       <div class="image-container">
-        <img
-          v-if="clickedPlace.firstImage"
-          :src="clickedPlace.firstImage"
-          alt="Place image"
-          class="place-image"
-        />
+        <img v-if="clickedPlace.firstImage" :src="clickedPlace.firstImage" alt="Place image" class="place-image" />
         <img v-else src="@/assets/img/no-picture.png" alt="Default image" class="place-image" />
-        <img
-          src="@/assets/img/like-before.png"
-          v-if="!clickedPlace.isBookmarked"
-          alt="Like"
-          class="like-button"
-          @click="togleLike(clickedPlace.contentId)"
-        />
-        <img
-          src="@/assets/img/like-after.png"
-          v-else
-          alt="Liked"
-          class="like-button"
-          @click="togleLike(clickedPlace.contentId)"
-        />
+        <img src="@/assets/img/like-before.png" v-if="!clickedPlace.isBookmarked" alt="Like" class="like-button"
+          @click="togleLike(clickedPlace.contentId)" />
+        <img src="@/assets/img/like-after.png" v-else alt="Liked" class="like-button"
+          @click="togleLike(clickedPlace.contentId)" />
       </div>
       <div class="title scroll">
         <p class="font-bold">{{ clickedPlace.title }}</p>
