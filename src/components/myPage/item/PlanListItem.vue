@@ -1,7 +1,10 @@
 <script setup>
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
 const { VITE_VUE_API_URL } = import.meta.env;
+
+const router = useRouter();
 
 const props = defineProps({
   plan: Object,
@@ -28,11 +31,16 @@ onMounted(() => {
   let index = props.plan.file.originFile.indexOf(".");
   plan.value.img.alt = `${props.plan.file.originFile.substring(0, index)}`;
 });
+
+const goPlanDetail = () => {
+  router.push({ name: "plan-detail", params: { planId: plan.value.id } });
+};
 </script>
 
 <template>
   <figure
     class="relative w-full h-56 hover:cursor-pointer hover:shadow-xl hover:shadow-gray-800/30 transition duration-300 rounded-xl"
+    @click="goPlanDetail"
   >
     <div class="w-full h-full rounded-xl overflow-hidden">
       <img
