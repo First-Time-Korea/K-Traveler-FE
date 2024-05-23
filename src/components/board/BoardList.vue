@@ -14,7 +14,7 @@ onMounted(() => {
 
 const tryGetArticles = () => {
   getArticles(param.value, ({ data }) => {
-    articles.value = { ...articles.value, ...data.articles };
+    articles.value = [...articles.value, ...data.articles];
     currentPage.value = data.currentPage;
     totalPage.value = data.totalPageCount;
   });
@@ -67,8 +67,7 @@ const canMoreGetArticles = computed(() => {
       <div class="relative h-10 flex-3 min-w-[60px]">
         <select
           class="peer h-full w-full rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
-          v-model="param.key"
-        >
+          v-model="param.key">
           <option value="tag">tag</option>
           <option value="username">username</option>
         </select>
@@ -76,39 +75,24 @@ const canMoreGetArticles = computed(() => {
       <div class="relative flex-6 min-w-[360px] h-10">
         <input
           class="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900"
-          placeholder="USERNAME"
-          v-model="param.word"
-        />
+          placeholder="USERNAME" v-model="param.word" />
       </div>
       <button
         class="bg-first-300 text-white relative flex-1 align-middle select-none font-sans font-medium text-center uppercase transition-all w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs shadow-md shadow-gray-900/10 hover:bg-first-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
-        type="button"
-        @click="searchArticles"
-      >
+        type="button" @click="searchArticles">
         <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-            />
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
           </svg>
         </span>
       </button>
     </div>
 
     <!-- 조회 결과 없음 -->
-    <p
-      class="text-center mt-20 block font-sans text-base antialiased font-light leading-relaxed text-inherit"
-      v-show="showNoSearchedResult"
-    >
+    <p class="text-center mt-20 block font-sans text-base antialiased font-light leading-relaxed text-inherit"
+      v-show="showNoSearchedResult">
       No search results match '{{ searchedWord }}'.
     </p>
 
@@ -121,10 +105,7 @@ const canMoreGetArticles = computed(() => {
     <div class="flex justify-center mt-10">
       <button
         class="px-6 py-3 font-sans text-xs font-bold text-center text-first-400 uppercase align-middle transition-all rounded-lg select-none hover:bg-first-300/10 active:bg-first-300/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-        type="button"
-        v-show="canMoreGetArticles"
-        @click="tryMoreGetArticles"
-      >
+        type="button" v-show="canMoreGetArticles" @click="tryMoreGetArticles">
         MORE
       </button>
     </div>
@@ -133,21 +114,9 @@ const canMoreGetArticles = computed(() => {
   <!-- 여행 후기 작성 버튼 -->
   <button
     class="fixed bottom-6 right-6 bg-third-300 rounded-full text-white p-3.5 shadow-md shadow-gray-900/20 hover:bg-third-400 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
-    @click="goBoardWrite"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="h-6 w-6"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-      />
+    @click="goBoardWrite">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
     </svg>
   </button>
 </template>
