@@ -19,8 +19,8 @@ function getPlanInfos(param, success, fail) {
   local.get(`/plan/list`, { params: param }).then(success).catch(fail);
 }
 
-async function getAttractionBySidoCode(sidoCode, success, fail) {
-  await http.get(`/attraction/sido/${sidoCode}`).then(success).catch(fail);
+async function getAttractionBySidoCode(param, success, fail) {
+  await http.get(`/attraction/sido`, { params: param }).then(success).catch(fail);
 }
 
 async function createPlan(formData, success, fail) {
